@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Who won the company's tug-of-war contest?
+voice: uk_female_1
+(A) The warehouse team, by a nose.
+(B) Contests are held yearly.
+(C) Tug-of-war needs strength.
+Answer: A
+Explanation: Câu hỏi ai thắng kéo co, đáp án đúng nêu đội thắng | (A) "The warehouse team, by a nose." — trả lời đúng người thắng | (B) "Contests are held yearly." — nói kỳ tổ chức | (C) "Tug-of-war needs strength." — nhận xét chung
+Source: original

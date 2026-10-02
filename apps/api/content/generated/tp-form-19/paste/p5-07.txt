@@ -1,0 +1,9 @@
+[QUESTION]
+The company reviewed the lease agreement ------- covers the rental price of the new premises.
+(A) who
+(B) whom
+(C) whose
+(D) which
+Answer: D
+Explanation: Mệnh đề quan hệ với tiền ngữ chỉ vật "agreement" làm chủ ngữ cần đại từ quan hệ "which"; trích nguyên văn đáp án đúng trong "which".
+Source: original

@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Have you seen the layout for our spring fair booth yet?
+voice: uk_female_1
+Yes, the colorful decorations and printed flyers arrived yesterday.
+voice: au_male_1
+Great. As your event coordinator, I ordered extra lights for the booth.
+voice: us_female_1
+Nice. Have the snack samples been delivered yet?
+voice: uk_female_1
+Not yet, but the supplier promised them by Thursday afternoon.
+voice: au_male_1
+Good. We still need a final check of the booth decorations.
+voice: us_female_1
+Can we meet on Friday morning to go through everything together?
+voice: uk_female_1
+Friday works for me. Should we invite the volunteers as well?
+voice: au_male_1
+Yes, please ask them to join so we can assign tasks early.
+voice: us_female_1
+Perfect, I will send a reminder to everyone tonight.
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Ordering extra lights for the office party
+(B) Preparing the booth for the spring fair
+(C) Arranging volunteers for Thursday afternoon
+(D) Sending a reminder about the snack samples tonight
+Answer: B
+Explanation: Sơ đồ gian hàng hội chợ xuân và duyệt trang trí | (A) "Ordering extra lights for the office party" — không có tiệc văn phòng | (B) "Preparing the booth for the spring fair" — đúng | (C) "Arranging volunteers for Thursday afternoon" — hàng tới thứ Năm, mời sau | (D) "Sending a reminder about the snack samples tonight" — lời nhắc là việc cuối
+Source: original
+[QUESTION]
+Who is the man most likely to be?
+(A) A snack supplier
+(B) One of the volunteers
+(C) The event coordinator
+(D) The printer of the flyers
+Answer: C
+Explanation: Tự giới thiệu là điều phối viên sự kiện | (A) "A snack supplier" — nhà cung cấp hứa giao thứ Năm | (B) "One of the volunteers" — ông phân công cho họ | (C) "The event coordinator" — đúng | (D) "The printer of the flyers" — tờ rơi đã tới
+Source: original
+[QUESTION]
+What will the speakers probably do on Friday?
+(A) Invite the supplier to check the decorations
+(B) Order extra lights for Thursday afternoon
+(C) Send snack samples to the volunteers tonight
+(D) Hold a final review meeting on Friday
+Answer: D
+Explanation: Gặp sáng thứ Sáu duyệt lần cuối | (A) "Invite the supplier to check the decorations" — mời tình nguyện viên | (B) "Order extra lights for Thursday afternoon" — đèn đã đặt | (C) "Send snack samples to the volunteers tonight" — gửi lời nhắc, không gửi mẫu | (D) "Hold a final review meeting on Friday" — đúng
+Source: original

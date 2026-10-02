@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) Two gardeners are planting flowers in the park.
+(B) A man is mowing the lawn with a mower.
+(C) Children are feeding ducks by the pond.
+(D) A woman is jogging along the pathway.
+Answer: A
+Explanation: Trong ảnh hai người làm vườn đang trồng hoa trong công viên thành phố | (A) "Two gardeners are planting flowers in the park." — đúng | (B) "A man is mowing the lawn with a mower." — không có máy cắt cỏ nào | (C) "Children are feeding ducks by the pond." — không có trẻ em hay vịt | (D) "A woman is jogging along the pathway." — không ai chạy bộ
+Source: original

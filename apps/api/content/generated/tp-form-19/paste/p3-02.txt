@@ -1,0 +1,44 @@
+[SCRIPT]
+voice: uk_female_1
+Hi, I'd like to exchange this phone I bought yesterday.
+voice: ca_male_1
+Of course. What's wrong with it?
+voice: uk_female_1
+The battery drains in just two hours.
+voice: ca_male_1
+Our system is down right now.
+voice: uk_female_1
+Oh, then I'll wait here.
+voice: ca_male_1
+Thanks. Can I offer you a cheaper monthly plan?
+voice: uk_female_1
+How much data does it include?
+voice: ca_male_1
+Ten gigabytes, and it's ten dollars less.
+[QUESTION]
+Who is the woman?
+(A) A customer returning a faulty phone
+(B) A manager of the phone store
+(C) A technician who repairs phone batteries
+(D) A driver delivering new phones
+Answer: A
+Explanation: Cô ấy nói exchange phone đã mua và pin tụt nên là khách đổi máy lỗi | (A) "A customer returning a faulty phone" — đúng | (B) "A manager of the phone store" — không quản lý, chỉ đến đổi máy | (C) "A technician who repairs phone batteries" — cô ấy là người mua, không phải thợ | (D) "A driver delivering new phones" — không giao hàng
+Source: original
+[QUESTION]
+What does the clerk imply when he says, "Our system is down right now"?
+(A) The phone battery has recovered fully
+(B) The exchange must wait a short time
+(C) The store is closing for the day
+(D) A cheaper monthly plan is ready now
+Answer: B
+Explanation: Câu nói đi sau yêu cầu đổi máy và cô ấy đáp sẽ chờ nên phải chờ | (A) "The phone battery has recovered fully" — pin vẫn hỏng | (B) "The exchange must wait a short time" — đúng | (C) "The store is closing for the day" — chỉ lỗi hệ thống tạm thời | (D) "A cheaper monthly plan is ready now" — gói cước ở lượt sau
+Source: original
+[QUESTION]
+What does the man offer the woman?
+(A) A free battery replacement in two hours
+(B) An immediate phone exchange today
+(C) A lower-cost service package
+(D) A ten-dollar extra charge
+Answer: C
+Explanation: Anh ấy hỏi có muốn gói cước rẻ hơn | (A) "A free battery replacement in two hours" — không thay pin | (B) "An immediate phone exchange today" — hệ thống lỗi nên phải chờ | (C) "A lower-cost service package" — đúng | (D) "A ten-dollar extra charge" — thực tế rẻ hơn mười đô
+Source: original

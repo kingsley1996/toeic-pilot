@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Hi Tom, how is the large warehouse stock report coming along?
+voice: au_male_1
+I've counted most aisles twice, but the numbers don't match the main system yet.
+voice: us_female_1
+Which section has the problem?
+voice: au_male_1
+The electronics section is short by two hundred boxes after yesterday's shipment.
+voice: us_female_1
+That's a lot. Could the boxes be in the wrong aisle?
+voice: au_male_1
+Possibly. The night team moved some heavy pallets last Thursday evening.
+voice: us_female_1
+Let's check the recent delivery logs and the busy loading area as well.
+voice: au_male_1
+Good idea. I'll pull the recent logs and photos this afternoon.
+voice: us_female_1
+And can we do a full careful recount of that entire section?
+voice: au_male_1
+Yes, let's recount the dusty electronics aisles together this quiet weekend.
+[QUESTION]
+What are the speakers discussing?
+(A) Progress on the warehouse stock count
+(B) Checking the loading area logs
+(C) Moving pallets on Thursday evening
+(D) Taking photos this afternoon
+Answer: A
+Explanation: Tiến độ báo cáo kiểm kê kho | (A) "Progress on the warehouse stock count" — đúng | (B) "Checking the loading area logs" — chỉ là bước xử lý | (C) "Moving pallets on Thursday evening" — chỉ là giả thuyết | (D) "Taking photos this afternoon" — ảnh chỉ kèm việc lấy sổ
+Source: original
+[QUESTION]
+What problem is mentioned in the electronics section?
+(A) Two hundred aisles were counted twice
+(B) Two hundred boxes are missing after shipment
+(C) The main system moved pallets at night
+(D) The delivery logs arrived this weekend
+Answer: B
+Explanation: Thiếu hai trăm thùng sau đợt giao hôm qua | (A) "Two hundred aisles were counted twice" — đếm lối hai lần, thiếu là thùng | (B) "Two hundred boxes are missing after shipment" — đúng | (C) "The main system moved pallets at night" — đội đêm dời, không phải hệ thống | (D) "The delivery logs arrived this weekend" — cuối tuần là kiểm lại
+Source: original
+[QUESTION]
+What will the speakers do this weekend?
+(A) Move heavy pallets in the loading area
+(B) Pull the recent logs and photos
+(C) Recount the electronics aisles together
+(D) Ship two hundred boxes on Thursday
+Answer: C
+Explanation: Kiểm lại toàn bộ khu điện tử vào cuối tuần vắng | (A) "Move heavy pallets in the loading area" — đã xảy ra tối thứ Năm | (B) "Pull the recent logs and photos" — làm chiều nay | (C) "Recount the electronics aisles together" — đúng | (D) "Ship two hundred boxes on Thursday" — thiếu sau đợt giao, không gửi thêm
+Source: original

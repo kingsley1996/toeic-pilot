@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Would you prefer chicken or fish for lunch?
+voice: us_female_1
+(A) The restaurant is near the park.
+(B) Lunch is served at noon.
+(C) Fish, please. I had chicken yesterday.
+Answer: C
+Explanation: Câu hỏi chọn món gà hay cá, đáp án đúng chọn cá kèm lý do | (A) "The restaurant is near the park." — lạc đề vị trí quán | (B) "Lunch is served at noon." — nói giờ ăn, không chọn món | (C) "Fish, please. I had chicken yesterday." — trả lời đúng lựa chọn
+Source: original

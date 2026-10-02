@@ -1,0 +1,44 @@
+[SCRIPT]
+voice: uk_female_1
+This paint store near our house has so many colors.
+voice: ca_male_1
+Let's find waterproof paint first. The bedroom wall is still damp.
+voice: uk_female_1
+Right, that damp patch has spread since last month.
+voice: ca_male_1
+Regular paint will peel off in such a moist spot.
+voice: uk_female_1
+This can blocks damp and mold for five years.
+voice: ca_male_1
+But we cannot paint this high wall ourselves.
+voice: uk_female_1
+Should we hire an experienced painter for Saturday?
+voice: ca_male_1
+Yes, let's ask the clerk to recommend someone.
+[QUESTION]
+Where does this conversation most likely take place?
+(A) At a paint store
+(B) At a Saturday painting workshop
+(C) In their bedroom at home
+(D) In the damp corner of the house
+Answer: A
+Explanation: Đang ở cửa hàng sơn chọn màu | (A) "At a paint store" — đúng | (B) "At a Saturday painting workshop" — thuê thợ, không phải hội thảo | (C) "In their bedroom at home" — tường nhà ẩm nhưng họ ở cửa hàng | (D) "In the damp corner of the house" — góc ẩm là hiện trạng ở nhà
+Source: original
+[QUESTION]
+What do the speakers imply they need to buy?
+(A) To pick a new shade for the bedroom
+(B) To get moisture-resistant coating for a wet bedroom wall
+(C) To ask the clerk about weekend work
+(D) To return leftover cans of regular paint
+Answer: B
+Explanation: Cần sơn chống thấm vì tường ẩm, sơn thường sẽ bong | (A) "To pick a new shade for the bedroom" — chọn màu chỉ là câu mở đầu | (B) "To get moisture-resistant coating for a wet bedroom wall" — đúng | (C) "To ask the clerk about weekend work" — hỏi thư ký để giới thiệu thợ | (D) "To return leftover cans of regular paint" — cần mua sơn mới
+Source: original
+[QUESTION]
+What does the woman suggest?
+(A) Pick a shade for the bedroom wall
+(B) Buy two cans of regular paint
+(C) Get a professional to paint on Saturday
+(D) Ask the clerk for brushes and tape
+Answer: C
+Explanation: Thuê thợ sơn, nhờ giới thiệu cho thứ Bảy | (A) "Pick a shade for the bedroom wall" — màu đã bàn xong | (B) "Buy two cans of regular paint" — cần sơn chống thấm | (C) "Get a professional to paint on Saturday" — đúng | (D) "Ask the clerk for brushes and tape" — cọ chỉ là chi tiết phụ
+Source: original

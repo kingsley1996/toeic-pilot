@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: ca_male_1
+Morning crew, this is Tom Baker, your site foreman with today's update. We're already two days behind schedule after last week's heavy rain. The client still expects us to hand over the building by the thirtieth. That means today we must pour concrete for the third floor. Steel frames are ready, so mixers will run all afternoon. Safety officers will check harnesses before anyone climbs up. To catch up, everyone will need to stay extra hours this Saturday and Sunday. Lunch will be provided for all weekend shifts in the site cabin. Thanks for your hard work, and let's finish this stage safely.
+[QUESTION]
+Who is speaking?
+(A) A safety officer
+(B) A construction site supervisor
+(C) A steel frame supplier
+(D) A building client
+Answer: B
+Explanation: Xưng đốc công | (A) "A safety officer" — an toàn chỉ là người kiểm tra | (B) "A construction site supervisor" — đúng | (C) "A steel frame supplier" — khung thép chỉ là vật liệu | (D) "A building client" — khách hàng là bên yêu cầu bàn giao
+Source: original
+[QUESTION]
+What is the main task for today?
+(A) Running mixers all afternoon
+(B) Checking harnesses before climbing
+(C) Pouring concrete for the third storey
+(D) Providing lunch in the site cabin
+Answer: C
+Explanation: Đổ bê tông tầng ba | (A) "Running mixers all afternoon" — phương tiện phục vụ đổ bê tông | (B) "Checking harnesses before climbing" — việc của cán bộ an toàn | (C) "Pouring concrete for the third storey" — đúng | (D) "Providing lunch in the site cabin" — hỗ trợ ca cuối tuần
+Source: original
+[QUESTION]
+What does the speaker imply workers must do?
+(A) Work on the third floor will stop until next week
+(B) The building will be handed over today
+(C) Rain will stop all afternoon work
+(D) The crew must put in additional time on their days off
+Answer: D
+Explanation: Ghép tiến độ trễ với hạn bàn giao | (A) "Work on the third floor will stop until next week" — bê tông đổ hôm nay | (B) "The building will be handed over today" — hạn ngày ba mươi | (C) "Rain will stop all afternoon work" — mưa là nguyên nhân trễ tuần trước | (D) "The crew must put in additional time on their days off" — đúng
+Source: original

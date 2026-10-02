@@ -1,0 +1,9 @@
+[QUESTION]
+voice: au_male_1
+(A) A plane is parked beside the hangar.
+(B) A helicopter is landing on a rooftop.
+(C) Birds are flying over the control tower.
+(D) An airplane is taking off from the runway.
+Answer: D
+Explanation: Trong ảnh một chiếc máy bay đang cất cánh trên đường băng lúc bình minh | (A) "A plane is parked beside the hangar." — máy bay đang bay lên, không đậu | (B) "A helicopter is landing on a rooftop." — đây là máy bay, không phải trực thăng | (C) "Birds are flying over the control tower." — không có chim hay tháp nào | (D) "An airplane is taking off from the runway." — đúng
+Source: original

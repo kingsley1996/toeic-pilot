@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Have you paid this month's electricity bill yet?
+voice: uk_female_1
+(A) Electricity prices went up.
+(B) Yes, I paid it online yesterday.
+(C) The bill arrives monthly.
+Answer: B
+Explanation: Câu hỏi đã đóng tiền điện chưa, đáp án đúng xác nhận đã đóng | (A) "Electricity prices went up." — nói giá điện | (B) "Yes, I paid it online yesterday." — trả lời đúng ý hỏi | (C) "The bill arrives monthly." — nói kỳ hóa đơn
+Source: original

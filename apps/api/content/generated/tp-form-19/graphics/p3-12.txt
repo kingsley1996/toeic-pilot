@@ -1,0 +1,6 @@
+kind: column
+Riverside Dinner Package Prices
+Silver | 25
+Gold | 35
+Platinum | 50
+Diamond | 70

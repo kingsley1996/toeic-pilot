@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Who dropped this umbrella in the lobby?
+voice: au_male_1
+(A) A resident from room 402, I think.
+(B) Umbrellas are sold downstairs.
+(C) It is raining heavily outside.
+Answer: A
+Explanation: Câu hỏi ai đánh rơi ô ở sảnh, đáp án đúng nêu người | (A) "A resident from room 402, I think." — trả lời đúng người | (B) "Umbrellas are sold downstairs." — nói chỗ bán ô | (C) "It is raining heavily outside." — nói thời tiết, không nêu ai
+Source: original

@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Morning, David. Have you finished screening the engineering applications?
+voice: ca_male_1
+Morning, Lisa. As the HR manager, I reviewed twenty files yesterday.
+voice: us_female_1
+Great. Are there enough qualified candidates for the two openings?
+voice: ca_male_1
+Not really. To be honest, we are still short two engineers.
+voice: us_female_1
+I see. Did anyone stand out in the technical interviews?
+voice: ca_male_1
+Yes, three finalists did very well on the practical test.
+voice: us_female_1
+Should we schedule second interviews with them this week?
+voice: ca_male_1
+Let's do that. I will send the candidate list before Monday morning.
+voice: us_female_1
+Perfect. Will you include their test scores as well?
+voice: ca_male_1
+Yes, I will attach the scores and availability to the email.
+[QUESTION]
+Who is David most likely to be?
+(A) A technical interviewer
+(B) An engineering applicant
+(C) The HR manager
+(D) One of the three finalists
+Answer: C
+Explanation: Tự giới thiệu là trưởng phòng nhân sự | (A) "A technical interviewer" — phỏng vấn chỉ là chi tiết | (B) "An engineering applicant" — anh sàng lọc hồ sơ | (C) "The HR manager" — đúng | (D) "One of the three finalists" — ba người là kết quả
+Source: original
+[QUESTION]
+What does the man mean when he says, "we are still short two engineers"?
+(A) Two openings were filled yesterday
+(B) Twenty files were reviewed this week
+(C) Three finalists failed the practical test
+(D) The team still needs two more engineers
+Answer: D
+Explanation: Vẫn thiếu hai kỹ sư sau khi sàng lọc | (A) "Two openings were filled yesterday" — trái ý | (B) "Twenty files were reviewed this week" — xem hồ sơ hôm qua | (C) "Three finalists failed the practical test" — ba người làm rất tốt | (D) "The team still needs two more engineers" — đúng
+Source: original
+[QUESTION]
+What will David probably do before Monday?
+(A) Email the candidate list before Monday
+(B) Schedule second interviews this week
+(C) Attach test scores to the email
+(D) Review twenty files again yesterday
+Answer: A
+Explanation: Gửi danh sách ứng viên trước sáng thứ Hai | (A) "Email the candidate list before Monday" — đúng | (B) "Schedule second interviews this week" — đề xuất chung | (C) "Attach test scores to the email" — đính kèm là kèm theo | (D) "Review twenty files again yesterday" — đã xem xong
+Source: original

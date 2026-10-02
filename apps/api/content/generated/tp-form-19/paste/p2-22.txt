@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Where are the display fridges in the supermarket?
+voice: ca_male_1
+(A) Supermarkets open late.
+(B) Fridges keep food cold.
+(C) Follow me, I'll show you.
+Answer: C
+Explanation: Câu hỏi tủ lạnh trưng bày ở đâu, đáp án đúng dẫn đường gián tiếp | (A) "Supermarkets open late." — nói giờ mở cửa | (B) "Fridges keep food cold." — nói công dụng tủ | (C) "Follow me, I'll show you." — đáp gián tiếp bằng hành động dẫn đi
+Source: original

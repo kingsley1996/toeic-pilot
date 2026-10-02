@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: us_female_1
+Good morning, everyone, thanks for joining today's budget meeting. I'm Karen Doyle, the finance director, and I'll chair our discussion. First, our department faces a serious shortfall this quarter. Revenue dropped, so we must reduce spending across all teams. Starting next month, monthly parking charges will rise by ten dollars. That change will affect everyone who drives to the building. Also, the annual staff celebration in December will be cancelled. We cannot fund social events while the deficit continues. Please send your saving ideas to my office by Friday.
+[QUESTION]
+Who is leading the meeting?
+(A) The company finance director
+(B) A new revenue analyst
+(C) The office parking manager
+(D) The building maintenance chief
+Answer: A
+Explanation: Người nói xưng danh và chủ trì | (A) "The company finance director" — đúng | (B) "A new revenue analyst" — doanh thu chỉ là số liệu | (C) "The office parking manager" — gửi xe chỉ là chi tiết bàn | (D) "The building maintenance chief" — tòa nhà chỉ là nơi đỗ xe
+Source: original
+[QUESTION]
+What change was announced?
+(A) Office hours will be reduced
+(B) Parking charges will go up
+(C) Staff salaries will rise by ten dollars
+(D) Revenue spending will double
+Answer: B
+Explanation: Phí gửi xe tăng | (A) "Office hours will be reduced" — văn phòng chỉ là nơi gửi ý tưởng | (B) "Parking charges will go up" — đúng | (C) "Staff salaries will rise by ten dollars" — mười đô là của phí xe | (D) "Revenue spending will double" — ngược ý cắt chi tiêu
+Source: original
+[QUESTION]
+What does the speaker imply when she says, "We cannot fund social events"?
+(A) Parking fees will pay for office parties
+(B) Revenue dropped because of the parking change
+(C) The staff party is cancelled because of the budget shortfall
+(D) The budget meeting will move to Friday
+Answer: C
+Explanation: Ghép thiếu hụt ngân sách với hủy tiệc | (A) "Parking fees will pay for office parties" — phí xe không nuôi tiệc | (B) "Revenue dropped because of the parking change" — không quan hệ nhân quả | (C) "The staff party is cancelled because of the budget shortfall" — đúng | (D) "The budget meeting will move to Friday" — thứ Sáu là hạn gửi ý tưởng
+Source: original

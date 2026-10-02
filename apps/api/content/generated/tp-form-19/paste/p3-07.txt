@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: uk_female_1
+Have you read the new timekeeping rule that starts next Monday?
+voice: au_male_1
+Not yet. Do we still sign the paper sheet at the front desk?
+voice: uk_female_1
+No, everyone must tap their staff card at the new scanner by nine o'clock.
+voice: au_male_1
+What if someone arrives late? Is there still a short grace period?
+voice: uk_female_1
+The notice says three late arrivals will be recorded as a serious violation.
+voice: au_male_1
+That sounds strict. What happens to a new employee during probation?
+voice: uk_female_1
+They receive a warning first, but repeated violations will cut their monthly pay.
+voice: au_male_1
+I understand. I am rarely late, but I need two days off next month.
+voice: uk_female_1
+Then you should submit a leave request on the staff portal this week.
+voice: au_male_1
+Good idea. I will fill in the form and send it to you today.
+[QUESTION]
+What is mentioned about the new timekeeping rule?
+(A) Sign a paper sheet at the front desk
+(B) Keep a short grace period for late mornings
+(C) Take two days off without notice
+(D) Check in with a staff card at the scanner by nine
+Answer: D
+Explanation: Quẹt thẻ tại máy mới trước chín giờ | (A) "Sign a paper sheet at the front desk" — cách cũ đã bỏ | (B) "Keep a short grace period for late mornings" — anh ấy hỏi, không phải quy định | (C) "Take two days off without notice" — việc riêng của anh ấy | (D) "Check in with a staff card at the scanner by nine" — đúng
+Source: original
+[QUESTION]
+What can be inferred about a new employee who arrives late three times?
+(A) A new employee will lose pay after three late arrivals
+(B) A grace period still applies to all arrivals
+(C) All staff must sign the sheet at the desk
+(D) The scanner will be fixed next Monday
+Answer: A
+Explanation: Ba lần muộn bị ghi vi phạm nặng + tái phạm bị trừ lương, ghép hai chỗ | (A) "A new employee will lose pay after three late arrivals" — đúng | (B) "A grace period still applies to all arrivals" — quy định mới không còn | (C) "All staff must sign the sheet at the desk" — cách cũ | (D) "The scanner will be fixed next Monday" — máy mới lắp
+Source: original
+[QUESTION]
+What will the man probably do next?
+(A) Tap the new scanner at the front desk
+(B) Submit a leave form on the portal
+(C) Cut monthly pay for repeated violations
+(D) Fill in a paper sheet for probation
+Answer: B
+Explanation: Nộp đơn nghỉ phép trên cổng nhân sự | (A) "Tap the new scanner at the front desk" — quy định chung | (B) "Submit a leave form on the portal" — đúng | (C) "Cut monthly pay for repeated violations" — công ty trừ, không phải anh ấy | (D) "Fill in a paper sheet for probation" — giấy cũ
+Source: original

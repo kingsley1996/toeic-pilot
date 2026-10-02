@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Who is covering the night shift at the clinic?
+voice: us_female_1
+(A) The clinic closes at ten.
+(B) Nurse Lan volunteered for it.
+(C) Night shifts pay extra.
+Answer: B
+Explanation: Câu hỏi ai trực đêm ở trạm xá, đáp án đúng nêu tên người | (A) "The clinic closes at ten." — nói giờ đóng cửa | (B) "Nurse Lan volunteered for it." — trả lời đúng người | (C) "Night shifts pay extra." — nói phụ cấp, không nêu ai
+Source: original

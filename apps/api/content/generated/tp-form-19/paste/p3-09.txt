@@ -1,0 +1,44 @@
+[SCRIPT]
+voice: us_female_1
+Hi Emma and David, let's finalize the year-end dinner menu for Friday.
+voice: uk_female_1
+Sure. The head chef called in sick, so the kitchen is short-staffed.
+voice: ca_male_1
+Right, with only two cooks left, the grilled fish will take too long.
+voice: us_female_1
+Can we switch the main course from fish to roast chicken instead?
+voice: ca_male_1
+Yes, chicken is faster with the same herbs.
+voice: uk_female_1
+Good. Let's keep the chocolate cake with berries.
+voice: ca_male_1
+I'll confirm the chicken order today.
+voice: us_female_1
+Thanks. I'll send the menu to staff on Wednesday.
+[QUESTION]
+What is implied about the main course?
+(A) The head chef will grill fish for Friday dinner
+(B) The fish dish was replaced with chicken due to staff shortage
+(C) The chicken will use different herbs and side dishes
+(D) The chocolate cake was switched to roast chicken
+Answer: B
+Explanation: Bếp thiếu người nên đổi món chính từ cá sang gà | (A) "The head chef will grill fish for Friday dinner" — bếp trưởng ốm | (B) "The fish dish was replaced with chicken due to staff shortage" — đúng | (C) "The chicken will use different herbs and side dishes" — vẫn dùng rau thơm cũ | (D) "The chocolate cake was switched to roast chicken" — bánh là tráng miệng
+Source: original
+[QUESTION]
+What dessert will be served?
+(A) Grilled fish with fresh berries
+(B) Roast chicken with chocolate sauce
+(C) Chocolate cake topped with fresh berries
+(D) Year-end menu with fried herbs
+Answer: C
+Explanation: Giữ bánh sô-cô-la kèm quả mọng | (A) "Grilled fish with fresh berries" — cá là món chính cũ | (B) "Roast chicken with chocolate sauce" — gà là món chính | (C) "Chocolate cake topped with fresh berries" — đúng | (D) "Year-end menu with fried herbs" — thực đơn không phải món
+Source: original
+[QUESTION]
+What will the woman do on Wednesday?
+(A) Call the sick chef in the morning
+(B) Confirm the chicken order with the kitchen
+(C) Prepare grilled fish in the kitchen
+(D) Send the final menu to staff
+Answer: D
+Explanation: Gửi thực đơn cuối cho nhân viên vào thứ Tư | (A) "Call the sick chef in the morning" — bếp trưởng đã tự báo ốm | (B) "Confirm the chicken order with the kitchen" — việc của David | (C) "Prepare grilled fish in the kitchen" — cá đã bị thay | (D) "Send the final menu to staff" — đúng
+Source: original

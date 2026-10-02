@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How long will it take to replace the hallway bulb?
+voice: au_male_1
+(A) The hallway is very long.
+(B) Bulbs are sold in packs.
+(C) About fifteen minutes with a ladder.
+Answer: C
+Explanation: Câu hỏi thay bóng đèn mất bao lâu, đáp án đúng cho khoảng thời gian | (A) "The hallway is very long." — bẫy chữ long, nói độ dài hành lang | (B) "Bulbs are sold in packs." — nói cách bán bóng | (C) "About fifteen minutes with a ladder." — trả lời đúng ý hỏi
+Source: original

@@ -1,0 +1,4 @@
+kind: map
+Maple Gardens Model Units
+Unit A: near the park | Unit B: near the school
+Unit C: near the market | Unit D: near the river

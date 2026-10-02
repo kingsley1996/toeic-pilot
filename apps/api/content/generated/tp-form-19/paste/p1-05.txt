@@ -1,0 +1,9 @@
+[QUESTION]
+voice: us_female_1
+(A) A nurse is pushing a wheelchair down the hall.
+(B) Patients are sitting in a hospital waiting room.
+(C) A doctor is examining a patient in a bed.
+(D) Visitors are buying flowers at a gift shop.
+Answer: B
+Explanation: Trong ảnh bệnh nhân ngồi chờ khám trong phòng chờ bệnh viện | (A) "A nurse is pushing a wheelchair down the hall." — không có xe lăn hay hành lang | (B) "Patients are sitting in a hospital waiting room." — đúng | (C) "A doctor is examining a patient in a bed." — không có giường bệnh nào | (D) "Visitors are buying flowers at a gift shop." — không có cửa hàng quà trong ảnh
+Source: original

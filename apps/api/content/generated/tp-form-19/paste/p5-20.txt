@@ -1,0 +1,9 @@
+[QUESTION]
+The water pump stopped working ------- the power was cut during the storm.
+(A) because
+(B) although
+(C) unless
+(D) despite
+Answer: A
+Explanation: Chỉ nguyên nhân mất điện nên dùng liên từ chỉ nguyên nhân, trích nguyên văn "because".
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Why don't we chip in for a farewell gift for the boss?
+voice: au_male_1
+(A) Gifts are expensive downtown.
+(B) Good idea. I'll collect the money.
+(C) The boss retires next year.
+Answer: B
+Explanation: Câu rủ góp tiền mua quà chia tay sếp, đáp án đúng hưởng ứng | (A) "Gifts are expensive downtown." — bàn giá quà | (B) "Good idea. I'll collect the money." — đồng ý và hành động | (C) "The boss retires next year." — nói thời điểm nghỉ hưu
+Source: original

@@ -1,0 +1,68 @@
+[PASSAGE]
+From: Management Office
+To: All staff
+Subject: New Year Holiday Closure and Bonus Payment Schedule
+Date: December 10
+Dear Colleagues,
+Please note that our office will be closed from December 31 to January 2 for the New Year holiday and will reopen on January 3. Only the emergency maintenance team will remain on duty during this period and can be reached at 555-0198 for urgent issues. All project deadlines have been adjusted in the internal system to reflect the three-day closure.
+The 13th-month salary for all full-time employees will be transferred to bank accounts on January 5. Employees who joined after February will receive a proportional amount based on working months. Please check your bank information in the personnel system by December 20 to avoid any delay. If you have questions about working months or tax deductions, contact the human resources desk before December 22.
+Thank you for your hard work this year, and we wish you a happy holiday.
+Best regards,
+Management Office
+[PASSAGE]
+From: hung.nguyen@company.com
+To: hr@company.com
+Subject: Question about my 13th-month salary
+Date: December 18
+Dear HR Team,
+I joined the company on March 10 as a sales assistant, so I would like to confirm how my 13th-month salary is calculated. I have updated my bank account in the system last week, and I hope the payment process will be smooth. Because my family travels to our hometown during the holiday, I would appreciate it if you could confirm the exact payment date for my case.
+I worked on the spring promotion campaign and achieved 112 percent of my sales target, and my supervisor can confirm this performance record. I understand that newcomers may receive a smaller amount, but I want to make sure the working months are counted correctly from March. Please let me know if you need any additional documents from me.
+Thank you very much for your support.
+Best regards,
+Hung Nguyen
+Sales Department
+[QUESTION]
+What is the main purpose of the announcement?
+(A) To recruit a new emergency maintenance team
+(B) To change bank accounts for all employees
+(C) To cancel the spring promotion campaign
+(D) To announce holiday closure and bonus payment schedule
+Answer: D
+Explanation: Báo nghỉ lễ và lịch trả thưởng | (A) "To recruit a new emergency maintenance team" — đội trực ở lại trực, không tuyển | (B) "To change bank accounts for all employees" — chỉ yêu cầu kiểm tra | (C) "To cancel the spring promotion campaign" — chiến dịch chỉ nhắc ở thư nhân viên | (D) "To announce holiday closure and bonus payment schedule" — đúng
+Source: original
+[QUESTION]
+According to the announcement, when will the office reopen?
+(A) On January 3
+(B) On December 20
+(C) On January 5
+(D) On February 10
+Answer: A
+Explanation: Mở lại ngày 3/1 | (A) "On January 3" — đúng | (B) "On December 20" — hạn kiểm tra ngân hàng | (C) "On January 5" — ngày chuyển lương T13 | (D) "On February 10" — mốc tính thưởng tỉ lệ
+Source: original
+[QUESTION]
+What can be inferred about Mr. Hung from the e-mail?
+(A) He serves on the emergency maintenance team
+(B) He will get a smaller bonus for his short service
+(C) He has not updated his bank account in the system
+(D) He joined before February and expects a full bonus
+Answer: B
+Explanation: Vào tháng 3 nên chỉ nhận tỉ lệ | (A) "He serves on the emergency maintenance team" — đội trực không liên quan thư | (B) "He will receive a proportional bonus counted from March" — đúng | (C) "He has not updated his bank account in the system" — trái với đã cập nhật tuần trước | (D) "He joined before February and expects a full bonus" — trái với March 10
+Source: original
+[QUESTION]
+What is NOT stated in the documents?
+(A) Mr. Hung achieved 112 percent of his sales target
+(B) The emergency team can be reached at 555-0198 for urgent issues
+(C) The office provides free holiday travel for families
+(D) Bank information should be checked by December 20
+Answer: C
+Explanation: Không du lịch miễn phí nào | (A) "Mr. Hung achieved 112 percent of his sales target" — có nhắc nên loại | (B) "The emergency team can be reached at 555-0198 for urgent issues" — có nhắc nên loại | (C) "The office provides free holiday travel for families" — đúng ý sai | (D) "Bank information should be checked by December 20" — có nhắc nên loại
+Source: original
+[QUESTION]
+According to the announcement and the e-mail, what will happen in Mr. Hung's case?
+(A) He will get his salary in cash on January 3
+(B) He will join the emergency team during the closure
+(C) He will have his sales target adjusted in the system
+(D) He will receive a proportional payment transferred on January 5
+Answer: D
+Explanation: Thư ghi "I joined the company on March 10 as a sales assistant" nên chỉ nhận tỉ lệ; thông báo ghi "will be transferred to bank accounts on January 5" và "will receive a proportional amount" | (A) "He will receive a full bonus payment before December 22" — trái tỉ lệ và ngày | (B) "He will join the emergency team during the closure" — không liên quan | (C) "He will have his sales target adjusted in the system" — hạn điều chỉnh là deadlines dự án | (D) "He will receive a proportional payment transferred on January 5" — đúng
+Source: original

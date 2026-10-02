@@ -1,0 +1,44 @@
+[SCRIPT]
+voice: us_female_1
+I'm comparing Phu Quoc tours for next month.
+voice: au_male_1
+I went with Blue Ocean last year.
+voice: us_female_1
+How much was their three-day package?
+voice: au_male_1
+Only three hundred fifty dollars, meals included.
+voice: us_female_1
+That's cheaper than Green Travel's four hundred.
+voice: au_male_1
+Yes, and the hotel was great.
+voice: us_female_1
+I'll book it. Can I leave a deposit?
+voice: au_male_1
+Sure, fifty dollars will hold your spot.
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Building a new hotel in Phu Quoc
+(B) Changing a flight to next month
+(C) Finding a job at Green Travel
+(D) Comparing tour prices to Phu Quoc
+Answer: D
+Explanation: Cô ấy so giá Blue Ocean với Green Travel | (A) "Building a new hotel in Phu Quoc" — chỉ khen khách sạn | (B) "Changing a flight to next month" — đi tour, không đổi vé | (C) "Finding a job at Green Travel" — chỉ so giá | (D) "Comparing tour prices to Phu Quoc" — đúng
+Source: original
+[QUESTION]
+How much is the Blue Ocean three-day package?
+(A) Three hundred fifty dollars
+(B) Four hundred dollars
+(C) Fifty dollars
+(D) One hundred dollars
+Answer: A
+Explanation: Người đàn ông nói ba trăm năm mươi đô gồm bữa ăn | (A) "Three hundred fifty dollars" — đúng | (B) "Four hundred dollars" — giá Green Travel | (C) "Fifty dollars" — tiền cọc | (D) "One hundred dollars" — không nhắc
+Source: original
+[QUESTION]
+What will the woman probably do next?
+(A) Cancel her hotel booking
+(B) Leave a deposit to reserve a spot
+(C) Cook meals by herself
+(D) Bargain for a cheaper flight
+Answer: B
+Explanation: Cô ấy hỏi đặt cọc và được đáp năm mươi đô giữ chỗ | (A) "Cancel her hotel booking" — cô ấy muốn đặt | (B) "Leave a deposit to reserve a spot" — đúng | (C) "Cook meals by herself" — tour gồm bữa ăn | (D) "Bargain for a cheaper flight" — đã chốt giá rẻ
+Source: original

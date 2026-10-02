@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Where is the nearest pharmacy?
+voice: au_male_1
+(A) Two blocks past the bank.
+(B) Pharmacies sell medicine.
+(C) I need some aspirin.
+Answer: A
+Explanation: Câu hỏi hiệu thuốc gần nhất ở đâu, đáp án đúng chỉ đường | (A) "Two blocks past the bank." — trả lời đúng vị trí | (B) "Pharmacies sell medicine." — nói chung chung | (C) "I need some aspirin." — nói nhu cầu bản thân
+Source: original

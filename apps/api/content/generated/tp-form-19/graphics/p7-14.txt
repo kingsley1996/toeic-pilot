@@ -1,0 +1,6 @@
+kind: column
+Book Fair Ticket Prices
+Standard | 10
+Student | 6
+Family | 20
+VIP | 35

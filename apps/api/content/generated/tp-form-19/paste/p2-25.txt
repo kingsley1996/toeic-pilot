@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+May I borrow your motorbike to pick up my kid?
+voice: uk_female_1
+(A) Kids love motorbikes.
+(B) Motorbikes need fuel.
+(C) Sure, but bring it back by six.
+Answer: C
+Explanation: Câu xin mượn xe máy đón con, đáp án đúng đồng ý có điều kiện | (A) "Kids love motorbikes." — nói chung chung | (B) "Motorbikes need fuel." — nói xăng xe | (C) "Sure, but bring it back by six." — chấp nhận kèm điều kiện
+Source: original

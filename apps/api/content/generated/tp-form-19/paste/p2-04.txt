@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+The third-floor meeting room is already booked.
+voice: us_female_1
+(A) The third floor has a nice view.
+(B) Meetings usually last an hour.
+(C) Then let's use the one on the fifth floor.
+Answer: C
+Explanation: Câu trần thuật phòng họp tầng ba đã có người đặt, đáp án đúng đề xuất phương án thay thế | (A) "The third floor has a nice view." — không giải quyết việc hết phòng | (B) "Meetings usually last an hour." — nói chung chung | (C) "Then let's use the one on the fifth floor." — phản ứng phù hợp
+Source: original

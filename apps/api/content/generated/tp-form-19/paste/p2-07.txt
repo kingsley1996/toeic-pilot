@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Bus route 27 changes its course starting tomorrow.
+voice: ca_male_1
+(A) Route 27 goes downtown.
+(B) Buses are usually crowded.
+(C) Thanks, I'll take the subway instead.
+Answer: C
+Explanation: Câu trần thuật tuyến 27 đổi lộ trình, đáp án đúng phản ứng bằng phương án khác | (A) "Route 27 goes downtown." — lặp lại thông tin cũ | (B) "Buses are usually crowded." — nhận xét chung | (C) "Thanks, I'll take the subway instead." — phản ứng phù hợp
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+The amusement park tickets are quite pricey, aren't they?
+voice: us_female_1
+(A) The park has a new roller coaster.
+(B) Tickets are printed at home.
+(C) Yes, so let's go on a weekday for the discount.
+Answer: C
+Explanation: Câu hỏi đuôi than vé khu vui chơi đắt, đáp án đúng đồng tình kèm giải pháp | (A) "The park has a new roller coaster." — nói trò mới | (B) "Tickets are printed at home." — nói cách in vé | (C) "Yes, so let's go on a weekday for the discount." — đồng ý và đề xuất
+Source: original

@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: au_male_1
+Hello, this is James from Hillside Public Library calling for Mr Adams. This is a friendly reminder about two books due last Friday. Titles are The Ocean Atlas and Modern Gardening for Beginners. If items stay overdue for more than two weeks, your membership card will be locked. That means you cannot borrow or reserve anything until fines are cleared. To avoid trouble, please extend your loans on our website tonight. Log in with your card number and click renew beside each title. Our front desk also accepts returns from nine to six daily. Thanks for using the library, and have a good evening.
+[QUESTION]
+What is the purpose of the call?
+(A) A notice to bring back borrowed books
+(B) A guide to using the library website
+(C) A call about a locked membership card
+(D) An offer of new gardening titles
+Answer: A
+Explanation: Nhắc trả sách | (A) "A notice to bring back borrowed books" — đúng | (B) "A guide to using the library website" — web chỉ là cách gia hạn | (C) "A call about a locked membership card" — khóa thẻ chỉ là hậu quả | (D) "An offer of new gardening titles" — sách làm vườn là tên sách đang mượn
+Source: original
+[QUESTION]
+What does the speaker imply if books stay overdue?
+(A) Fines must be paid tonight in cash
+(B) Borrowing rights will be suspended after a fortnight's delay
+(C) The front desk closes at six daily
+(D) Books can be kept for two more weeks free
+Answer: B
+Explanation: Quá hai tuần sẽ khóa thẻ | (A) "Fines must be paid tonight in cash" — tối nay là hạn gia hạn web | (B) "Borrowing rights will be suspended after a fortnight's delay" — đúng | (C) "The front desk closes at six daily" — giờ nhận trả | (D) "Books can be kept for two more weeks free" — ngược ý cho phép
+Source: original
+[QUESTION]
+What are listeners asked to do?
+(A) Return books to the front desk only
+(B) Call Mr Adams tonight
+(C) Renew the loans online
+(D) Reserve The Ocean Atlas again
+Answer: C
+Explanation: Gia hạn qua web | (A) "Return books to the front desk only" — quầy chỉ là nơi nhận thêm | (B) "Call Mr Adams tonight" — ông Adams là người nghe | (C) "Renew the loans online" — đúng | (D) "Reserve The Ocean Atlas again" — đặt trước là quyền bị mất khi khóa thẻ
+Source: original

@@ -1,0 +1,39 @@
+[PASSAGE]
+Subject: Printer Warranty Support
+Dear Ms. Hoa, Thank you for contacting us. We have ------- (1) your request and checked the warranty terms for Model X. Our technician will arrive ------- (2) 9 a.m. on Thursday to inspect the machine at your office. ------- (3) Please keep the original invoice ready for verification when he visits. The faulty part ------- (4) free of charge if it is still under warranty. If the problem is more serious, we will provide a replacement machine during the repair time. We apologize for any inconvenience and thank you for choosing our products. Best regards, Customer Service
+[QUESTION]
+Choose the best answer for blank (1).
+(A) denied
+(B) received
+(C) ignored
+(D) returned
+Answer: B
+Explanation: Đã nhận yêu cầu bảo hành, trích nguyên văn "received".
+Source: original
+[QUESTION]
+Choose the best answer for blank (2).
+(A) in
+(B) on
+(C) at
+(D) by
+Answer: C
+Explanation: Đi với giờ cụ thể "9 a.m." dùng "at", trích nguyên văn "at".
+Source: original
+[QUESTION]
+Choose the best answer for blank (3).
+(A) The printer is the most expensive device in the world.
+(B) Our company sells fresh vegetables every morning.
+(C) The technician enjoys swimming in the river.
+(D) If the damage was caused by the user, a repair fee will apply.
+Answer: D
+Explanation: Câu về phí sửa chữa nếu lỗi do người dùng phù hợp ngữ cảnh bảo hành, trích nguyên văn "If the damage was caused by the user, a repair fee will apply."
+Source: original
+[QUESTION]
+Choose the best answer for blank (4).
+(A) will be replaced
+(B) will replace
+(C) will have replaced
+(D) will be replacing
+Answer: A
+Explanation: Linh kiện được thay nên dùng bị động tương lai, trích nguyên văn "will be replaced".
+Source: original

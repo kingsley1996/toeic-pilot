@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: us_female_1
+Good evening everyone, I'm Susan Lee, director of Riverside Cultural Centre. Welcome to our new season of beginner evening and weekend classes. Our guitar course is already full, with a long waiting list this term. Luckily, the Saturday afternoon group still has five open places for newcomers. Lessons run for eight weeks in small groups with expert teachers. The full fee is ninety dollars, covering books and practice room use. Please register at the front desk before Thursday to keep your seat. Bring a notebook to the first meeting and arrive a little early. Thanks for joining us, and I hope you enjoy learning with us.
+[QUESTION]
+Who is speaking?
+(A) The head of Riverside Cultural Centre
+(B) An expert teacher
+(C) A guitar course student
+(D) A front desk clerk
+Answer: A
+Explanation: Xưng giám đốc trung tâm | (A) "The head of Riverside Cultural Centre" — đúng | (B) "An expert teacher" — giáo viên chỉ là người dạy | (C) "A guitar course student" — khóa guitar là môn học | (D) "A front desk clerk" — quầy chỉ là nơi đăng ký
+Source: original
+[QUESTION]
+Look at the graphic. Which class still has places for beginners?
+(A) Guitar
+(B) Painting
+(C) Piano
+(D) Dance
+Answer: B
+Explanation: Lớp chiều thứ Bảy còn năm chỗ tra thời khóa biểu ra Vẽ | (A) "Guitar" — tối thứ Hai đã đầy | (B) "Painting" — đúng | (C) "Piano" — tối thứ Tư, không phải lớp được nêu | (D) "Dance" — sáng Chủ Nhật
+Source: original
+[QUESTION]
+What is the course fee?
+(A) Five dollars for a notebook
+(B) Eight dollars per week
+(C) $90, covering study materials
+(D) Free registration before Thursday
+Answer: C
+Explanation: Chín mươi đô gồm sách và phòng tập | (A) "Five dollars for a notebook" — năm là số chỗ, sổ là đồ mang theo | (B) "Eight dollars per week" — tám là số tuần học | (C) "$90, covering study materials" — đúng | (D) "Free registration before Thursday" — thứ Năm là hạn giữ chỗ
+Source: original

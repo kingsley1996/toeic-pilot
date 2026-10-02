@@ -1,0 +1,9 @@
+[QUESTION]
+The swimming pool ticket price ------- in the membership package covers towel service.
+(A) included
+(B) include
+(C) includes
+(D) including
+Answer: A
+Explanation: Rút gọn bị động, giá vé được bao gồm, trích nguyên văn "included".
+Source: original

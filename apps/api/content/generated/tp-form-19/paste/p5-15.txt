@@ -1,0 +1,9 @@
+[QUESTION]
+The flight to Hanoi ------- due to severe weather, so passengers were offered free rebooking.
+(A) has cancelled
+(B) is cancelling
+(C) cancels
+(D) was cancelled
+Answer: D
+Explanation: Chủ ngữ chỉ vật "flight" không tự thực hiện hành động nên cần bị động quá khứ đơn; đáp án đúng là "was cancelled".
+Source: original

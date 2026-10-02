@@ -1,0 +1,48 @@
+[SCRIPT]
+voice: us_female_1
+Hi Brian and Chris, let's fix our rehearsal time for the charity show tomorrow.
+voice: ca_male_1
+Hi Anna. I'm free most of the afternoon, what does the schedule show?
+voice: au_male_1
+This is Chris, the program director. I checked the grid, Anna, Brian and I share two open slots.
+voice: us_female_1
+Right, but the main hall is already booked from two to three for a dance class.
+voice: ca_male_1
+So the early open slot won't work for our full rehearsal then.
+voice: au_male_1
+Exactly. We'll use the later open slot for the full run-through in the main hall.
+voice: us_female_1
+Good. Will we have the lights and sound ready by then?
+voice: ca_male_1
+Yes, I'll ask the crew to set up the stage beforehand.
+voice: au_male_1
+Perfect. I'll bring the running order and cue sheets.
+voice: us_female_1
+Thanks. See you both at the main hall tomorrow.
+[QUESTION]
+Who is Chris most likely to be?
+(A) The dance class instructor
+(B) A stage crew assistant
+(C) A lighting technician
+(D) The program director for the show
+Answer: D
+Explanation: Tự giới thiệu là đạo diễn chương trình | (A) "The dance class instructor" — lớp nhảy chỉ chiếm phòng hai-ba giờ | (B) "A stage crew assistant" — đội dựng do Brian nhờ | (C) "A lighting technician" — đèn chỉ là mục cần chuẩn bị | (D) "The program director for the show" — đúng
+Source: original
+[QUESTION]
+What will they do during the rehearsal?
+(A) Practice the entire show in the main hall
+(B) Book the main hall for a dance class
+(C) Set up lights and sound beforehand
+(D) Bring cue sheets to the afternoon grid
+Answer: A
+Explanation: Tổng duyệt toàn bộ trong sảnh chính | (A) "Practice the entire show in the main hall" — đúng | (B) "Book the main hall for a dance class" — phòng bị lớp nhảy chiếm | (C) "Set up lights and sound beforehand" — đội làm trước | (D) "Bring cue sheets to the afternoon grid" — mang theo là chuẩn bị
+Source: original
+[QUESTION]
+Look at the graphic. When are all three speakers free?
+(A) 13-14
+(B) 15-16
+(C) 14-15
+(D) 16-17
+Answer: B
+Explanation: Khung sớm bị lớp nhảy chiếm, khung muộn hơn còn trống, tra hình ra giờ chung | (A) "13-14" — cả ba đều bận lúc đầu giờ | (B) "15-16" — đúng, khung trống chung duy nhất | (C) "14-15" — khung sớm bị chiếm phòng | (D) "16-17" — cả ba đều bận lúc cuối giờ
+Source: original

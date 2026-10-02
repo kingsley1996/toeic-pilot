@@ -1,0 +1,39 @@
+[PASSAGE]
+Subject: Tet Train Ticket Booking Confirmation
+Dear Mr. Nam, Thank you for choosing our service. I ------- (1) two sleeper tickets from Hanoi to Hue for January 25th yesterday. The departure time is 9:30 p.m. from Hanoi Station, and the estimated arrival time is 11 a.m. the next day. Your seats are in carriage 5, berths 12 and 13, near the dining car for your convenience. Please find the payment ------- (2) attached for your reference. If you need to change the travel date, please contact us at least 48 hours in advance. Please call our hotline at 1900-1234 ------- (3) your seats before 5 p.m. tomorrow. ------- (4) We wish you and your family a happy Tet holiday. Best regards, Ticket Office
+[QUESTION]
+Choose the best answer for blank (1).
+(A) book
+(B) booked
+(C) booking
+(D) books
+Answer: B
+Explanation: Có "yesterday" nên dùng quá khứ đơn, trích nguyên văn "booked".
+Source: original
+[QUESTION]
+Choose the best answer for blank (2).
+(A) invitation
+(B) advertisement
+(C) confirmation
+(D) introduction
+Answer: C
+Explanation: Giấy xác nhận thanh toán đính kèm, trích nguyên văn "confirmation".
+Source: original
+[QUESTION]
+Choose the best answer for blank (3).
+(A) confirmed
+(B) confirm
+(C) confirming
+(D) to confirm
+Answer: D
+Explanation: Cấu trúc call...to-V chỉ mục đích, trích nguyên văn "to confirm".
+Source: original
+[QUESTION]
+Choose the best answer for blank (4).
+(A) Your tickets will be canceled automatically if we do not receive your confirmation.
+(B) The train does not allow sleeper passengers in winter.
+(C) The station is closed on national holidays.
+(D) The train leaves without passengers every morning.
+Answer: A
+Explanation: Câu cảnh báo hủy vé nếu không xác nhận phù hợp ngữ cảnh, trích nguyên văn "Your tickets will be canceled automatically if we do not receive your confirmation."
+Source: original

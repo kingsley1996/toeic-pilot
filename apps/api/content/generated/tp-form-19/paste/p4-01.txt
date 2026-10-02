@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: uk_female_1
+Hi, I'm Lisa from FreshCare Laundry in Maple Town. We're excited to announce our brand-new shop opens this Saturday. We wash, iron, and fold clothes for busy families and offices. Our special vans will collect and return orders to your door. To celebrate, everything costs twenty percent less during our first seven days. Shirts, suits, blankets, and curtains are all included in this deal. Our team works late every evening to finish items on time. Book a pickup today and try our fast, friendly service. Call our hotline at 555-214 to reserve your slot now.
+[QUESTION]
+What is the purpose of the advertisement?
+(A) To hire late-evening staff for a shop
+(B) To introduce a new wash-and-fold business with home pickup
+(C) To announce a curtain and blanket sale
+(D) To explain a hotline problem
+Answer: B
+Explanation: Người nói giới thiệu cửa hàng giặt ủi mới có giao nhận | (A) "To hire late-evening staff for a shop" — làm đêm chỉ là chi tiết phục vụ | (B) "To introduce a new wash-and-fold business with home pickup" — đúng | (C) "To announce a curtain and blanket sale" — rèm chăn chỉ là món đồ giặt | (D) "To explain a hotline problem" — hotline là cách đặt lịch
+Source: original
+[QUESTION]
+What special offer is mentioned?
+(A) Free door-to-door van rides for offices
+(B) Free shirts with every blanket order
+(C) Twenty percent off in the opening seven days
+(D) Late-evening work with no extra charge
+Answer: C
+Explanation: Giảm giá tuần đầu | (A) "Free door-to-door van rides for offices" — xe thu gom là dịch vụ | (B) "Free shirts with every blanket order" — áo chăn chỉ là món trong gói | (C) "Twenty percent off in the opening seven days" — đúng | (D) "Late-evening work with no extra charge" — làm tối là cam kết đúng giờ
+Source: original
+[QUESTION]
+What are listeners asked to do?
+(A) Try suits and curtains in the store
+(B) Visit the shop on Saturday evening
+(C) Bring blankets to the team on time
+(D) Phone the hotline to arrange a collection
+Answer: D
+Explanation: Hãy gọi đặt lịch hẹn lấy đồ | (A) "Try suits and curtains in the store" — vest rèm chỉ là đồ giặt | (B) "Visit the shop on Saturday evening" — thứ Bảy là ngày mở cửa | (C) "Bring blankets to the team on time" — không yêu cầu mang tới | (D) "Phone the hotline to arrange a collection" — đúng
+Source: original

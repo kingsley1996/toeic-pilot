@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+When does the library reopen after renovation?
+voice: au_male_1
+(A) Renovations take time.
+(B) The library has new books.
+(C) Next Monday morning.
+Answer: C
+Explanation: Câu hỏi khi nào thư viện mở lại, đáp án đúng cho mốc thời gian | (A) "Renovations take time." — nhận xét chung | (B) "The library has new books." — nói sách mới | (C) "Next Monday morning." — trả lời đúng ý hỏi
+Source: original

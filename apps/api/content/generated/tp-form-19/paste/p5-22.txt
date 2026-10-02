@@ -1,0 +1,9 @@
+[QUESTION]
+Patients ------- need a dental re-examination should call the clinic to book an appointment.
+(A) which
+(B) whom
+(C) who
+(D) whose
+Answer: C
+Explanation: Đại từ quan hệ chỉ người làm chủ ngữ, trích nguyên văn "who".
+Source: original

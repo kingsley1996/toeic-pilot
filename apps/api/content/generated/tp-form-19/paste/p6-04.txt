@@ -1,0 +1,39 @@
+[PASSAGE]
+MEMO: Change of Lunch Hours
+To all staff, [1] ------- (1) the canteen is under repair, lunch break hours will change next week. [2] Employees are requested to follow the new ------- (2) strictly to avoid crowding in the temporary dining area. The temporary area is on the third floor and can serve 100 people at a time. [3] ------- (3) [4] The new hours ------- (4) effect from Monday, March 3rd. Morning shifts will start 30 minutes earlier to keep production on schedule. Please contact the HR office if you have any questions about the arrangement. Thank you for your cooperation and understanding. HR Department
+[QUESTION]
+Choose the best answer for blank (1).
+(A) Although
+(B) Because
+(C) Unless
+(D) Despite
+Answer: B
+Explanation: Chỉ nguyên nhân căng-tin sửa chữa, trích nguyên văn "Because".
+Source: original
+[QUESTION]
+Choose the best answer for blank (2).
+(A) menu
+(B) bill
+(C) schedule
+(D) recipe
+Answer: C
+Explanation: Tuân thủ lịch mới về giờ ăn, trích nguyên văn "schedule".
+Source: original
+[QUESTION]
+"Please return to your desk by 1:30 p.m." Where should it go?
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: D
+Explanation: Câu yêu cầu quay lại làm việc phù hợp sau lịch mới tại vị trí cuối, trích nguyên văn "[4]".
+Source: original
+[QUESTION]
+Choose the best answer for blank (4).
+(A) will take
+(B) take
+(C) taken
+(D) taking
+Answer: A
+Explanation: Hiệu lực từ ngày trong tương lai nên dùng tương lai đơn, trích nguyên văn "will take".
+Source: original

@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) Two scientists are cleaning the laboratory floor.
+(B) A technician is pouring liquid into a test tube.
+(C) A woman is writing notes on a clipboard.
+(D) A man is carrying boxes out of the laboratory.
+Answer: B
+Explanation: Trong ảnh nữ kỹ thuật viên rót chất lỏng vào ống nghiệm trong phòng thí nghiệm | (A) "Two scientists are cleaning the laboratory floor." — chỉ một người và không ai lau sàn | (B) "A technician is pouring liquid into a test tube." — đúng | (C) "A woman is writing notes on a clipboard." — cô ấy đang rót, không ghi chép | (D) "A man is carrying boxes out of the laboratory." — không có người đàn ông hay thùng nào
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+Why was the parcel three days late?
+voice: ca_male_1
+(A) The truck broke down on the highway.
+(B) Parcels arrive daily.
+(C) Late deliveries annoy us.
+Answer: A
+Explanation: Câu hỏi vì sao bưu kiện trễ ba ngày, đáp án đúng nêu nguyên nhân | (A) "The truck broke down on the highway." — trả lời đúng lý do | (B) "Parcels arrive daily." — nói chung chung | (C) "Late deliveries annoy us." — bày tỏ cảm xúc, không nêu lý do
+Source: original

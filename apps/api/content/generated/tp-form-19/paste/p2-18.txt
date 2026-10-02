@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+You understood the doctor's instructions, didn't you?
+voice: au_male_1
+(A) Doctors work long hours.
+(B) Yes, take one pill after meals.
+(C) Instructions are on the wall.
+Answer: B
+Explanation: Câu hỏi đuôi xác nhận đã hiểu lời dặn bác sĩ, đáp án đúng nhắc lại lời dặn | (A) "Doctors work long hours." — nói giờ làm bác sĩ | (B) "Yes, take one pill after meals." — xác nhận bằng nội dung | (C) "Instructions are on the wall." — nói vị trí hướng dẫn
+Source: original

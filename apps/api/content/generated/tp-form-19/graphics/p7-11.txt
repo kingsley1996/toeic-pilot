@@ -1,0 +1,7 @@
+kind: schedule
+Startup Training Room Plan
+Session | 9:00 | 10:30 | 13:00 | 14:30
+Session 1 | Room 101 |  |  | 
+Session 2 |  | Room 102 |  | 
+Session 3 |  |  | Room 101 | 
+Session 4 |  |  |  | Room 103

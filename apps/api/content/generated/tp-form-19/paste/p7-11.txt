@@ -1,0 +1,57 @@
+[PASSAGE]
+From: hr@brightstart.com
+To: All new employees
+Subject: Invitation to Startup Training Sessions in June
+Date: May 20
+Dear New Team Members,
+We are pleased to invite you to our Startup Training Sessions for all staff who joined after January. The program includes four Monday sessions in June, starting at 9:00 A.M. Each meeting will cover effective customer communication and practical product knowledge for daily tasks. Attendance at all four sessions is mandatory for new employees, and a completion certificate will be given to those who finish the full program.
+Session 1 will introduce company policies and workplace safety. Session 2 will focus on effective customer communication skills for phone and e-mail. Session 3 will focus on product knowledge for our three main software packages. Session 4 will review difficult customer cases and final assessment procedures. All materials and handouts will be provided at the door, and lunch will be served after each morning meeting.
+Room assignments and dates are listed in the attached schedule. Please confirm your attendance by replying to this e-mail no later than May 28. If you have questions, contact the training desk at 555-0142. We look forward to seeing you there.
+Best regards,
+Anna Lee
+Human Resources Manager
+[QUESTION]
+What is the purpose of the e-mail?
+(A) To invite new employees to training sessions
+(B) To sell three main software packages to clients
+(C) To cancel Monday meetings in June
+(D) To request workplace safety reports from staff
+Answer: A
+Explanation: Mời nhân viên mới dự đào tạo | (A) "To invite new employees to training sessions" — đúng | (B) "To sell three main software packages to clients" — chỉ dạy kiến thức sản phẩm | (C) "To cancel Monday meetings in June" — chương trình vẫn diễn ra | (D) "To request workplace safety reports from staff" — an toàn chỉ là nội dung Session 1
+Source: original
+[QUESTION]
+What must new employees do by May 28?
+(A) Collect completion certificates at the door
+(B) Pay for lunch after each morning meeting
+(C) Confirm attendance by replying to the e-mail
+(D) Contact suppliers about software packages
+Answer: C
+Explanation: Xác nhận tham dự trước 28/5 | (A) "Collect completion certificates at the door" — chứng chỉ cho người học xong | (B) "Pay for lunch after each morning meeting" — bữa trưa được phục vụ | (C) "Confirm attendance by replying to the e-mail" — đúng | (D) "Contact suppliers about software packages" — không nhắc nhà cung cấp
+Source: original
+[QUESTION]
+According to the e-mail and the schedule, at what time is the product-knowledge session held?
+(A) At 9:00
+(B) At 10:30
+(C) At 13:00
+(D) At 14:30
+Answer: C
+Explanation: Thư ghi "Session 3 will focus on product knowledge for our three main software packages" còn lịch xếp "Session 3 | | | Room 101 |" vào cột 13:00 | (A) "At 9:00" — cột của Session 1, không phải buổi này | (B) "At 10:30" — cột của Session 2, không phải buổi này | (C) "At 13:00" — đúng giờ của Session 3 vừa dẫn | (D) "At 14:30" — cột của Session 4, không phải buổi này
+Source: original
+[QUESTION]
+According to the schedule, where does Session 1 meet?
+(A) In Room 101
+(B) In Room 102
+(C) In Room 103
+(D) In the main lobby
+Answer: A
+Explanation: Lịch xếp "Session 1 | Room 101 |  |  | " nên buổi đầu ở Room 101 | (A) "In Room 101" — đúng | (B) "In Room 102" — phòng Session 2 | (C) "In Room 103" — phòng Session 4 | (D) "In the main lobby" — sảnh không xuất hiện
+Source: original
+[QUESTION]
+In the e-mail, the word "mandatory" in paragraph 1 is closest in meaning to
+(A) required
+(B) optional
+(C) late
+(D) difficult
+Answer: A
+Explanation: Từ "mandatory" nghĩa bắt buộc tham dự | (A) "required" — đúng | (B) "optional" — ngược nghĩa | (C) "late" — sai trường nghĩa | (D) "difficult" — sai trường nghĩa
+Source: original

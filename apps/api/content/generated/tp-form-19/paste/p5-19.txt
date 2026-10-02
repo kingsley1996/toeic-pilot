@@ -1,0 +1,9 @@
+[QUESTION]
+The vegetarian buffet ------- over 200 guests last Sunday.
+(A) serve
+(B) serves
+(C) serving
+(D) served
+Answer: D
+Explanation: Có "last Sunday" nên dùng quá khứ đơn, trích nguyên văn "served".
+Source: original

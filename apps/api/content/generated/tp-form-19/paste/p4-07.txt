@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: ca_male_1
+Good afternoon passengers, this is an update from Central Station control. To ease holiday crowds, we are adding an extra train to Lakeside this evening. The additional service means everyone should get a seat without standing in aisles. The train will now leave from platform two at six forty-five. Please have your tickets ready and queue behind the yellow line. Luggage must be stored in overhead racks during the journey. If you have not bought a ticket yet, please go to counter number five. Our staff there will print passes quickly with cash or card payment. Thank you for travelling with us, and enjoy your trip.
+[QUESTION]
+What can be inferred when the speaker says, "everyone should get a seat"?
+(A) Platform two is closed for repairs
+(B) Holiday trains will run late tonight
+(C) Luggage must be queued behind the line
+(D) Travellers will find seats easily and avoid congestion
+Answer: D
+Explanation: Thêm tàu nên đủ chỗ | (A) "Platform two is closed for repairs" — sân ga hai là nơi tàu rời | (B) "Holiday trains will run late tonight" — tàu đúng giờ, không trễ | (C) "Luggage must be queued behind the line" — gộp sai hai chi tiết | (D) "Travellers will find seats easily and avoid congestion" — đúng
+Source: original
+[QUESTION]
+What time will the train depart?
+(A) At forty-five minutes past six in the evening
+(B) At five o'clock
+(C) At two o'clock
+(D) At six o'clock
+Answer: A
+Explanation: Sáu giờ bốn mươi lăm | (A) "At forty-five minutes past six in the evening" — đúng | (B) "At five o'clock" — số năm là số quầy vé | (C) "At two o'clock" — số hai là số sân ga | (D) "At six o'clock" — thiếu bốn mươi lăm phút
+Source: original
+[QUESTION]
+What should passengers without tickets do?
+(A) Queue behind the yellow line
+(B) Get travel passes at booth five
+(C) Store luggage in overhead racks
+(D) Board the train on platform two
+Answer: B
+Explanation: Ra quầy số năm mua vé | (A) "Queue behind the yellow line" — việc của người đã có vé | (B) "Get travel passes at booth five" — đúng | (C) "Store luggage in overhead racks" — việc trên tàu | (D) "Board the train on platform two" — sau khi có vé
+Source: original

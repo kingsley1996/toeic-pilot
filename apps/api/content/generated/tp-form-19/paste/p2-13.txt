@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Could you swap the cleaning duty with me?
+voice: us_female_1
+(A) Duty rosters change monthly.
+(B) Cleaning supplies are upstairs.
+(C) Sure, I'll take Friday for you.
+Answer: C
+Explanation: Câu đề nghị đổi ca trực nhật, đáp án đúng đồng ý cụ thể | (A) "Duty rosters change monthly." — nói lịch trực chung | (B) "Cleaning supplies are upstairs." — nói đồ dùng | (C) "Sure, I'll take Friday for you." — chấp nhận đề nghị
+Source: original

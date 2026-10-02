@@ -1,0 +1,9 @@
+[QUESTION]
+The water bill for the office ------- yesterday morning after the meter was checked.
+(A) arrives
+(B) will arrive
+(C) arrived
+(D) has arrived
+Answer: C
+Explanation: Mốc thời gian xác định trong quá khứ "yesterday morning" cần quá khứ đơn; đáp án đúng là "arrived".
+Source: original

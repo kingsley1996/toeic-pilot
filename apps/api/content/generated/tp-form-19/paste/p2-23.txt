@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+Did you lock the storage room before leaving?
+voice: ca_male_1
+(A) The key is still in my pocket.
+(B) Storage rooms need keys.
+(C) Leaving early is nice.
+Answer: A
+Explanation: Câu hỏi đã khóa kho chưa, đáp án đúng trả lời gián tiếp qua chìa khóa | (A) "The key is still in my pocket." — ngụ ý chưa khóa mà không nói thẳng | (B) "Storage rooms need keys." — nói chung chung | (C) "Leaving early is nice." — lạc đề
+Source: original

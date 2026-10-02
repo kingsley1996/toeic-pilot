@@ -1,0 +1,31 @@
+[PASSAGE]
+SunCool Refrigerator Warranty Registration Card
+Customer name: Tran Minh Duc Phone: 090-554-1278 Address: 18 Ly Thuong Kiet Street, District 10 Product: SunCool Double-Door Refrigerator SC-320L Purchase date: September 12 Store: Dien May Xanh, Branch 5
+[1] The customer confirms that the product seal and serial number were checked at the store before delivery. [2] The standard warranty covers the compressor for twenty-four months and other parts for twelve months from the purchase date. [3] Free repair service is available only for faults caused by the maker, not for damage from power surges, floods, or wrong use. [4] To request service, please call the hotline 1800-5566 with this card and the original receipt ready. Our technicians will visit within two working days in the city center and within four days in distant areas. Customers can extend the compressor warranty by twelve months by registering online before October 30. Thank you for choosing SunCool for your home.
+[QUESTION]
+According to the card, how can customers request repair service?
+(A) Call 1800-5566 with the card and receipt ready
+(B) Register online before September 12 for approval
+(C) Bring the card to Ly Thuong Kiet Street in person
+(D) Visit Branch 5 with the product seal for checking
+Answer: A
+Explanation: Cách gọi sửa chữa | (A) "Call 1800-5566 with the card and receipt ready" — đúng | (B) "Register online before September 12 for approval" — đăng ký online để gia hạn | (C) "Bring the card to Ly Thuong Kiet Street in person" — địa chỉ nhà khách | (D) "Visit Branch 5 with the product seal for checking" — kiểm seal là lúc mua
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "Please read the following terms carefully before signing below."
+(A) [4]
+(B) [1]
+(C) [2]
+(D) [3]
+Answer: B
+Explanation: Dặn đọc kỹ điều khoản trước khi ký hợp ngay trước loạt điều khoản | (A) "[4]" — sau điều khoản lỗi, quá muộn | (B) "[1]" — đúng | (C) "[2]" — đã vào thời hạn bảo hành | (D) "[3]" — sau thời hạn, không hợp mở đầu
+Source: original
+[QUESTION]
+What is NOT stated on the warranty card?
+(A) The compressor has a twenty-four-month warranty
+(B) Technicians visit the city center in two working days
+(C) Customers get free transport in distant areas
+(D) Online registration extends the compressor warranty
+Answer: C
+Explanation: Không có xe đưa đón nào | (A) "The compressor has a twenty-four-month warranty" — phiếu ghi covers 24 tháng | (B) "Technicians visit the city center in two working days" — phiếu ghi visit trong 2 ngày | (C) "Customers get free transport in distant areas" — đúng ý sai | (D) "Online registration extends the compressor warranty" — phiếu ghi gia hạn online
+Source: original

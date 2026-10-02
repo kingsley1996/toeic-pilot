@@ -1,0 +1,9 @@
+[QUESTION]
+voice: uk_female_1
+(A) A man is swimming next to the boat.
+(B) Sailors are raising the sails at noon.
+(C) Fishermen are pulling a net onto the boat.
+(D) Workers are unloading crates at the harbor.
+Answer: C
+Explanation: Trong ảnh ngư dân gỡ lưới trên thuyền lúc rạng đông | (A) "A man is swimming next to the boat." — không ai bơi | (B) "Sailors are raising the sails at noon." — trời rạng đông và thuyền không có buồm | (C) "Fishermen are pulling a net onto the boat." — đúng | (D) "Workers are unloading crates at the harbor." — thuyền đang ngoài khơi, không ở bến
+Source: original

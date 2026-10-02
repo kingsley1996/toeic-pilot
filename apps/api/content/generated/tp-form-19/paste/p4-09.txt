@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: au_male_1
+Afternoon team, I'm Peter Walsh, market coordinator for the wholesale bazaar. Thanks for coming to discuss stall positions for next month. Vegetable sellers have already agreed to stay along the south entrance. The chilled ocean catch needs a spot right beside the cold storage to stay fresh. That location keeps ice use low and loading times short for trucks. Other traders will take the remaining rows as marked on the plan. Please check your assigned corner and confirm power needs by Friday. All old boxes must be cleared and floors swept before Monday morning. Thanks everyone, let's make the new layout safe and tidy.
+[QUESTION]
+What is the meeting about?
+(A) Power needs for Friday confirmation
+(B) Plans for arranging stalls at the wholesale market
+(C) Truck loading times and ice use
+(D) Cleaning old boxes on Monday
+Answer: B
+Explanation: Bàn vị trí quầy chợ đầu mối | (A) "Power needs for Friday confirmation" — điện chỉ là việc xác nhận thêm | (B) "Plans for arranging stalls at the wholesale market" — đúng | (C) "Truck loading times and ice use" — xe tải và đá chỉ là lợi ích vị trí | (D) "Cleaning old boxes on Monday" — dọn hộp chỉ là việc tương lai
+Source: original
+[QUESTION]
+Look at the graphic. Which zone will sell fresh seafood?
+(A) Zone A
+(B) Zone C
+(C) Zone B
+(D) Zone D
+Answer: C
+Explanation: Cạnh kho lạnh tra hình ra khu B | (A) "Zone A" — lối nam là chỗ rau củ | (B) "Zone C" — cánh đông, không cạnh kho lạnh | (C) "Zone B" — đúng | (D) "Zone D" — cánh tây
+Source: original
+[QUESTION]
+What must vendors do before Monday?
+(A) Stay along the south entrance
+(B) Confirm power needs by Friday
+(C) Load trucks at the south entrance
+(D) Clear out old stock by the start of next week
+Answer: D
+Explanation: Dọn quầy trước sáng thứ Hai | (A) "Stay along the south entrance" — chỗ của người bán rau | (B) "Confirm power needs by Friday" — hạn thứ Sáu, sai mốc | (C) "Load trucks at the south entrance" — gộp sai quan hệ | (D) "Clear out old stock by the start of next week" — đúng
+Source: original

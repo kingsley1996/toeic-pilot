@@ -1,0 +1,42 @@
+[SCRIPT]
+voice: us_female_1
+Good afternoon, welcome to our bright sales office. Are you looking for a model home?
+voice: au_male_1
+Yes, we're choosing a model apartment for my family near here.
+voice: us_female_1
+Do you prefer a quiet area close to a good school?
+voice: au_male_1
+Yes. We need a safe morning path for our little daughter.
+voice: us_female_1
+Then the unit by the classrooms suits you best among our layouts.
+voice: au_male_1
+Perfect. Can we walk through it right now?
+voice: us_female_1
+Of course. I'll get the keys and show you around the rooms.
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Getting keys around the rooms
+(B) Choosing a model apartment for a family
+(C) Finding a safe morning path
+(D) Touring the bright sales office
+Answer: B
+Explanation: Chọn căn hộ mẫu cho gia đình | (A) "Getting keys around the rooms" — lấy chìa là bước dẫn đi | (B) "Choosing a model apartment for a family" — đúng | (C) "Finding a safe morning path" — đường an toàn là tiêu chí | (D) "Touring the bright sales office" — văn phòng là nơi đang đứng
+Source: original
+[QUESTION]
+Where are the speakers?
+(A) In a quiet classroom
+(B) On the school walking path
+(C) At the property showroom
+(D) Inside the furnished display home
+Answer: C
+Explanation: Đang ở văn phòng bán hàng | (A) "In a quiet classroom" — lớp học là gợi ý | (B) "On the school walking path" — dự định xem sau | (C) "At the property showroom" — đúng | (D) "Inside the furnished display home" — sắp đi xem
+Source: original
+[QUESTION]
+Look at the graphic. Which unit best fits the man's needs?
+(A) Unit A
+(B) Unit D
+(C) Unit C
+(D) Unit B
+Answer: D
+Explanation: Gần trường cho con nhỏ tra sơ đồ ra căn phù hợp | (A) "Unit A" — gần công viên | (B) "Unit D" — gần sông | (C) "Unit C" — gần chợ | (D) "Unit B" — đúng
+Source: original

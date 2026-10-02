@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning shoppers, I'm Helen Grant, the store manager of FreshMart. Thank you for choosing our supermarket on this busy holiday weekend. For Easter, we will stay open from eight in the morning until ten at night. Fresh bread and fruit arrive every hour in the produce section. I first thought two tills would be enough for today. Actually, crowds are much larger than expected this morning. So we have now opened four extra checkouts at the back of the store. Please move to the shortest line and keep baskets off the floor. Enjoy your shopping, and ask our team if you need help.
+[QUESTION]
+Who is speaking?
+(A) A produce section assistant
+(B) A holiday weekend shopper
+(C) The manager of a grocery store
+(D) A bread delivery driver
+Answer: C
+Explanation: Xưng quản lý cửa hàng | (A) "A produce section assistant" — quầy rau quả chỉ là nơi nhận hàng | (B) "A holiday weekend shopper" — kỳ nghỉ và người mua là đối tượng nghe | (C) "The manager of a grocery store" — đúng | (D) "A bread delivery driver" — bánh mì chỉ là hàng hóa
+Source: original
+[QUESTION]
+What are the holiday opening hours?
+(A) From eight at night until ten at night
+(B) From ten in the morning until eight at night
+(C) From eight in the morning until ten in the morning
+(D) From 8:00 to 22:00
+Answer: D
+Explanation: Tám giờ sáng tới mười giờ đêm | (A) "From eight at night until ten at night" — sai buổi sáng | (B) "From ten in the morning until eight at night" — đảo ngược | (C) "From eight in the morning until ten in the morning" — sai buổi tối | (D) "From 8:00 to 22:00" — đúng
+Source: original
+[QUESTION]
+What does the speaker imply about checkouts?
+(A) Additional payment counters are in use due to heavy shopper traffic
+(B) Fresh bread arrives every hour
+(C) Two tills will be enough today
+(D) Baskets must be kept off the floor
+Answer: A
+Explanation: Đã mở thêm quầy vì đông | (A) "Additional payment counters are in use due to heavy shopper traffic" — đúng | (B) "Fresh bread arrives every hour" — chi tiết quầy rau quả | (C) "Two tills will be enough today" — cách nghĩ cũ đã bị sửa | (D) "Baskets must be kept off the floor" — nhắc xếp hàng
+Source: original

@@ -1,0 +1,6 @@
+kind: form
+Island Tour Feedback Form
+Name: Tran Van Minh
+Tour date: July 12
+Rating: 2 out of 5
+Comment: Late pickup

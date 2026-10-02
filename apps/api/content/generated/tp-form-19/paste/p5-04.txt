@@ -1,0 +1,9 @@
+[QUESTION]
+The antivirus software detected a potential ------- in the attached file before it could spread.
+(A) threat
+(B) desert
+(C) blanket
+(D) recipe
+Answer: A
+Explanation: Quy tắc collocation "potential threat" chỉ mối nguy bảo mật phù hợp với phần mềm diệt virus; trích nguyên văn đáp án đúng trong "threat".
+Source: original

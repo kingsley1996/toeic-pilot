@@ -1,0 +1,6 @@
+kind: map
+Central Wholesale Market - Ground Floor Plan
+Zone A: south entrance, front row
+Zone B: north side, beside cold storage
+Zone C: east wing
+Zone D: west wing

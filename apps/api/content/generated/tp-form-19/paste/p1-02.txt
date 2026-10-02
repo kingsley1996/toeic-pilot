@@ -1,0 +1,9 @@
+[QUESTION]
+voice: ca_male_1
+(A) Travelers are sleeping on benches in the terminal.
+(B) A man is buying a ticket from a vending machine.
+(C) Passengers are waiting in line at a check-in counter.
+(D) A woman is dragging a suitcase down the stairs.
+Answer: C
+Explanation: Trong ảnh hành khách xếp hàng làm thủ tục tại quầy check-in trong sân bay | (A) "Travelers are sleeping on benches in the terminal." — mọi người đang đứng xếp hàng | (B) "A man is buying a ticket from a vending machine." — không có máy bán vé nào | (C) "Passengers are waiting in line at a check-in counter." — đúng | (D) "A woman is dragging a suitcase down the stairs." — không có cầu thang trong ảnh
+Source: original

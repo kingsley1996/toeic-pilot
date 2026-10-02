@@ -1,0 +1,63 @@
+[PASSAGE]
+From: islandtours@mail.com
+To: Tran Van Minh
+Subject: Confirmation for Island Tour on July 12
+Date: July 8
+Dear Mr. Minh,
+Thank you for booking our Island Tour for July 12 for a group of ten guests. Your van will pick you up at 8:00 A.M. in the hotel lobby, so please be ready with your photo ID fifteen minutes early. The itinerary includes the sunrise viewpoint, a fishing village, and a seafood lunch on the beach. The total fee of $300 has been paid in full, and our guide Lan will carry a blue flag with your name. If the weather changes, call 555-0233 before 7:00 A.M.
+Best regards,
+Island Tours Team
+[PASSAGE]
+From: Tran Van Minh
+To: islandtours@mail.com
+Subject: Complaint about late pickup on July 12 tour
+Date: July 13
+Dear Island Tours Team,
+I am writing about our tour on July 12 with ten guests. The van arrived forty minutes late at the hotel lobby, so we missed the sunrise viewpoint that was the highlight for my group. We waited from 7:45 A.M. in the lobby with children and elderly parents, which was very tiring. The guide was polite and the seafood lunch was good, but the late start shortened our time in the fishing village. I request a partial refund of twenty percent for this inconvenience. Please reply within five working days.
+Sincerely,
+Tran Van Minh
+[QUESTION]
+What can be inferred from the confirmation?
+(A) The guide forgot to bring a blue flag
+(B) The tour was cancelled because of bad weather
+(C) The group had completed payment before the tour
+(D) The tour required no photo identification
+Answer: C
+Explanation: Đã trả xong $300 trước tour | (A) "The guide forgot to bring a blue flag" — trái will carry blue flag | (B) "The tour was cancelled because of bad weather" — tour vẫn diễn ra | (C) "The group had completed payment before the tour" — đúng | (D) "The tour required no photo identification" — trái be ready with photo ID
+Source: original
+[QUESTION]
+According to the confirmation, where and when is the scheduled pickup?
+(A) At 7:00 A.M. by phone call
+(B) At 7:45 A.M. in the fishing village
+(C) At 8:40 A.M. on the beach
+(D) At 8:00 A.M. in the hotel lobby
+Answer: D
+Explanation: Đón lúc 8 giờ ở sảnh | (A) "At 7:00 A.M. by phone call" — 7 giờ là hạn gọi đổi thời tiết | (B) "At 7:45 A.M. in the fishing village" — 7:45 là giờ khách tự chờ | (C) "At 8:40 A.M. on the beach" — 8:40 là giờ trễ thực tế | (D) "At 8:00 A.M. in the hotel lobby" — đúng
+Source: original
+[QUESTION]
+What is NOT stated in the documents?
+(A) The company offers a free return tour next month
+(B) The itinerary includes a fishing village visit
+(C) The van arrived forty minutes late at the lobby
+(D) The guide will carry a blue flag with the name
+Answer: A
+Explanation: Không tour miễn phí nào | (A) "The company offers a free return tour next month" — đúng ý sai | (B) "The itinerary includes a fishing village visit" — có nhắc nên loại | (C) "The van arrived forty minutes late at the lobby" — có nhắc nên loại | (D) "The guide will carry a blue flag with the name" — có nhắc nên loại
+Source: original
+[QUESTION]
+What can be inferred about the July 12 tour?
+(A) It was cancelled before the sunrise viewpoint
+(B) It arrived behind schedule and shortened the trip
+(C) It carried only two guests with full refund
+(D) It provided no lunch on the beach
+Answer: B
+Explanation: Trễ nên lỡ điểm nhấn ngắm bình minh | (A) "It was cancelled before the sunrise viewpoint" — tour vẫn đi | (B) "It missed its highlight because of a late arrival" — đúng | (C) "It carried only two guests with full refund" — đoàn mười khách, xin hoàn 20% | (D) "It provided no lunch on the beach" — trái seafood lunch was good
+Source: original
+[QUESTION]
+According to the letter and the feedback form, how did Mr. Minh evaluate the July 12 tour?
+(A) 4 out of 5 for a polite guide
+(B) 5 out of 5 for excellent seafood lunch
+(C) 2 out of 5 because of late pickup
+(D) 3 out of 5 for the fishing village
+Answer: C
+Explanation: Điểm 2/5 do đón trễ, trích "Rating: 2 out of 5" và "The van arrived forty minutes late at the hotel lobby" | (A) "4 out of 5 for a polite guide" — hướng dẫn tử tế nhưng điểm thấp | (B) "5 out of 5 for excellent seafood lunch" — trái điểm 2 | (C) "2 out of 5 because of late pickup" — đúng | (D) "3 out of 5 for the fishing village" — làng chài bị rút ngắn, không phải lý do điểm
+Source: original

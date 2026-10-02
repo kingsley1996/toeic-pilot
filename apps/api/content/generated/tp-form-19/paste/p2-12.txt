@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+The photocopier on the second floor is jammed again.
+voice: ca_male_1
+(A) Photocopiers save paper.
+(B) I'll call the technician right away.
+(C) The second floor is busy.
+Answer: B
+Explanation: Câu trần thuật máy photocopy kẹt giấy, đáp án đúng đưa ra hành động | (A) "Photocopiers save paper." — nhận xét chung | (B) "I'll call the technician right away." — phản ứng phù hợp | (C) "The second floor is busy." — không liên quan sự cố
+Source: original

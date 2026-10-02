@@ -1,0 +1,44 @@
+[SCRIPT]
+voice: uk_female_1
+Good morning, thanks for calling our riverside restaurant.
+voice: ca_male_1
+Morning. We're planning a team dinner with a wide river view.
+voice: uk_female_1
+Great. How many guests are coming?
+voice: ca_male_1
+Around eighty people, with colleagues and families.
+voice: uk_female_1
+We can host that in our bright main hall by the river.
+voice: ca_male_1
+Perfect. Our budget is thirty-five dollars per guest.
+voice: uk_female_1
+That fits our dinner with fish, salad, and dessert.
+voice: ca_male_1
+Wonderful, let's book it for Friday evening then.
+[QUESTION]
+What is the conversation mainly about?
+(A) Reserving a riverside venue for the staff party
+(B) Ordering fish salad and dessert by the river
+(C) Hosting a team dinner in the main hall
+(D) Planning Friday evening budgets for colleagues
+Answer: A
+Explanation: Đặt tiệc ở nhà hàng ven sông | (A) "Reserving a riverside venue for the staff party" — đúng | (B) "Ordering fish salad and dessert by the river" — cá salad chỉ là món | (C) "Hosting a team dinner in the main hall" — sảnh chỉ là địa điểm | (D) "Planning Friday evening budgets for colleagues" — ngân sách là chi tiết
+Source: original
+[QUESTION]
+How many people will attend the party?
+(A) About thirty-five people in total
+(B) A large team without families
+(C) Around eighty people including families
+(D) Friday evening lights and music
+Answer: C
+Explanation: Tám mươi khách gồm gia đình | (A) "About thirty-five people in total" — ba mươi lăm là đô la mỗi khách | (B) "A large team without families" — gồm cả gia đình | (C) "Around eighty people including families" — đúng | (D) "Friday evening lights and music" — giờ đặt và đồ kèm
+Source: original
+[QUESTION]
+Look at the graphic. Which dinner package fits the man's budget?
+(A) Silver
+(B) Gold
+(C) Platinum
+(D) Diamond
+Answer: B
+Explanation: Ngân sách ba mươi lăm đô mỗi khách tra biểu đồ ra gói Gold | (A) "Silver" — rẻ nhất, thấp hơn ngân sách | (B) "Gold" — đúng | (C) "Platinum" — vượt ngân sách | (D) "Diamond" — đắt nhất
+Source: original

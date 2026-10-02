@@ -1,0 +1,9 @@
+[QUESTION]
+The inspection center confirmed that the car was ------- to drive after the brake check.
+(A) safety
+(B) safely
+(C) safe
+(D) safeness
+Answer: C
+Explanation: Sau "was" cần tính từ, trích nguyên văn "safe".
+Source: original

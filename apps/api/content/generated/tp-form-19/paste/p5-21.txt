@@ -1,0 +1,9 @@
+[QUESTION]
+The security guard was told to allow ------- visitors nor deliveries after midnight.
+(A) both
+(B) neither
+(C) also
+(D) either
+Answer: B
+Explanation: Cấu trúc song song "neither...nor", trích nguyên văn "neither".
+Source: original

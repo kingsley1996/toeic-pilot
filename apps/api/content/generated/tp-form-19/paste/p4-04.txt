@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: us_female_1
+Hello everyone, I'm Maria from Green Kitchen Studio downtown. We're happy to open a brand-new cooking course for beginners next Monday. You will learn soups, salads, and simple Italian dishes in six lessons. The full tuition is one hundred eighty dollars, including all ingredients. Originally, I planned to accept sign-ups until the end of this month. Actually, sorry, that date has changed because enrolment filled very quickly. We already have thirty learners, so we must stop taking forms this Wednesday. Please bring your apron and arrive ten minutes before each lesson. Thanks for your interest, and I look forward to cooking with you.
+[QUESTION]
+What is the talk mainly about?
+(A) An Italian dish tasting event
+(B) A kitchen apron sale downtown
+(C) A new cooking class for newcomers
+(D) A six-lesson salad diet plan
+Answer: C
+Explanation: Khai giảng khóa nấu ăn cho người mới | (A) "An Italian dish tasting event" — món Ý chỉ là nội dung học | (B) "A kitchen apron sale downtown" — tạp dề là đồ mang theo | (C) "A new cooking class for newcomers" — đúng | (D) "A six-lesson salad diet plan" — khung học, không phải chế độ ăn
+Source: original
+[QUESTION]
+How much is the tuition?
+(A) Thirty dollars for each lesson
+(B) Six lessons free for beginners
+(C) Ten minutes before each lesson
+(D) One hundred eighty dollars with materials included
+Answer: D
+Explanation: Học phí trọn gói | (A) "Thirty dollars for each lesson" — ba mươi là số học viên | (B) "Six lessons free for beginners" — không miễn phí | (C) "Ten minutes before each lesson" — mười phút là giờ tới lớp | (D) "One hundred eighty dollars with materials included" — đúng
+Source: original
+[QUESTION]
+What is implied about enrollment?
+(A) No more seats are available for newcomers
+(B) Aprons are provided free to beginners
+(C) Sign-ups will run till the end of the month
+(D) Lessons are held every evening
+Answer: A
+Explanation: Lớp đã đủ ba mươi người nên ngừng nhận đơn | (A) "No more seats are available for newcomers" — đúng | (B) "Aprons are provided free to beginners" — tạp dề là đồ mang theo | (C) "Sign-ups will run till the end of the month" — cách cũ đã bị sửa | (D) "Lessons are held every evening" — lớp học tối và cuối tuần, không phải mỗi tối
+Source: original

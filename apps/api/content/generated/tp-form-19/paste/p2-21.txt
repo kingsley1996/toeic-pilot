@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Why did the gym close early yesterday?
+voice: uk_female_1
+(A) Gyms open early daily.
+(B) They had to fix a burst pipe.
+(C) I exercise every morning.
+Answer: B
+Explanation: Câu hỏi vì sao phòng gym đóng sớm, đáp án đúng nêu nguyên nhân | (A) "Gyms open early daily." — nói giờ mở cửa | (B) "They had to fix a burst pipe." — trả lời đúng lý do | (C) "I exercise every morning." — nói thói quen bản thân
+Source: original

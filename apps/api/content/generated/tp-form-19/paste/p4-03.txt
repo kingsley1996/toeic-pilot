@@ -1,0 +1,30 @@
+[SCRIPT]
+voice: au_male_1
+Hello, this is Daniel from BrightNet customer support with an urgent update. Our fibre-optic service is temporarily interrupted in your district. The outage started at three o'clock after a cable fault downtown. Affected neighborhoods include Riverside, Lakeview, and Old Market streets. Internet, phone, and television signals are all currently unstable. Our engineers are repairing the main line through the night. A technician will visit your building early tomorrow morning. He will test the connection and replace the faulty router if needed. Sorry for the trouble, and thanks for staying with BrightNet.
+[QUESTION]
+What is the purpose of the message?
+(A) A change in customer support hours
+(B) A new cable installation downtown
+(C) A faulty router replacement offer
+(D) A temporary loss of Internet service
+Answer: D
+Explanation: Báo gián đoạn mạng | (A) "A change in customer support hours" — chỉ là danh tính người gọi | (B) "A new cable installation downtown" — cáp là chỗ hỏng, không lắp mới | (C) "A faulty router replacement offer" — bộ định tuyến chỉ thay khi kiểm tra | (D) "A temporary loss of Internet service" — đúng
+Source: original
+[QUESTION]
+Which area is affected by the outage?
+(A) Several streets around the Riverside district
+(B) The BrightNet support office
+(C) The main line through the night
+(D) The downtown repair centre
+Answer: A
+Explanation: Liệt kê các phố bị ảnh hưởng | (A) "Several streets around the Riverside district" — đúng | (B) "The BrightNet support office" — chỉ là bên gọi | (C) "The main line through the night" — thứ đang sửa, không phải khu vực | (D) "The downtown repair centre" — trung tâm là nơi lỗi cáp
+Source: original
+[QUESTION]
+What will happen tomorrow morning?
+(A) The cable fault will move downtown
+(B) A technician will call at the building tomorrow
+(C) The signals will stay unstable all week
+(D) A new router will be sent by post
+Answer: B
+Explanation: Hẹn kỹ thuật viên tới | (A) "The cable fault will move downtown" — nguyên nhân đã xảy ra | (B) "A technician will call at the building tomorrow" — đúng | (C) "The signals will stay unstable all week" — chỉ là hiện tại | (D) "A new router will be sent by post" — chỉ thay khi kiểm tra trực tiếp
+Source: original

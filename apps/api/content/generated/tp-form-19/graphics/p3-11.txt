@@ -1,0 +1,6 @@
+kind: schedule
+Afternoon Rehearsal Availability
+Name | 13-14 | 14-15 | 15-16 | 16-17
+Anna | Meeting |  |  | Phone call
+Brian | Inventory |  |  | Training
+Chris | Briefing |  |  | Interview

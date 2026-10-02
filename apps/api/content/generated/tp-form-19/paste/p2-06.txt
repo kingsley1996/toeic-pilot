@@ -1,0 +1,10 @@
+[QUESTION]
+voice: ca_male_1
+Who will watch the fair booth this weekend?
+voice: uk_female_1
+(A) The fair opens on Saturday.
+(B) Minh and I will take turns.
+(C) Booths are near the entrance.
+Answer: B
+Explanation: Câu hỏi ai trông gian hàng cuối tuần, đáp án đúng nêu người | (A) "The fair opens on Saturday." — nói giờ mở cửa | (B) "Minh and I will take turns." — trả lời đúng người | (C) "Booths are near the entrance." — nói vị trí gian hàng
+Source: original

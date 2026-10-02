@@ -1,0 +1,9 @@
+[QUESTION]
+The pharmacist explained the recommended ------- on the prescription label to the patient.
+(A) foliage
+(B) postage
+(C) dosage
+(D) mileage
+Answer: C
+Explanation: Quy tắc collocation về toa thuốc, chỉ liều lượng ghi trên nhãn mới phù hợp; trích nguyên văn đáp án đúng trong "dosage".
+Source: original

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: us_female_1
+When will the annual health check results come out?
+voice: au_male_1
+(A) Health checks matter a lot.
+(B) The clinic will call you next week.
+(C) Results are printed clearly.
+Answer: B
+Explanation: Câu hỏi khi nào có kết quả khám sức khỏe, đáp án đúng cho thời điểm | (A) "Health checks matter a lot." — nhận xét chung | (B) "The clinic will call you next week." — trả lời đúng ý hỏi | (C) "Results are printed clearly." — nói cách in kết quả
+Source: original

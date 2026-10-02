@@ -1,0 +1,72 @@
+[PASSAGE]
+From: citybookclub@mail.com
+To: All members
+Subject: Invitation to Annual Book Fair on October 18-19
+Date: October 1
+
+Dear Members,
+
+We are delighted to invite you to our Annual Book Fair at Central Library Hall from October 18 to October 19, 9:00 A.M. to 6:00 P.M. The program features author talks, book signings, and reading corners for children. Members may bring up to two guests, and children under six enter free with parents. Early registration by October 10 is recommended because seats for author talks are limited to eighty.
+
+VIP ticket holders will enjoy an exclusive guided tour with curators and a gift set of three bestsellers. Please see the ticket table for prices and benefits and choose the type that fits your group. If you need wheelchair access or vegetarian lunch, reply to this e-mail by October 12. We look forward to welcoming you and your family.
+
+Warm regards,
+Lan Phuong
+City Book Club
+[PASSAGE]
+From: mai.tran@mail.com
+To: citybookclub@mail.com
+Subject: Confirmation for October 19 visit
+Date: October 8
+
+Dear Ms. Phuong,
+
+Thank you for the invitation to the Annual Book Fair. My family will attend on October 19, including my husband and our 8-year-old son. We have reserved tickets accordingly for two adults and one child and will bring student ID for my nephew who joins us separately. We would like wheelchair access for my father and vegetarian lunch for three people. Please confirm our registration and let us know where to collect the tickets at Central Library Hall.
+
+Best regards,
+Tran Thi Mai
+[QUESTION]
+What can be inferred from the invitation?
+(A) Children under six must buy Standard tickets
+(B) Author talks have unlimited seating available
+(C) Wheelchair access cannot be arranged for visitors
+(D) The fair welcomes families with varied age programs
+Answer: D
+Explanation: Có góc đọc cho trẻ + trẻ dưới 6 miễn phí + talks cho người lớn | (A) "Children under six must buy Standard tickets" — trái enter free | (B) "Author talks have unlimited seating available" — trái limited eighty | (C) "Wheelchair access cannot be arranged for visitors" — trái yêu cầu báo trước | (D) "The fair welcomes families with varied age programs" — đúng
+Source: original
+[QUESTION]
+What is NOT stated in the documents?
+(A) The VIP guided tour is led by famous foreign authors
+(B) Children under six enter free with parents
+(C) Seats for author talks are limited to eighty
+(D) Student tickets require an ID for entry
+Answer: A
+Explanation: Tour do curators dẫn, không phải tác giả nước ngoài | (A) "The VIP guided tour is led by famous foreign authors" — đúng ý sai | (B) "Children under six enter free with parents" — có nhắc nên loại | (C) "Seats for author talks are limited to eighty" — có nhắc nên loại | (D) "Student tickets require an ID for entry" — đúng bảng nên loại
+Source: original
+[QUESTION]
+In the invitation, the word "exclusive" in paragraph 2 is closest in meaning to
+(A) costly
+(B) delayed
+(C) special
+(D) crowded
+Answer: C
+Explanation: Từ "exclusive" nghĩa tour đặc biệt riêng | (A) "costly" — sai trường nghĩa | (B) "delayed" — sai trường nghĩa | (C) "special" — đúng | (D) "crowded" — ngược nghĩa
+Source: original
+[QUESTION]
+According to the chart, what is the price of a Family ticket?
+(A) $10 for entry only
+(B) $20 covering entry for the whole group
+(C) $6 for entry with ID
+(D) $35 including a gift set and curator walk
+Answer: B
+Explanation: Biểu đồ ghi vé Family giá 20 | (A) "$10 for entry only" — giá Standard | (B) "$20 covering entry for the whole group" — đúng | (C) "$6 for entry with ID" — giá Student | (D) "$35 including a gift set and curator walk" — giá VIP đi tour kèm quà
+Source: original
+[QUESTION]
+According to the confirmation and the table, how much will Ms. Mai's own family pay for tickets?
+(A) $6 for one student entry
+(B) $10 for one standard entry
+(C) $35 including a gift set and curator walk
+(D) $20 for two adults and one child
+Answer: D
+Explanation: Nhóm 2 người lớn 1 trẻ khớp vé Family trong bảng "Book Fair Ticket Prices", thư ghi "for two adults and one child" | (A) "$6 for one student entry" — vé Student cho cháu đi riêng | (B) "$10 for one standard entry" — Standard một người | (C) "$35 including a gift set and curator walk" — giá VIP đi tour kèm quà, không phải vé Family | (D) "$20 for two adults and one child" — đúng
+Source: original

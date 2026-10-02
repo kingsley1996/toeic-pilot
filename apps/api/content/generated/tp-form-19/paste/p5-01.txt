@@ -1,0 +1,9 @@
+[QUESTION]
+The elevator maintenance contract ------- for another two years last month.
+(A) will extend
+(B) was extended
+(C) extends
+(D) has extended
+Answer: B
+Explanation: Quy tắc thì quá khứ đơn với mốc thời gian đã kết thúc "last month" và chủ ngữ chỉ vật cần bị động; đáp án đúng là "was extended".
+Source: original

@@ -1,0 +1,44 @@
+[PASSAGE]
+From: Lan Pham <lan.pham@mail.com>
+To: Seabreeze Hotel <stay@seabreezehotel.com>
+Subject: Family room booking for August 15-17
+Date: July 28
+Dear Sir or Madam, [1] I would like to book a family room for two adults and two children from August 15 to August 17. [2] We prefer a room on a high floor with a balcony facing the sea, as my parents love watching the sunrise. [3] Could you please confirm whether breakfast is included and whether the outdoor pool is open in August? [4] My younger son has a seafood allergy, so we would appreciate advice on nearby family restaurants.
+We will arrive around 3:00 P.M. on August 15 by shuttle bus from the airport. Please let me know the total price and the deposit needed to keep the booking. I can pay by credit card today if required. Thank you very much for your help. I look forward to hearing from you soon.
+Best regards, Lan Pham
+[QUESTION]
+Why did Ms. Pham write the email?
+(A) To cancel a shuttle bus from the airport
+(B) To book a family room for the August holiday
+(C) To complain about a seafood restaurant nearby
+(D) To apply for a receptionist job at Seabreeze Hotel
+Answer: B
+Explanation: Mở đầu nêu ý định đặt phòng gia đình | (A) "To cancel a shuttle bus from the airport" — cô đi xe trung chuyển, không hủy | (B) "To book a sea-view family room for her family in August" — đúng | (C) "To complain about a seafood restaurant nearby" — xin gợi ý quán, không phàn nàn | (D) "To apply for a receptionist job at Seabreeze Hotel" — không xin việc
+Source: original
+[QUESTION]
+What kind of room does Ms. Pham prefer?
+(A) A single room on the ground floor
+(B) A quiet room near the outdoor pool
+(C) A high-floor balcony facing the ocean
+(D) A cheap room without breakfast service
+Answer: C
+Explanation: Muốn phòng tầng cao có ban công hướng biển | (A) "A single room on the ground floor" — trái với phòng gia đình tầng cao | (B) "A quiet room near the outdoor pool" — hồ bơi chỉ hỏi có mở không | (C) "A high-floor room with a sea-view balcony" — đúng | (D) "A cheap room without breakfast service" — ngược: cô hỏi bữa sáng có kèm không
+Source: original
+[QUESTION]
+What can be inferred about Ms. Pham?
+(A) She has already paid the deposit by credit card
+(B) Her parents dislike watching the sunrise
+(C) She will cook seafood meals for her son
+(D) She needs price and restaurant details before the trip
+Answer: D
+Explanation: Nối 2 chỗ: hỏi tổng giá tiền cọc + xin gợi ý quán ăn | (A) "She has already paid the deposit by credit card" — mới nói có thể trả hôm nay | (B) "Her parents dislike watching the sunrise" — ngược: bố mẹ thích ngắm bình minh | (C) "She will cook seafood meals for her son" — con dị ứng hải sản | (D) "She needs price and restaurant details before the trip" — đúng
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "This will be our first family trip to your coastal city."
+(A) [2]
+(B) [4]
+(C) [1]
+(D) [3]
+Answer: A
+Explanation: Giới thiệu lần đầu tới thành phố biển hợp sau câu đặt phòng | (A) "[2]" — đúng | (B) "[4]" — sau câu dị ứng, lạc đề | (C) "[1]" — sau lời chào, chưa nhắc đặt phòng | (D) "[3]" — đã chuyển sang bữa sáng và hồ bơi
+Source: original

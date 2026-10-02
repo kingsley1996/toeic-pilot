@@ -1,0 +1,42 @@
+[SCRIPT]
+voice: us_female_1
+Excuse me, I'm looking for a microwave for my new apartment.
+voice: ca_male_1
+Sure. This compact 20-liter model fits small counters and it's on sale this week.
+voice: us_female_1
+That sounds good. How much is it, and does it include a warranty?
+voice: ca_male_1
+Two million eight, down from three million five, with a one-year warranty included.
+voice: us_female_1
+Perfect. Do I need to register anything before using it?
+voice: ca_male_1
+Just fill in this short card at the checkout while I pack it.
+voice: us_female_1
+Great, let's pay for it now.
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Registering a warranty card at the checkout
+(B) Buying a microwave oven for a new apartment
+(C) Returning a sale model to the counter
+(D) Packing a used oven for a small kitchen
+Answer: B
+Explanation: Câu mở đầu hỏi mua lò vi sóng cho căn hộ mới | (A) "Registering a warranty card at the checkout" — đăng ký chỉ là thủ tục phụ | (B) "Buying a microwave oven for a new apartment" — đúng | (C) "Returning a sale model to the counter" — không đổi trả | (D) "Packing a used oven for a small kitchen" — máy mới, không phải cũ
+Source: original
+[QUESTION]
+Who is the man most likely to be?
+(A) A delivery driver packing the checkout counter
+(B) A warranty repair technician for the sale model
+(C) A store clerk
+(D) A customer comparing prices at the counter
+Answer: C
+Explanation: Giới thiệu mẫu máy, báo giá sale và bảo hành | (A) "A delivery driver packing the checkout counter" — không giao hàng | (B) "A warranty repair technician for the sale model" — không sửa chữa | (C) "A store clerk" — đúng | (D) "A customer comparing prices at the counter" — anh ấy tư vấn, không phải so giá
+Source: original
+[QUESTION]
+What will the woman probably do next?
+(A) Measure the small counter before the sale ends
+(B) Register the warranty card for another model
+(C) Return the sale counter to the apartment
+(D) Pay for the microwave at the checkout
+Answer: D
+Explanation: Câu cuối cô ấy nói trả tiền ngay | (A) "Measure the small counter before the sale ends" — đã biết bếp nhỏ | (B) "Register the warranty card for another model" — đăng ký chỉ kèm theo | (C) "Return the sale counter to the apartment" — không trả quầy | (D) "Pay for the microwave at the checkout" — đúng
+Source: original

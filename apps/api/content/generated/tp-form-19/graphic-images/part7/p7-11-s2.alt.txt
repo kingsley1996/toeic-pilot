@@ -1,0 +1,1 @@
+Startup Training Room Plan. Session: Session 1, 9:00: Room 101, 10:30: trống, 13:00: trống, 14:30: trống. Session: Session 2, 9:00: trống, 10:30: Room 102, 13:00: trống, 14:30: trống. Session: Session 3, 9:00: trống, 10:30: trống, 13:00: Room 101, 14:30: trống. Session: Session 4, 9:00: trống, 10:30: trống, 13:00: trống, 14:30: Room 103.

@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Should we take the express train or the coach home?
+voice: uk_female_1
+(A) The train is faster and cheaper today.
+(B) The station is crowded today.
+(C) I bought a novel yesterday.
+Answer: A
+Explanation: Câu hỏi chọn tàu nhanh hay xe khách, đáp án đúng so sánh và chọn | (A) "The train is faster and cheaper today." — trả lời đúng lựa chọn | (B) "The station is crowded today." — không chọn phương tiện | (C) "I bought a novel yesterday." — lạc đề hoàn toàn
+Source: original

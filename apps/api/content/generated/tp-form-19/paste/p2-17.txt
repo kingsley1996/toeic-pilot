@@ -1,0 +1,10 @@
+[QUESTION]
+voice: au_male_1
+Could you print these documents before the meeting?
+voice: us_female_1
+(A) Of course. How many copies?
+(B) The printer is new.
+(C) Meetings start at nine.
+Answer: A
+Explanation: Câu nhờ in tài liệu trước họp, đáp án đúng nhận lời và hỏi thêm | (A) "Of course. How many copies?" — chấp nhận và làm rõ | (B) "The printer is new." — nói máy in | (C) "Meetings start at nine." — nói giờ họp
+Source: original

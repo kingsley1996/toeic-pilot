@@ -1,0 +1,10 @@
+[QUESTION]
+voice: uk_female_1
+How soon can you finish the report?
+voice: ca_male_1
+(A) By Thursday afternoon at the latest.
+(B) The report is twenty pages long.
+(C) I left it on your desk.
+Answer: A
+Explanation: Câu hỏi bao giờ xong báo cáo, đáp án đúng cho mốc thời gian | (A) "By Thursday afternoon at the latest." — trả lời đúng ý hỏi | (B) "The report is twenty pages long." — nói độ dài, không nói thời gian | (C) "I left it on your desk." — nói vị trí, không nói thời gian
+Source: original

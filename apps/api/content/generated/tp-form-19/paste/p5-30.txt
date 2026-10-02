@@ -1,0 +1,9 @@
+[QUESTION]
+Candidates must be ------- to take the B2 driving test after completing the theory course.
+(A) license
+(B) eligibility
+(C) eligible
+(D) eligibly
+Answer: C
+Explanation: Sau "be" cần tính từ chỉ đủ điều kiện, trích nguyên văn "eligible".
+Source: original

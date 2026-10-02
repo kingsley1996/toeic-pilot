@@ -1,0 +1,61 @@
+[PASSAGE]
+City Arts Daily, December 2 — Veteran Potter Pham Thi Hoa Marks 40 Years with Clay
+Pham Thi Hoa, 62, has shaped celadon pottery in Bat Trang village for four decades using natural river clay and wood-fired kilns. She trains twelve young apprentices free of charge every summer and refuses to use chemical glaze to keep the traditional blue-green color. All works in the museum shop are made in Hoa's workshop in Bat Trang, according to the cultural center. Her anniversary exhibition at the City Art Museum will run from December 12 to December 20, showing sixty large vases alongside small cups for daily use. Tickets are $8, with morning visits recommended to avoid crowds.
+[PASSAGE]
+Exhibition Review: Quiet Beauty in Blue-Green, by Critic Le Mai, December 14
+The anniversary show gathers sixty pieces, and the blue-white vases on the second floor are the most striking. The morning light brings out the depth of the blue glaze, so visitors should arrive before 10 A.M. to see the works at their best. Two small bowls near the entrance show tiny cracks from firing, but they do not reduce the overall charm. The gift corner sells miniature cups at $15 each, ideal for office desks. The catalog lacks English explanations, which may disappoint foreign guests, but the staff offers free guided tours at 2 P.M.
+[PASSAGE]
+From: tran.hotel@riverside.com
+To: museumshop@cityart.vn
+Subject: Order of miniature cups for hotel lobby
+Date: December 15
+Dear Museum Shop Team,
+After reading the review of Ms. Hoa's exhibition, we would like to order twenty miniature cups from the museum shop for our lobby display. Our budget is $250, so please let us know if a bulk discount is available for this quantity. We need delivery to Riverside Hotel, 48 Lake Road, by December 22 before our year-end event. Payment will be made by bank transfer upon receipt of your invoice. Please confirm availability and total cost at your earliest convenience.
+Best regards,
+Tran Minh Duc
+Riverside Hotel Manager
+[QUESTION]
+What is the article mainly about?
+(A) A veteran potter and her anniversary exhibition
+(B) A review of hotel lobby decorations
+(C) A training course for foreign museum guides
+(D) A discount on museum souvenirs in December
+Answer: A
+Explanation: Nghệ nhân gạo cội và triển lãm | (A) "A veteran potter and her anniversary exhibition" — đúng | (B) "A review of hotel lobby decorations" — trang trí sảnh chỉ ở thư đặt hàng | (C) "A training course for foreign museum guides" — tour 2 giờ ở bài đánh giá | (D) "A sale of chemical glaze in Bat Trang" — trái với refuses chemical glaze
+Source: original
+[QUESTION]
+According to the review, how much is a miniature cup?
+(A) $8 for each ticketed visitor
+(B) $15 for each miniature cup
+(C) $20 for each large vase
+(D) $12 for each office desk set
+Answer: B
+Explanation: Cốc nhỏ giá $15 | (A) "$8 for each ticketed visitor" — $8 là vé triển lãm | (B) "$15 for each miniature cup" — đúng | (C) "$20 for each large vase" — bình lớn không niêm giá | (D) "$12 for each office desk set" — mức $12 không có
+Source: original
+[QUESTION]
+According to the article and the e-mail, which products will the hotel most likely receive?
+(A) Large vases from the second-floor collection
+(B) Bowls with firing cracks from the entrance display
+(C) Cups crafted in Hoa's Bat Trang workshop
+(D) Chemical-glazed items from other suppliers
+Answer: C
+Explanation: Shop bán hàng xưởng Hoa + thư đặt 20 cốc nhỏ, trích "made in Hoa's workshop in Bat Trang" và "order twenty miniature cups from the museum shop" | (A) "Large vases from the second-floor collection" — bình lớn không phải món đặt | (B) "Bowls with firing cracks from the entrance display" — bát nứt chỉ trưng | (C) "Cups crafted in Hoa's Bat Trang workshop" — đúng | (D) "Chemical-glazed items from other suppliers" — trái refuses chemical glaze
+Source: original
+[QUESTION]
+What is NOT stated in the documents?
+(A) Hoa trains twelve apprentices free each summer
+(B) The gift corner sells miniature cups at $15 each
+(C) The exhibition runs from December 12 to December 20
+(D) The hotel requests delivery by December 10 with cash payment
+Answer: D
+Explanation: Giao 22/12 trả chuyển khoản, không phải 10/12 tiền mặt | (A) "Hoa trains twelve apprentices free each summer" — có nhắc nên loại | (B) "The gift corner sells miniature cups at $15 each" — có nhắc nên loại | (C) "The exhibition runs from December 12 to December 20" — có nhắc nên loại | (D) "The hotel requests delivery by December 10 with cash payment" — đúng ý sai
+Source: original
+[QUESTION]
+What does Ms. Le Mai mean when she writes, "The morning light brings out the depth of the blue glaze"?
+(A) Visitors should arrive before 10 A.M. to see the works at their best
+(B) The glaze was repainted during the morning
+(C) The museum opens only when the sun rises
+(D) The cracks disappear under bright lighting
+Answer: A
+Explanation: Ánh sáng buổi sáng làm nổi men xanh, khuyên đi sớm | (A) "Visitors should arrive before 10 A.M. to see the works at their best" — đúng | (B) "The glaze was repainted during the morning" — men không sơn lại | (C) "The museum opens only when the sun rises" — giờ mở không nói thế | (D) "The cracks disappear under bright lighting" — vết nứt vẫn còn
+Source: original

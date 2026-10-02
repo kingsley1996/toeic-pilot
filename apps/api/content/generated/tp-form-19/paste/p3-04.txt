@@ -1,0 +1,44 @@
+[SCRIPT]
+voice: uk_female_1
+Thanks for showing me the flat near the school this afternoon.
+voice: au_male_1
+You're welcome. Do you like this second-floor unit?
+voice: uk_female_1
+Yes, I do. How much is the deposit?
+voice: au_male_1
+Two months' rent, payable before you sign the contract.
+voice: uk_female_1
+Can I move in this Saturday morning?
+voice: au_male_1
+I'm afraid the elevator is broken this week, so heavy furniture can't go up.
+voice: uk_female_1
+Oh no, what should we do?
+voice: au_male_1
+Let's postpone the move to next Wednesday when repairs finish.
+[QUESTION]
+What are the speakers mainly discussing?
+(A) Joining Saturday classes in the hall
+(B) Fixing a lift in the downtown tower
+(C) Viewing a rental flat near a school
+(D) Paying tuition with a new contract
+Answer: C
+Explanation: Xem căn hộ thuê gần trường, hỏi cọc và ngày dọn | (A) "Joining Saturday classes in the hall" — thứ Bảy là ngày dọn | (B) "Fixing a lift in the downtown tower" — chỉ báo hỏng | (C) "Viewing a rental flat near a school" — đúng | (D) "Paying tuition with a new contract" — hợp đồng thuê
+Source: original
+[QUESTION]
+How much is the deposit?
+(A) One week's rent
+(B) One month's rent
+(C) Three months' rent
+(D) Two months' rent
+Answer: D
+Explanation: Hai tháng tiền thuê trả trước khi ký | (A) "One week's rent" — nhiễu kỳ hạn | (B) "One month's rent" — thiếu một tháng | (C) "Three months' rent" — thừa một tháng | (D) "Two months' rent" — đúng
+Source: original
+[QUESTION]
+Why must the move be delayed until Wednesday?
+(A) Because the broken elevator forces them to postpone the move
+(B) The second-floor unit is already rented
+(C) The deposit cannot be paid on time
+(D) The second-floor unit is too small
+Answer: A
+Explanation: Chạm 2 câu rời: thang hỏng không chở đồ + dời sang thứ Tư | (A) "Because the broken elevator forces them to postpone the move" — đúng | (B) "The second-floor unit is already rented" — căn vẫn xem được | (C) "The deposit cannot be paid on time" — cọc vẫn trả được | (D) "The second-floor unit is too small" — cô ấy thích căn này
+Source: original

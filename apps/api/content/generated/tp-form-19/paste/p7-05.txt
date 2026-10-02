@@ -1,0 +1,39 @@
+[PASSAGE]
+Book Review: The Lantern on the Pier by Quynh Anh
+New detective novel The Lantern on the Pier has become a favorite among weekend readers. [1] The story follows inspector Bao Lam as he returns to his fishing village to solve the disappearance of a lighthouse keeper. [2] Unlike many fast crime books, the writer spends the first eighty pages on village life, family meals, and childhood friends before the first real clue appears. [3] Critics praise the lively market scenes and the honest talks between the inspector and his aging mother. [4] The final forty pages move quickly, with two unexpected twists and a calm ending on the beach. The book has 320 pages and costs 145,000 dong at Fahasa stores. Readers who enjoy quiet observation more than car chases will love this gentle mystery. The author will sign copies at the district library at 9:00 A.M. on Sunday, November 9. Come early because seats are limited to eighty people.
+[QUESTION]
+According to the review, what happens in the first eighty pages?
+(A) Two unexpected twists end on the beach
+(B) The author signs copies at the library
+(C) The inspector finds the first real clue at once
+(D) Village life and family meals are described
+Answer: D
+Explanation: 80 trang đầu viết về làng | (A) "Two unexpected twists end on the beach" — 40 trang cuối | (B) "The author signs copies at the library" — sự kiện giao lưu | (C) "The inspector finds the first real clue at once" — ngược: qua 80 trang mới có manh mối | (D) "Village life and family meals are described" — đúng
+Source: original
+[QUESTION]
+What can be inferred about readers who like fast action?
+(A) They may find the beginning slow
+(B) They will get free seats at the signing event
+(C) They wrote the lively market scenes
+(D) They paid eighty dong for the first pages
+Answer: A
+Explanation: Nối 2 chỗ: 80 trang chưa có manh mối + hợp người thích quan sát lặng | (A) "They may find the beginning slow" — đúng | (B) "They will get free seats at the signing event" — chỗ ngồi giới hạn, không miễn phí | (C) "They wrote the lively market scenes" — cảnh chợ do tác giả viết | (D) "They paid eighty dong for the first pages" — eighty là số trang, giá 145,000
+Source: original
+[QUESTION]
+What is NOT stated in the review?
+(A) The book has three hundred twenty pages
+(B) The book won a national prize last year
+(C) The ending has two unexpected twists
+(D) The signing starts at 9:00 A.M. on November 9
+Answer: B
+Explanation: Không giải thưởng nào | (A) "The book has three hundred twenty pages" — bài ghi 320 pages | (B) "The book won a national prize last year" — đúng ý sai | (C) "The ending has two unexpected twists" — bài ghi two twists | (D) "The signing starts at 9:00 A.M. on November 9" — bài ghi ký tặng 9 giờ 9/11
+Source: original
+[QUESTION]
+In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "The slow start may test impatient readers, but it builds deep love for the village."
+(A) [1]
+(B) [2]
+(C) [3]
+(D) [4]
+Answer: C
+Explanation: Nhận xét mở đầu chậm hợp sau câu 80 trang chưa có manh mối | (A) "[1]" — sau giới thiệu chung | (B) "[2]" — sau tóm tắt vụ mất tích | (C) "[3]" — đúng | (D) "[4]" — đã sang 40 trang cuối dồn dập
+Source: original
