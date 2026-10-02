@@ -296,7 +296,7 @@ _EXPLAINED_LETTER = re.compile(r"\(([A-D])\)\s*(?:là\s+)?(?:đáp án\s+)?đún
 # mở ấy rồi ghép dấu ĐÓNG của cặp đó với dấu MỞ của cặp sau, nuốt trọn đoạn
 # tiếng Việt ở giữa và coi đó là một trích dẫn. Đoạn ấy tất nhiên không có trong
 # ngữ liệu, nên cổng báo oan hàng loạt. Ghép hết rồi lọc bằng Python.
-_QUOTED = re.compile(r'"([^"]*)"')
+_QUOTED = re.compile(r'["“”]([^"“”]*)["“”]')
 _QUOTE_MIN_CHARS = 12
 
 
@@ -1031,7 +1031,9 @@ def passage_blocks(block: str) -> list[str]:
     return ["\n".join(lines).strip() for lines in out]
 
 
-def check_cross_passage(questions: list[ParsedQuestion], block: str) -> list[str]:
+def check_cross_passage(
+    questions: list[ParsedQuestion], block: str, extra_docs: tuple[str, ...] = ()
+) -> list[str]:
     """Cụm NHIỀU tài liệu phải có một câu vắt qua hai tài liệu (guide §9.4–9.5).
 
     Đây là toàn bộ lý do cụm nhiều ngữ liệu tồn tại. Không có câu bắc cầu thì ba
@@ -1050,6 +1052,7 @@ def check_cross_passage(questions: list[ParsedQuestion], block: str) -> list[str
     `prompt_for_part7` phải nói ra luật này, nếu không cổng lại chặt hơn prompt.
     """
     docs = [_normalise(doc) for doc in passage_blocks(block) if doc.strip()]
+    docs.extend(_normalise(doc) for doc in extra_docs if doc.strip())
     if len(docs) < 2:
         return []
     for question in questions:
@@ -1248,6 +1251,10 @@ def _check_set(
         # người học thấy kết quả điền thì lời giải không giải thích gì. Ghép thêm
         # bản đã điền vào ngữ liệu đối chiếu; cùng cách hình được ghép vào dưới.
         evidence = f"{evidence}\n\n{_filled_passage(script, questions)}"
+    # P7 mang brief hình trong `passages` (mục không rỗng), không phải `graphic`
+    # như P3/4 — nhưng tệp hình đính kèm vẫn nằm cùng chỗ. Chuẩn hoá một mối để
+    # các cổng dưới (evidence, bắc cầu) không phải biết hai quy ước.
+    has_graphic = bool(slot.graphic) or (part == 7 and any(getattr(slot, "passages", None) or []))
     if slot.graphic:
         source = workdir / "graphics" / f"{slot.id}.txt"
         graphic_problems, graphic_flags = check_graphic(questions, script, source, part)
@@ -1336,7 +1343,21 @@ def _check_set(
         # khó, thứ đề thật không làm. Đo trên `p3-13`.
         spread = [] if slot.graphic else check_retrieval_spread(questions, script)
         if part == 7:
-            spread = [*spread, *check_cross_passage(questions, block)]
+            # Hình đính kèm cũng là một "tài liệu": câu bắc cầu của cụm trộn
+            # chữ với hình trích bảng là chuyện hợp lệ (vd thư + phiếu đánh
+            # giá) — cùng điều kiện với evidence (hình hỏng thì chữ dựng từ nó
+            # không đáng tin).
+            graphic_docs: tuple[str, ...] = ()
+            if has_graphic:
+                # Đọc lại tệp hình ở đây thay vì tái dùng `source` của nhánh P3/4:
+                # nhánh đó chạy luật "Look at the graphic" không áp cho P7.
+                graphic_source = workdir / "graphics" / f"{slot.id}.txt"
+                if graphic_source.exists():
+                    from app.content.exam.graphics import parse_graphic
+
+                    if not parse_graphic(graphic_source.read_text()).problems(part):
+                        graphic_docs = (graphic_source.read_text(),)
+            spread = [*spread, *check_cross_passage(questions, block, graphic_docs)]
         if slot.hard:
             shared = [*shared, *spread]
         else:

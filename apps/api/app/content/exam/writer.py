@@ -186,12 +186,15 @@ def clean(text: str, expect_markers: int = 1) -> str:
         if line.strip() in (SCRIPT_MARKER, PASSAGE_MARKER)
     ]
     if script_starts:
-        # Giữ khối [GRAPHIC] nếu nó đứng TRƯỚC lời thoại — mô hình đặt bảng lên
-        # đầu vì prompt bảo thế, và cắt sạch phần trước [SCRIPT] sẽ vứt mất nó.
-        # Mất bảng thì chỉ lộ ra ở chặng vẽ, tức là sau khi đã trả tiền gọi.
+        # Giữ khối [GRAPHIC] chỉ khi nó đứng TRƯỚC MỌI ngữ liệu — mô hình đặt
+        # bảng lên đầu vì prompt bảo thế, và cắt sạch phần trước [SCRIPT] sẽ
+        # vứt mất nó. Mất bảng thì chỉ lộ ra ở chặng vẽ, tức là sau khi đã trả
+        # tiền gọi. Graphic KẸP GIỮA các passage thì không được rớ: bản cũ cắt
+        # từ graphic (vì nó đứng trước mốc passage CUỐI) và vứt im lặng ngữ
+        # liệu đầu — cụm vẫn hợp lệ, check vẫn xanh, chỉ thiếu tài liệu.
         graphic_starts = [
             index
-            for index, line in enumerate(lines_all[: script_starts[-1]])
+            for index, line in enumerate(lines_all[: script_starts[0]])
             if line.strip() == GRAPHIC_MARKER
         ]
         # Lấy mốc thứ `expect_markers` TỪ CUỐI LÊN, không phải mốc cuối.

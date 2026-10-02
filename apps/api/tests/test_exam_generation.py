@@ -3127,3 +3127,63 @@ def test_generate_part_graphics_falls_back_per_brief(tmp_path: Path, monkeypatch
         "brief trùng hình cũ phải trả về một bản pool"
     )
     assert briefs[1].startswith("line: số cuộc gọi")
+
+
+def test_clean_keeps_passages_around_a_mid_graphic() -> None:
+    """Graphic kẹp GIỮA các passage thì `clean` không được rớ.
+
+    Hồi quy cho mất dữ liệu im lặng ở tp-form-19: graphic đứng trước mốc passage
+    CUỐI nên bản cũ cắt từ graphic và vứt ngữ liệu đầu — cụm còn lại vẫn hợp lệ,
+    check vẫn xanh, chỉ thiếu tài liệu mà câu hỏi đang hỏi tới.
+    """
+    block = (
+        "[PASSAGE]\nFirst document body here.\n"
+        "[GRAPHIC]\nkind: table\nTitle\nA | 1\n"
+        "[PASSAGE]\nSecond document body here.\n"
+        "[QUESTION]\nWhat is it?\n(A) x\n(B) y\n(C) z\n(D) w\nAnswer: A\nSource: original\n"
+    )
+    out = writer.clean(block, 3)
+    assert out.count("[PASSAGE]") == 2
+    assert "First document body here." in out
+    assert "[GRAPHIC]" in out
+
+
+def test_clean_still_keeps_a_leading_graphic() -> None:
+    """Graphic đứng TRƯỚC mọi ngữ liệu thì vẫn giữ (hành vi cũ phải còn)."""
+    block = (
+        "[GRAPHIC]\nkind: table\nTitle\nA | 1\n"
+        "[PASSAGE]\nFirst document body here.\n"
+        "[PASSAGE]\nSecond document body here.\n"
+        "[QUESTION]\nWhat is it?\n(A) x\n(B) y\n(C) z\n(D) w\nAnswer: A\nSource: original\n"
+    )
+    out = writer.clean(block, 3)
+    assert "[GRAPHIC]" in out
+    assert out.count("[PASSAGE]") == 2
+
+
+def test_cross_passage_counts_an_attached_graphic_as_a_document() -> None:
+    """Câu bắc cầu của cụm trộn chữ với hình được trích bảng — hình đính kèm là
+    một tài liệu, cùng điều kiện với evidence (hình hỏng thì không)."""
+    from app.content.exam.check import check_cross_passage
+
+    rated = _q(
+        "How did he rate it?",
+        "2 out of 5 because of late pickup",
+        ["5 out of 5 for lunch"],
+    )
+    rated.explanation = (
+        'Phiếu ghi "Rating: 2 out of 5" còn thư ghi '
+        '"The van arrived forty minutes late at the hotel lobby".'
+    )
+    questions = [rated]
+    block = (
+        "[PASSAGE]\nThe tour was confirmed for July 12 for ten guests.\n"
+        "[PASSAGE]\nThe van arrived forty minutes late at the hotel lobby.\n"
+        "[QUESTION]\nHow did he rate it?\n(A) 2 out of 5 because of late pickup\n"
+        "(B) 5 out of 5 for lunch\nAnswer: A\n"
+        'Explanation: Phiếu ghi "Rating: 2 out of 5" còn thư ghi '
+        '"The van arrived forty minutes late at the hotel lobby".\nSource: original\n'
+    )
+    assert check_cross_passage(questions, block) != []
+    graphic = "Island Tour Feedback Form\nRating: 2 out of 5\nComment: Late pickup"
+    assert check_cross_passage(questions, block, (graphic,)) == []
