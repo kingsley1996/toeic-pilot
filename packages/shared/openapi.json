@@ -13974,6 +13974,11 @@
             "title": "Parts",
             "type": "array"
           },
+          "position": {
+            "default": 0,
+            "title": "Position",
+            "type": "integer"
+          },
           "question_count": {
             "title": "Question Count",
             "type": "integer"
@@ -14291,6 +14296,23 @@
           "parts"
         ],
         "title": "TestDetail",
+        "type": "object"
+      },
+      "TestOrderIn": {
+        "description": "Thứ tự đề trong MỘT bộ: danh sách slug theo đúng thứ tự muốn hiện.\n\nPhải phủ đủ đề của bộ (thiếu/thừa đều 422) — sắp xếp lại mà làm rơi một đề\nkhỏi danh sách thì thứ tự còn lại vô nghĩa, giống luật `order` của grammar.",
+        "properties": {
+          "slugs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Slugs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "slugs"
+        ],
+        "title": "TestOrderIn",
         "type": "object"
       },
       "TestPartCommit": {
@@ -23191,6 +23213,68 @@
           }
         ],
         "summary": "Publish Collection",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/test-collections/{slug}/tests/order": {
+      "put": {
+        "description": "Gán lại thứ tự đề TRONG MỘT bộ — cùng luật `order` của grammar: một giao\ndịch gán 1..N, danh sách phải phủ đủ đề của bộ (thiếu/thừa đều 422). Người\nhọc thấy đúng thứ tự này (`practice.read_collection` sắp theo position).",
+        "operationId": "reorder_collection_tests_api_v1_admin_test_collections__slug__tests_order_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestOrderIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TestAdmin"
+                  },
+                  "title": "Response Reorder Collection Tests Api V1 Admin Test Collections  Slug  Tests Order Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reorder Collection Tests",
         "tags": [
           "admin"
         ]

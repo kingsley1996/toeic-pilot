@@ -78,6 +78,7 @@ ADMIN_CALLS = [
     ("GET", "/api/v1/admin/tests", None),
     ("POST", "/api/v1/admin/tests/x/placement", {"slug": "tp-placement-99"}),
     ("POST", "/api/v1/admin/test-collections/x/archive", {"archived": True}),
+    ("PUT", "/api/v1/admin/test-collections/x/tests/order", {"slugs": []}),
     ("DELETE", "/api/v1/admin/test-collections/x", None),
     ("POST", "/api/v1/admin/tests/x/archive", {"archived": True}),
     ("DELETE", "/api/v1/admin/tests/x", None),
@@ -754,6 +755,58 @@ def test_moving_a_test_between_collections_and_out_of_one(
         "/api/v1/admin/tests/di-chuyen", json={"collection_slug": None}, headers=headers
     )
     assert removed.json()["collection_slug"] is None
+
+
+def test_reordering_tests_inside_a_collection(
+    client: TestClient, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Đổi chỗ đề trong bộ: gửi đủ thứ tự mới, máy gán position 1..N.
+
+    Thiếu/thừa một đề đều 422 — sắp xếp lại mà làm rơi đề thì thứ tự còn lại
+    vô nghĩa. Người học thấy đúng thứ tự này (sắp theo position).
+    """
+    headers = auth("editor")
+    client.post(
+        "/api/v1/admin/test-collections",
+        json={"slug": "bo-xep", "title": "Bộ xếp"},
+        headers=headers,
+    )
+    for slug in ("de-mot", "de-hai", "de-ba"):
+        assert (
+            client.post(
+                "/api/v1/admin/tests",
+                json={"slug": slug, "title": slug.upper(), "collection_slug": "bo-xep"},
+                headers=headers,
+            ).status_code
+            == 201
+        )
+
+    order = client.put(
+        "/api/v1/admin/test-collections/bo-xep/tests/order",
+        json={"slugs": ["de-ba", "de-mot", "de-hai"]},
+        headers=headers,
+    )
+    assert order.status_code == 200
+    assert [row["slug"] for row in order.json()] == ["de-ba", "de-mot", "de-hai"]
+    assert [row["position"] for row in order.json()] == [1, 2, 3]
+
+    listed = client.get("/api/v1/admin/tests?limit=200", headers=headers).json()["items"]
+    in_collection = [row["slug"] for row in listed if row["collection_slug"] == "bo-xep"]
+    assert in_collection == ["de-ba", "de-mot", "de-hai"]
+
+    short = client.put(
+        "/api/v1/admin/test-collections/bo-xep/tests/order",
+        json={"slugs": ["de-ba", "de-mot"]},
+        headers=headers,
+    )
+    assert short.status_code == 422
+
+    dup = client.put(
+        "/api/v1/admin/test-collections/bo-xep/tests/order",
+        json={"slugs": ["de-ba", "de-ba", "de-hai"]},
+        headers=headers,
+    )
+    assert dup.status_code == 422
 
 
 def test_renaming_a_collection_leaves_its_slug_alone(

@@ -513,6 +513,8 @@ export const API_ROUTES = {
   // Soạn đề thi (ADR-007). `parse` không ghi gì; `parts` mới là đường ghi.
   adminTestCollections: "/api/v1/admin/test-collections",
   adminTestCollectionPublish: (slug: string) => `/api/v1/admin/test-collections/${slug}/publish`,
+  adminTestCollectionTestsOrder: (slug: string) =>
+    `/api/v1/admin/test-collections/${slug}/tests/order`,
   adminTests: "/api/v1/admin/tests",
   adminTest: (slug: string) => `/api/v1/admin/tests/${slug}`,
   adminTestQuestions: (slug: string) => `/api/v1/admin/tests/${slug}/questions`,

@@ -620,6 +620,7 @@ class TestAdmin(BaseModel):
     status: str
     time_limit_seconds: int | None
     collection_slug: str | None
+    position: int = 0
     # Đề mà một placement được rút 84 câu ra (null với các hàng cũ).
     source_slug: str | None = None
     question_count: int
@@ -628,6 +629,16 @@ class TestAdmin(BaseModel):
 
 class PlacementBuildIn(BaseModel):
     slug: str
+
+
+class TestOrderIn(BaseModel):
+    """Thứ tự đề trong MỘT bộ: danh sách slug theo đúng thứ tự muốn hiện.
+
+    Phải phủ đủ đề của bộ (thiếu/thừa đều 422) — sắp xếp lại mà làm rơi một đề
+    khỏi danh sách thì thứ tự còn lại vô nghĩa, giống luật `order` của grammar.
+    """
+
+    slugs: list[str]
 
 
 class PlacementPartOut(BaseModel):

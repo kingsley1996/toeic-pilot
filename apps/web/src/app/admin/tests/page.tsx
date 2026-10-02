@@ -6,7 +6,15 @@ import {
   type TestAdmin,
   type TestAdminPage,
 } from "@toeic-pilot/shared";
-import { ClipboardList, FileText, FolderTree, Send, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ClipboardList,
+  FileText,
+  FolderTree,
+  Send,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -16,6 +24,7 @@ import {
   EmptyState,
   Field,
   FieldError,
+  IconButton,
   Input,
   Page,
   PageHeader,
@@ -176,6 +185,22 @@ export default function AdminTestsPage() {
       }),
     );
 
+  // Đổi chỗ hai đề trong CÙNG một bộ: gửi toàn bộ thứ tự mới (giống moveTopic
+  // của grammar), máy chủ gán lại position 1..N trong một giao dịch.
+  const moveTest = (target: string, ordered: TestAdmin[], from: number, to: number) => {
+    if (to < 0 || to >= ordered.length) return null;
+    const slugs = ordered.map((test) => test.slug);
+    const [moved] = slugs.splice(from, 1);
+    slugs.splice(to, 0, moved);
+    return run(() =>
+      apiFetch(API_ROUTES.adminTestCollectionTestsOrder(target), {
+        method: "PUT",
+        token: token ?? undefined,
+        body: JSON.stringify({ slugs }),
+      }),
+    );
+  };
+
   if (status === "loading") {
     return (
       <Page>
@@ -321,6 +346,14 @@ export default function AdminTestsPage() {
                 busy={busy}
                 onRename={(title) => void renameCollection(collection.slug, title)}
                 onPublish={() => void publishCollection(collection.slug)}
+                onMove={(from, to) =>
+                  void moveTest(
+                    collection.slug,
+                    tests.filter((test) => test.collection_slug === collection.slug),
+                    from,
+                    to,
+                  )
+                }
                 onArchive={(archived) => void archiveCollection(collection.slug, archived)}
                 onDelete={(force) => deleteCollection(collection.slug, force)}
               />
@@ -355,6 +388,7 @@ function CollectionBlock({
   onRename,
   busy,
   onPublish,
+  onMove,
   onArchive,
   onDelete,
 }: {
@@ -364,6 +398,7 @@ function CollectionBlock({
   onRename: (title: string) => void;
   busy: boolean;
   onPublish: () => void;
+  onMove: (from: number, to: number) => void;
   onArchive: (archived: boolean) => void;
   onDelete: (force?: boolean) => Promise<string | null>;
 }) {
@@ -448,7 +483,29 @@ function CollectionBlock({
         {tests.length === 0 ? (
           <TreeEmpty>Bộ này chưa có đề nào.</TreeEmpty>
         ) : (
-          tests.map((test) => <TestRow key={test.id} test={test} />)
+          tests.map((test, index) => (
+            <div key={test.id} className="flex items-stretch gap-1.5">
+              {tests.length > 1 && (
+                <div className="flex flex-col justify-center gap-1">
+                  <IconButton
+                    icon={ArrowUp}
+                    aria-label={`Đưa ${test.title} lên trước`}
+                    disabled={busy || index === 0}
+                    onClick={() => onMove(index, index - 1)}
+                  />
+                  <IconButton
+                    icon={ArrowDown}
+                    aria-label={`Đưa ${test.title} xuống sau`}
+                    disabled={busy || index === tests.length - 1}
+                    onClick={() => onMove(index, index + 1)}
+                  />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <TestRow test={test} />
+              </div>
+            </div>
+          ))
         )}
       </TreeNode>
 

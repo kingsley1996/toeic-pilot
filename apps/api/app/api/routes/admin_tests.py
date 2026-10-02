@@ -49,6 +49,7 @@ from app.schemas.admin import (
     PlacementBuildOut,
     TestAdmin,
     TestCreate,
+    TestOrderIn,
     TestUpdate,
 )
 from app.schemas.common import DEFAULT_LIMIT, MAX_LIMIT, Page, count_rows, page_of
@@ -275,6 +276,41 @@ def delete_collection(
     db.commit()
 
 
+@router.put("/test-collections/{slug}/tests/order", response_model=list[TestAdmin])
+def reorder_collection_tests(
+    slug: str,
+    body: TestOrderIn,
+    db: Session = Depends(get_db),
+    _: User = Depends(can_edit),
+) -> list[TestAdmin]:
+    """Gán lại thứ tự đề TRONG MỘT bộ — cùng luật `order` của grammar: một giao
+    dịch gán 1..N, danh sách phải phủ đủ đề của bộ (thiếu/thừa đều 422). Người
+    học thấy đúng thứ tự này (`practice.read_collection` sắp theo position)."""
+    collection = _collection_or_404(db, slug)
+    tests = db.scalars(
+        select(PracticeTest).where(PracticeTest.collection_id == collection.id)
+    ).all()
+    by_slug = {test.slug: test for test in tests}
+    if len(set(body.slugs)) != len(body.slugs):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="slugs trùng nhau"
+        )
+    missing = [t.slug for t in tests if t.slug not in set(body.slugs)]
+    unknown = [s for s in body.slugs if s not in by_slug]
+    if missing or unknown:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=(
+                "order phải phủ ĐỦ đề của bộ — "
+                f"thiếu: {', '.join(missing)}; không thuộc bộ: {', '.join(unknown)}"
+            ),
+        )
+    for position, test_slug in enumerate(body.slugs, start=1):
+        by_slug[test_slug].position = position
+    db.commit()
+    return [_as_admin(db, by_slug[test_slug]) for test_slug in body.slugs]
+
+
 @router.get("/tests", response_model=Page[TestAdmin])
 def list_tests(
     kind: str | None = Query(default=None, description="lọc theo kiểu, vd `placement`"),
@@ -289,7 +325,9 @@ def list_tests(
     if kind:
         query = query.where(PracticeTest.kind == kind)
     tests = db.scalars(
-        query.order_by(PracticeTest.created_at.desc(), PracticeTest.id.desc())
+        query.order_by(
+            PracticeTest.position, PracticeTest.created_at.desc(), PracticeTest.id.desc()
+        )
         .limit(limit)
         .offset(offset)
     ).all()

@@ -2312,6 +2312,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/test-collections/{slug}/tests/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Reorder Collection Tests
+         * @description Gán lại thứ tự đề TRONG MỘT bộ — cùng luật `order` của grammar: một giao
+         *     dịch gán 1..N, danh sách phải phủ đủ đề của bộ (thiếu/thừa đều 422). Người
+         *     học thấy đúng thứ tự này (`practice.read_collection` sắp theo position).
+         */
+        put: operations["reorder_collection_tests_api_v1_admin_test_collections__slug__tests_order_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/tests": {
         parameters: {
             query?: never;
@@ -10721,6 +10743,11 @@ export interface components {
             kind: string;
             /** Parts */
             parts: components["schemas"]["TestPartSummary"][];
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
             /** Question Count */
             question_count: number;
             /** Slug */
@@ -10825,6 +10852,17 @@ export interface components {
             time_limit_seconds: number | null;
             /** Title */
             title: string;
+        };
+        /**
+         * TestOrderIn
+         * @description Thứ tự đề trong MỘT bộ: danh sách slug theo đúng thứ tự muốn hiện.
+         *
+         *     Phải phủ đủ đề của bộ (thiếu/thừa đều 422) — sắp xếp lại mà làm rơi một đề
+         *     khỏi danh sách thì thứ tự còn lại vô nghĩa, giống luật `order` của grammar.
+         */
+        TestOrderIn: {
+            /** Slugs */
+            slugs: string[];
         };
         /** TestPartCommit */
         TestPartCommit: {
@@ -15765,6 +15803,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CollectionAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reorder_collection_tests_api_v1_admin_test_collections__slug__tests_order_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TestOrderIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAdmin"][];
                 };
             };
             /** @description Validation Error */
