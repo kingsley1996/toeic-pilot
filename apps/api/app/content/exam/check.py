@@ -915,6 +915,12 @@ def check_redundancy(questions: list[ParsedQuestion], script: str) -> list[str]:
 # Dưới ngưỡng này, đáp án đúng gần như không dùng chữ nào của ngữ liệu.
 THIN_PARAPHRASE = 0.25
 
+# Đáp đúng của câu suy luận được phủ tối đa bao nhiêu chữ thoại. Đo trên đề tham
+# chiếu (đáp ≥5 từ nội dung): thật 0/17 câu vượt 0.8; form-18: 8/25; form-17: 4/24.
+COPY_ANSWER_TYPES = ("IMPLICATION", "TOPIC_OR_PURPOSE", "INFERENCE")
+COPY_ANSWER_ECHO = 0.8
+COPY_ANSWER_MIN_WORDS = 5
+
 
 def check_retrieval_spread(questions: list[ParsedQuestion], script: str) -> list[str]:
     """CỜ, không chặn: cụm nên có ít nhất một câu phải ghép hai chỗ (guide §10, D1).
@@ -972,6 +978,34 @@ def check_thin_paraphrase(question: ParsedQuestion, script: str, code: str = "")
         return []
     if echo(gold[0], script) < THIN_PARAPHRASE:
         return [f"đáp án đúng gần như không dùng chữ nào của ngữ liệu: {gold[0][:48]!r}"]
+    return []
+
+
+def check_copy_answer(question: ParsedQuestion, script: str, code: str = "") -> list[str]:
+    """CHẶN: đáp đúng của câu suy luận mà copy nguyên chữ thoại.
+
+    Mặt còn lại của `check_thin_paraphrase` (bên kia chặn đáp đúng KHÔNG dùng chữ
+    nào). Đề thật paraphrase mạnh ở câu suy luận: implication 0.00, topic 0.35 —
+    còn form-18 đáp đúng implication phủ tới 0.70, topic 0.85, tức đo kỹ năng
+    dò chữ thay vì suy luận.
+
+    Chỉ chặn ba dạng suy luận (hàm ý/chủ đích/suy ra), và chỉ khi đáp án đủ dài
+    (≥5 từ nội dung): đáp ngắn 2–4 chữ ("A company picnic") trùng khít là tất
+    yếu, đề thật cũng có 3 câu như thế. Câu detail/future/request/speaker giữ
+    nguyên — đề thật cũng giữ từ ở đó ("Move their vehicles").
+    """
+    if not any(key in code for key in COPY_ANSWER_TYPES):
+        return []
+    gold = [option_text(o) for o in question.options if o.is_correct]
+    if not gold or len(_content_words(gold[0])) < COPY_ANSWER_MIN_WORDS:
+        return []
+    if echo(gold[0], script) >= COPY_ANSWER_ECHO:
+        return [
+            f"đáp đúng copy nguyên chữ thoại ({echo(gold[0], script):.0%} từ nội dung "
+            f"có trong thoại): {gold[0][:48]!r} — câu {code} phải đo suy luận, không "
+            "đo dò chữ. Diễn đạt lại bằng chữ khác (thượng vị hóa, danh từ hóa), "
+            "giữ nguyên ý"
+        ]
     return []
 
 
@@ -1183,6 +1217,23 @@ def _check_set(
                 "cụm ngắn không đủ chỗ giấu vế thứ hai của đáp án, kiểm tra xem "
                 "thoại/văn bản có bị cụt không"
             )
+        if part in (3, 4):
+            # Ngữ liệu quá DÀI thì đề dễ hơn đề thật ở MỌI câu: thoại dài cho
+            # người học nhiều chỗ bám hơn, và cả họ AI đang dài hơn thật ~1/3
+            # (form-18 P3 trung bình 99 từ nội dung vs thật 62, min 87 vs max
+            # thật 76). Prompt đã dặn "60-100 từ" mà model vẫn viết lố, nên phải
+            # chặn bằng cổng chứ không trông chờ prompt.
+            # CHẶN chứ không cờ: dài là lệch chuẩn có hướng (luôn dễ hơn), và vòng
+            # revise cần tín hiệu error mới viết lại — warning thì ô được accept
+            # luôn (verdict.py chỉ revise khi có error).
+            ceiling = SCRIPT_CEIL[part]
+            if words > ceiling:
+                shared.append(
+                    f"thoại dài bất thường ({words} từ nội dung, trần {ceiling}) — "
+                    f"đề thật P{part} chỉ 45–76 từ, thoại dài cho thêm chỗ bám nên "
+                    "dễ hơn. Rút gọn còn ~60 từ nội dung, giữ đủ chứng cứ cho cả "
+                    f"{len(questions)} câu hỏi"
+                )
     # Ngữ liệu để đối chiếu trích dẫn: CHÍNH khối dán, trừ các dòng giải thích.
     # Dùng cả khối thay vì ghép script + passage vì `parse_group` không trả ngữ
     # liệu ra ngoài, và cả khối lại đúng hơn — nó phủ mọi part, kể cả Part 2 nơi
@@ -1369,6 +1420,7 @@ def _check_set(
             report.problems.extend(check_distractors(question, script))
             kind = slot.question_types[index] if index < len(slot.question_types) else ""
             report.flags.extend(check_thin_paraphrase(question, script, kind))
+            report.problems.extend(check_copy_answer(question, script, kind))
 
         # Khoá chống trùng của Part 3/4 gồm CẢ lời thoại, không chỉ đề bài.
         #
@@ -1609,6 +1661,16 @@ def check_blueprint(
 # tới 40% vì 30 câu là mẫu nhỏ, nhưng quá đó thì không còn là ngẫu nhiên.
 ANSWER_SKEW_LIMIT = 0.40
 
+# Trần độ dài thoại P3/P4 (từ nội dung — cùng đơn vị với sàn volume). Đo trên đề
+# tham chiếu: thật P3 max 76, P4 max 65; form-18 min 87 (P3) / 76 (P4). Trần 85
+# chặn đúng họ AI dài lố mà không chạm đề thật. CHẶN (problem) chứ không cờ: dài
+# là lệch chuẩn có hướng — luôn dễ hơn đề thật — và vòng revise chỉ viết lại khi
+# có error (verdict.py bỏ qua warning).
+SCRIPT_CEIL = {3: 85, 4: 85}
+# Dải trung bình cụm P3/P4 cả part (từ nội dung). Thật: P3 62, P4 53; form-17:
+# 57/64 (qua); form-18: 99/83 (trượt). Kẹp từng cụm ở trần mà cả part vẫn dồn
+# một đầu thì lỗi ở tầng đề — cổng này bắt chỗ đó.
+
 
 # Nhiễu mở đầu bằng Yes/No cho một câu hỏi WH là bẫy THẬT của đề thật — nhưng ở
 # tần suất cao nó thôi là bẫy và thành một luật, mà luật nào cũng là một lần
@@ -1709,6 +1771,56 @@ def check_answer_spread(reports_dir: Path, blueprint: Blueprint) -> list[str]:
             problems.append(
                 f"đáp án lệch: ({letter}) chiếm {count}/{total} = {count / total * 100:.0f}% "
                 f"— chọn bừa cũng đúng chừng đó. Chạy `balance` trước khi nạp."
+            )
+    return problems
+
+
+# Dải trung bình độ dài cụm P3/P4 cả part (từ nội dung). Trần từng cụm (SCRIPT_CEIL)
+# bắt từng ô dài lố, nhưng cả part dồn một đầu (form-18: P3 trung bình 99, P4 83
+# mà không ô nào qua trần nếu trần nới) thì lỗi ở tầng đề — cổng này bắt chỗ đó.
+SCRIPT_MEAN_BAND = {3: (45, 75), 4: (45, 75)}
+
+
+def check_script_volume(reports_dir: Path, blueprint: Blueprint) -> list[str]:
+    """Độ dài thoại cả part có giống đề thật không — lỗi ở tầng đề.
+
+    Đo trên đề tham chiếu (từ nội dung): thật P3 trung bình 62 (49–76), P4 trung
+    bình 53 (45–65); form-17: 57/64 (qua); form-18: 99/83 (trượt cả hai). Thoại
+    dài cho người học nhiều chỗ bám hơn nên cả part dài là dễ hơn ở mọi câu —
+    cùng họ với answer_spread: từng cụm riêng lẻ vẫn "hợp lệ".
+    """
+    from app.content.exam.writer import paste_path
+
+    problems = []
+    for part in blueprint.parts:
+        if part.part not in (3, 4):
+            continue
+        counts: list[tuple[str, int]] = []
+        for slot in part.slots:
+            path = paste_path(reports_dir, slot)
+            if not path.exists():
+                continue
+            questions, script, _ = parse_group(path.read_text(), part.part)
+            if questions:
+                counts.append((slot.id, len(_content_words(script))))
+        if len(counts) < 8:
+            # Part viết dở: thiếu tệp đã có cổng từng-ô chặn, trung bình trên vài
+            # cụm không nói được gì về cả part.
+            continue
+        mean = sum(count for _, count in counts) / len(counts)
+        low, high = SCRIPT_MEAN_BAND[part.part]
+        if not low <= mean <= high:
+            longest = sorted(counts, key=lambda item: -item[1])[:3]
+            problems.append(
+                f"thoại P{part.part} dài bất thường: trung bình {mean:.0f} từ nội dung/cụm, "
+                f"đề thật chỉ {low}–{high} — cả part dài là dễ hơn ở mọi câu. Rút gọn "
+                f"3 cụm dài nhất trước: {' '.join(f'{sid} ({n})' for sid, n in longest)}"
+            )
+        elif max(count for _, count in counts) - min(count for _, count in counts) < 10:
+            problems.append(
+                f"thoại P{part.part} đồng đều bất thường: cụm dài nhất và ngắn nhất chỉ "
+                "cách nhau dưới 10 từ nội dung, đề thật chênh 20–27 — thiếu cụm ngắn "
+                "là mất chỗ khó (ít chứng cứ để bám). Viết lại 1–2 cụm ngắn hơn hẳn."
             )
     return problems
 
