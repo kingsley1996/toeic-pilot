@@ -607,6 +607,16 @@ PART3_GRAPHIC_POOL: tuple[str, ...] = (
     "chart: biểu đồ cột doanh số bốn quý, nhãn là tên quý",
     "survey: phiếu khảo sát bốn mục mức độ hài lòng đã đánh dấu",
     "form: phiếu đặt phòng họp bốn suất đã điền",
+    # Đợt mở rộng chống lặp hình liên-đề: cùng 8 kind nhưng khác domain, khác số
+    # hàng/cột trong ngưỡng check (table 3–6 hàng, schedule 2–4 hàng người). Trục
+    # đáp án P3/4 vẫn đúng 4 mục — đổi số mục là đổi luôn câu hỏi, không phải
+    # việc của pool.
+    "column: số đơn hàng bốn tháng đầu năm, nhãn Jan, Feb, Mar, Apr",
+    "line: nhiệt độ kho lạnh bốn tuần, nhãn Week 1, Week 2, Week 3, Week 4",
+    "table: bảng giá bốn gói bảo hiểm xe, cột Plan và Premium",
+    "map: sơ đồ bốn gian hàng hội chợ sách, mỗi ô tên gian hàng",
+    "schedule: lịch trực ba nhân viên qua bốn ca trong tuần, cột đầu là tên",
+    "form: phiếu yêu cầu sửa chữa bốn hạng mục đã điền",
 )
 
 
@@ -694,6 +704,40 @@ PART4_MIX: tuple[tuple[str, str, tuple[str, str, str], str], ...] = (
         ("PART_4_TOPIC_OR_PURPOSE", "PART_4_IMPLICATION", "PART_4_FUTURE_ACTION"),
         "",
     ),
+    # Dạng bài nói của đề thật mà pool còn thiếu: tour thuyết minh, podcast
+    # how-to, diễn văn khánh thành/gây quỹ, public lecture. Toàn là TALK theo
+    # taxonomy (chỉ có 5 dạng bài nói) — khác nhau ở bối cảnh và cách xưng hô,
+    # và đó đúng là thứ người học dùng để nhận ra dạng bài khi nghe.
+    (
+        "PART_4_TALK",
+        "hướng dẫn viên thuyết minh tour tham quan khu nhà kính vườn thực vật",
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_IMPLICATION"),
+        "",
+    ),
+    (
+        "PART_4_TALK",
+        "tập podcast hướng dẫn cách sửa mái nhà bị dột",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_4_TALK",
+        "diễn văn khánh thành công viên mới của thị trưởng",
+        ("PART_4_SPEAKER_OR_LOCATION", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        "",
+    ),
+    (
+        "PART_4_TALK",
+        "bài phát biểu gây quỹ trước buổi hòa nhạc từ thiện",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_IMPLICATION", "PART_4_REQUEST_OR_SUGGESTION"),
+        "",
+    ),
+    (
+        "PART_4_TALK",
+        "bài giảng công cộng về cách trồng rau sạch tại nhà",
+        ("PART_4_TOPIC_OR_PURPOSE", "PART_4_DETAIL", "PART_4_FUTURE_ACTION"),
+        "",
+    ),
     (
         "PART_4_MEETING_EXCERPT",
         "trích buổi họp công bố doanh số bốn quý của công ty",
@@ -720,6 +764,13 @@ PART4_GRAPHIC_POOL: tuple[str, ...] = (
     'bốn cột "Monday", "Tuesday", "Wednesday", "Thursday"',
     "survey: phiếu khảo sát bốn câu hỏi về dịch vụ đã đánh dấu",
     "form: phiếu đăng ký bốn buổi đào tạo đã điền",
+    # Đợt mở rộng chống lặp hình liên-đề (xem ghi chú ở PART3_GRAPHIC_POOL).
+    "column: lượt khách bốn chi nhánh, nhãn tên chi nhánh",
+    "line: số cuộc gọi hỗ trợ bốn tuần, nhãn Week 1, Week 2, Week 3, Week 4",
+    "survey: phiếu đánh giá bốn khía cạnh khóa học của ba lớp đã điền",
+    "table: bảng phí bốn khóa học ngoại ngữ, cột Course và Fee",
+    "map: sơ đồ bốn phòng họp tầng hai, mỗi ô tên phòng",
+    "form: phiếu đặt mua bốn loại văn phòng phẩm đã điền",
 )
 
 
@@ -742,16 +793,18 @@ PART4_GRAPHIC_POOL: tuple[str, ...] = (
 # 8/25 câu gián tiếp. Câu đuôi và câu lựa chọn để 0: chúng đã khó sẵn ở chỗ
 # khác, và đáp gián tiếp cho một câu lựa chọn thường ra câu nghe không tự nhiên.
 PART2_MIX: tuple[tuple[str, int, int], ...] = (
-    ("PART_2_WHERE_QUESTION", 2, 1),
-    ("PART_2_WHEN_QUESTION", 2, 1),
-    ("PART_2_HOW_QUESTION", 2, 1),
-    ("PART_2_YES_NO_QUESTION", 2, 1),
+    # Phân bố theo đề tham chiếu (WHO ×4, STATEMENT ×3, WHEN ×1 — đề thật hỏi
+    # WHEN đúng một lần; WHO/STATEMENT nặng vì khó có từ để bám).
+    ("PART_2_WHERE_QUESTION", 1, 1),
+    ("PART_2_WHEN_QUESTION", 1, 0),
+    ("PART_2_HOW_QUESTION", 1, 1),
+    ("PART_2_YES_NO_QUESTION", 3, 1),
     ("PART_2_REQUEST_OR_SUGGESTION", 2, 1),
-    ("PART_2_WHO_QUESTION", 1, 1),
+    ("PART_2_WHO_QUESTION", 2, 2),
     ("PART_2_WHY_QUESTION", 1, 1),
     ("PART_2_TAG_QUESTION", 2, 0),
     ("PART_2_CHOICE_QUESTION", 2, 0),
-    ("PART_2_STATEMENT", 1, 1),
+    ("PART_2_STATEMENT", 2, 1),
 )
 
 
@@ -1065,6 +1118,82 @@ PART7_SETS: tuple[tuple[str, str, tuple[str, ...], tuple[str, ...]], ...] = (
         ),
         ("", "", ""),
     ),
+    # Chất liệu đời thường của đề thật mà pool còn thiếu (so với tp-2024-01):
+    # email đang gấp 3 lần thật (6/15) trong khi notice/review/tin tuyển dụng
+    # vắng hẳn. Cụ thể hoá khác đề thật để cổng `compare` không bắt trùng —
+    # cùng THỂ LOẠI, khác PHIÊN BẢN (kệ sách thay hộp hàng, phòng tập thay khán
+    # phòng, ấm đun thay máy rửa bát...). `build_part7` nhóm theo SỐ ĐOẠN
+    # (len passages) nên vị trí chèn không quan trọng.
+    (
+        "PART_7_ANNOUNCEMENT_OR_NOTICE",
+        "tờ hướng dẫn lắp ráp kệ sách trong hộp hàng",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_INFERENCE"),
+        ("",),
+    ),
+    (
+        "PART_7_ANNOUNCEMENT_OR_NOTICE",
+        "nội quy phòng tập thể hình dán ở cửa ra vào",
+        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFORMATION_RETRIEVAL"),
+        ("",),
+    ),
+    (
+        "PART_7_ARTICLE_OR_REVIEW",
+        "bài đánh giá ấm đun nước mới của trang gia dụng",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFERENCE",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+        ),
+        ("",),
+    ),
+    (
+        "PART_7_ADVERTISEMENT",
+        "tin tuyển dụng nhân viên pha chế chuỗi cà phê",
+        ("PART_7_INFORMATION_RETRIEVAL", "PART_7_INFERENCE"),
+        ("",),
+    ),
+    (
+        "PART_7_ANNOUNCEMENT_OR_NOTICE",
+        "thông báo tặng bánh mì cuối ngày cho người cần",
+        ("PART_7_TOPIC_OR_PURPOSE", "PART_7_INFERENCE"),
+        ("",),
+    ),
+    (
+        "PART_7_EMAIL_OR_LETTER",
+        "thư người bán chốt lịch giao tủ lạnh kèm vé tham quan nhà máy",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+        ),
+        ("", ""),
+    ),
+    (
+        "PART_7_ARTICLE_OR_REVIEW",
+        "bài báo về tiệm phở, review 1 sao của thực khách và email xin lỗi của chủ tiệm",
+        (
+            "PART_7_TOPIC_OR_PURPOSE",
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_IMPLICATION",
+        ),
+        ("", "", ""),
+    ),
+    (
+        "PART_7_ANNOUNCEMENT_OR_NOTICE",
+        "hóa đơn sửa xe, thông báo đổi sang hóa đơn điện tử và email thắc mắc của khách",
+        (
+            "PART_7_INFORMATION_RETRIEVAL",
+            "PART_7_INFERENCE",
+            "PART_7_FALSE_INFORMATION",
+            "PART_7_VOCABULARY_IN_CONTEXT",
+            "PART_7_INFERENCE",
+        ),
+        ("", "", ""),
+    ),
 )
 
 
@@ -1090,4 +1219,12 @@ PART7_GRAPHIC_POOL: tuple[str, ...] = (
     'table: bảng giá bốn gói phần mềm, cột "Plan" và "Fee"',
     'map: sơ đồ bốn khu vực hội chợ, mỗi ô "Zone A".."Zone D" kèm tên gian hàng',
     'form: phiếu đăng ký hội thảo đã điền, các mục "Name", "Company", "Session", "Meal"',
+    # Đợt mở rộng chống lặp hình liên-đề (xem ghi chú ở PART3_GRAPHIC_POOL).
+    # P7 là ngữ liệu nên thoáng hơn P3/4, nhưng brief lạ vẫn phải vẽ được —
+    # kind của mọi mục đã kiểm thuộc KINDS, dữ liệu cụ thể do người viết đề
+    # chịu trách nhiệm qua cổng `problems(part=7)` lúc viết.
+    "column: số vé bán ra bốn suất diễn, nhãn suất diễn",
+    "line: lượng truy cập website bốn tháng, nhãn tháng",
+    'table: bảng lương bốn vị trí, cột "Position" và "Salary"',
+    "map: sơ đồ bốn khu cắm trại, mỗi ô tên khu",
 )
