@@ -185,21 +185,16 @@ export default function AdminTestsPage() {
       }),
     );
 
-  // Đổi chỗ hai đề trong CÙNG một bộ: gửi toàn bộ thứ tự mới (giống moveTopic
-  // của grammar), máy chủ gán lại position 1..N trong một giao dịch.
-  const moveTest = (target: string, ordered: TestAdmin[], from: number, to: number) => {
-    if (to < 0 || to >= ordered.length) return null;
-    const slugs = ordered.map((test) => test.slug);
-    const [moved] = slugs.splice(from, 1);
-    slugs.splice(to, 0, moved);
-    return run(() =>
+  // Lưu thứ tự đề trong CÙNG một bộ: FE sắp xếp trước, bấm lưu mới PUT toàn
+  // bộ slugs một lần, máy chủ gán lại position 1..N trong một giao dịch.
+  const saveTestOrder = (target: string, slugs: string[]) =>
+    run(() =>
       apiFetch(API_ROUTES.adminTestCollectionTestsOrder(target), {
         method: "PUT",
         token: token ?? undefined,
         body: JSON.stringify({ slugs }),
       }),
     );
-  };
 
   if (status === "loading") {
     return (
@@ -337,27 +332,27 @@ export default function AdminTestsPage() {
           />
         ) : (
           <div className="space-y-4">
-            {collections.map((collection) => (
-              <CollectionBlock
-                key={collection.id}
-                collection={collection}
-                tests={tests.filter((test) => test.collection_slug === collection.slug)}
-                canPublish={canPublish}
-                busy={busy}
-                onRename={(title) => void renameCollection(collection.slug, title)}
-                onPublish={() => void publishCollection(collection.slug)}
-                onMove={(from, to) =>
-                  void moveTest(
-                    collection.slug,
-                    tests.filter((test) => test.collection_slug === collection.slug),
-                    from,
-                    to,
-                  )
-                }
-                onArchive={(archived) => void archiveCollection(collection.slug, archived)}
-                onDelete={(force) => deleteCollection(collection.slug, force)}
-              />
-            ))}
+            {collections.map((collection) => {
+              const inCollection = tests.filter(
+                (test) => test.collection_slug === collection.slug,
+              );
+              return (
+                <CollectionBlock
+                  // Key kèm thứ tự server: sau lưu/refresh block remount nên bản
+                  // xếp dở tự xả; xếp dở ở FE không đổi prop nên không remount.
+                  key={`${collection.id}:${inCollection.map((test) => test.slug).join(",")}`}
+                  collection={collection}
+                  tests={inCollection}
+                  canPublish={canPublish}
+                  busy={busy}
+                  onRename={(title) => void renameCollection(collection.slug, title)}
+                  onPublish={() => void publishCollection(collection.slug)}
+                  onSaveOrder={(slugs) => void saveTestOrder(collection.slug, slugs)}
+                  onArchive={(archived) => void archiveCollection(collection.slug, archived)}
+                  onDelete={(force) => deleteCollection(collection.slug, force)}
+                />
+              );
+            })}
 
             {loose.length > 0 && (
               <div>
@@ -388,7 +383,7 @@ function CollectionBlock({
   onRename,
   busy,
   onPublish,
-  onMove,
+  onSaveOrder,
   onArchive,
   onDelete,
 }: {
@@ -398,7 +393,7 @@ function CollectionBlock({
   onRename: (title: string) => void;
   busy: boolean;
   onPublish: () => void;
-  onMove: (from: number, to: number) => void;
+  onSaveOrder: (slugs: string[]) => void;
   onArchive: (archived: boolean) => void;
   onDelete: (force?: boolean) => Promise<string | null>;
 }) {
@@ -409,6 +404,24 @@ function CollectionBlock({
   // touch). Thả lên chính hàng đang cầm thì không làm gì.
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
+  // Thứ tự chỉ xếp ở FE, bấm lưu mới PUT: giữ override slugs cục bộ, suy ra
+  // `ordered` từ `tests` gốc. Cha truyền `key` kèm thứ tự server nên khi server
+  // đổi (sau lưu/refresh) block remount và override tự mất; còn gõ form tạo đề
+  // không đổi `tests` nên bản xếp dở giữ nguyên.
+  const [localSlugs, setLocalSlugs] = useState<string[] | null>(null);
+  const bySlug = new Map(tests.map((test) => [test.slug, test]));
+  const ordered = localSlugs
+    ? localSlugs.flatMap((slug) => (bySlug.get(slug) ? [bySlug.get(slug)!] : []))
+    : tests;
+  const dirty =
+    localSlugs !== null && localSlugs.join(",") !== tests.map((test) => test.slug).join(",");
+  const moveLocal = (from: number, to: number) => {
+    if (to < 0 || to >= ordered.length) return;
+    const slugs = ordered.map((test) => test.slug);
+    const [moved] = slugs.splice(from, 1);
+    slugs.splice(to, 0, moved);
+    setLocalSlugs(slugs);
+  };
   // Từ chối xoá phải in TRONG hộp thoại: băng lỗi chung nằm sau lớp phủ
   // `<dialog>`, nên một cú 409 hiện ở đầu trang là vô hình.
   const [refusal, setRefusal] = useState<string | null>(null);
@@ -486,62 +499,84 @@ function CollectionBlock({
           </>
         }
       >
-        {tests.length === 0 ? (
+        {ordered.length === 0 ? (
           <TreeEmpty>Bộ này chưa có đề nào.</TreeEmpty>
         ) : (
-          tests.map((test, index) => (
-            <div
-              key={test.id}
-              className={cx(
-                "flex items-stretch gap-1.5 rounded",
-                dragIndex === index && "opacity-50",
-                overIndex === index && dragIndex !== index && "ring-1 ring-accent",
-              )}
-              draggable={tests.length > 1 && !busy}
-              onDragStart={(event) => {
-                event.dataTransfer.effectAllowed = "move";
-                setDragIndex(index);
-              }}
-              onDragOver={(event) => {
-                event.preventDefault();
-                event.dataTransfer.dropEffect = "move";
-                setOverIndex(index);
-              }}
-              onDrop={(event) => {
-                // Chặn điều hướng: hàng chứa Link, thả link mà không chặn là
-                // trình duyệt mở URL thay vì sắp xếp.
-                event.preventDefault();
-                if (dragIndex !== null && dragIndex !== index) onMove(dragIndex, index);
-                setDragIndex(null);
-                setOverIndex(null);
-              }}
-              onDragEnd={() => {
-                setDragIndex(null);
-                setOverIndex(null);
-              }}
-              title={tests.length > 1 ? "Kéo để sắp xếp lại thứ tự" : undefined}
-            >
-              {tests.length > 1 && (
-                <div className="flex flex-col justify-center gap-1">
-                  <IconButton
-                    icon={ArrowUp}
-                    aria-label={`Đưa ${test.title} lên trước`}
-                    disabled={busy || index === 0}
-                    onClick={() => onMove(index, index - 1)}
-                  />
-                  <IconButton
-                    icon={ArrowDown}
-                    aria-label={`Đưa ${test.title} xuống sau`}
-                    disabled={busy || index === tests.length - 1}
-                    onClick={() => onMove(index, index + 1)}
-                  />
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <TestRow test={test} />
+          <>
+            {dirty && (
+              <div className="mb-2 flex flex-wrap items-center gap-2 rounded border border-warn bg-warn-tint px-3 py-2">
+                <span className="text-small font-semibold">Thứ tự chưa lưu</span>
+                <Button
+                  size="sm"
+                  onClick={() => localSlugs && onSaveOrder(localSlugs)}
+                  disabled={busy}
+                >
+                  Lưu thứ tự
+                </Button>
+                <Button
+                  size="sm"
+                  variant="quiet"
+                  onClick={() => setLocalSlugs(null)}
+                  disabled={busy}
+                >
+                  Hoàn tác
+                </Button>
               </div>
-            </div>
-          ))
+            )}
+            {ordered.map((test, index) => (
+              <div
+                key={test.id}
+                className={cx(
+                  "flex items-stretch gap-1.5 rounded",
+                  dragIndex === index && "opacity-50",
+                  overIndex === index && dragIndex !== index && "ring-1 ring-accent",
+                )}
+                draggable={ordered.length > 1 && !busy}
+                onDragStart={(event) => {
+                  event.dataTransfer.effectAllowed = "move";
+                  setDragIndex(index);
+                }}
+                onDragOver={(event) => {
+                  event.preventDefault();
+                  event.dataTransfer.dropEffect = "move";
+                  setOverIndex(index);
+                }}
+                onDrop={(event) => {
+                  // Chặn điều hướng: hàng chứa Link, thả link mà không chặn là
+                  // trình duyệt mở URL thay vì sắp xếp.
+                  event.preventDefault();
+                  if (dragIndex !== null && dragIndex !== index) moveLocal(dragIndex, index);
+                  setDragIndex(null);
+                  setOverIndex(null);
+                }}
+                onDragEnd={() => {
+                  setDragIndex(null);
+                  setOverIndex(null);
+                }}
+                title={ordered.length > 1 ? "Kéo để sắp xếp lại thứ tự" : undefined}
+              >
+                {ordered.length > 1 && (
+                  <div className="flex flex-col justify-center gap-1">
+                    <IconButton
+                      icon={ArrowUp}
+                      aria-label={`Đưa ${test.title} lên trước`}
+                      disabled={busy || index === 0}
+                      onClick={() => moveLocal(index, index - 1)}
+                    />
+                    <IconButton
+                      icon={ArrowDown}
+                      aria-label={`Đưa ${test.title} xuống sau`}
+                      disabled={busy || index === ordered.length - 1}
+                      onClick={() => moveLocal(index, index + 1)}
+                    />
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <TestRow test={test} />
+                </div>
+              </div>
+            ))}
+          </>
         )}
       </TreeNode>
 
