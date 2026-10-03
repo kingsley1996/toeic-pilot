@@ -403,6 +403,12 @@ function CollectionBlock({
   onDelete: (force?: boolean) => Promise<string | null>;
 }) {
   const [confirming, setConfirming] = useState(false);
+  // Kéo-thả sắp xếp: chỉ số hàng đang cầm và hàng đang trỏ tới. Dùng HTML5 DnD
+  // thuần (không thêm lib): danh sách dọc reorder là đúng việc của nó, và nút
+  // lên/xuống vẫn ở lại cho bàn phím + màn hình cảm ứng (DnD không chạy trên
+  // touch). Thả lên chính hàng đang cầm thì không làm gì.
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
   // Từ chối xoá phải in TRONG hộp thoại: băng lỗi chung nằm sau lớp phủ
   // `<dialog>`, nên một cú 409 hiện ở đầu trang là vô hình.
   const [refusal, setRefusal] = useState<string | null>(null);
@@ -484,7 +490,37 @@ function CollectionBlock({
           <TreeEmpty>Bộ này chưa có đề nào.</TreeEmpty>
         ) : (
           tests.map((test, index) => (
-            <div key={test.id} className="flex items-stretch gap-1.5">
+            <div
+              key={test.id}
+              className={cx(
+                "flex items-stretch gap-1.5 rounded",
+                dragIndex === index && "opacity-50",
+                overIndex === index && dragIndex !== index && "ring-1 ring-accent",
+              )}
+              draggable={tests.length > 1 && !busy}
+              onDragStart={(event) => {
+                event.dataTransfer.effectAllowed = "move";
+                setDragIndex(index);
+              }}
+              onDragOver={(event) => {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "move";
+                setOverIndex(index);
+              }}
+              onDrop={(event) => {
+                // Chặn điều hướng: hàng chứa Link, thả link mà không chặn là
+                // trình duyệt mở URL thay vì sắp xếp.
+                event.preventDefault();
+                if (dragIndex !== null && dragIndex !== index) onMove(dragIndex, index);
+                setDragIndex(null);
+                setOverIndex(null);
+              }}
+              onDragEnd={() => {
+                setDragIndex(null);
+                setOverIndex(null);
+              }}
+              title={tests.length > 1 ? "Kéo để sắp xếp lại thứ tự" : undefined}
+            >
               {tests.length > 1 && (
                 <div className="flex flex-col justify-center gap-1">
                   <IconButton
