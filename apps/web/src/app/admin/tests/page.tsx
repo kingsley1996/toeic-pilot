@@ -333,9 +333,7 @@ export default function AdminTestsPage() {
         ) : (
           <div className="space-y-4">
             {collections.map((collection) => {
-              const inCollection = tests.filter(
-                (test) => test.collection_slug === collection.slug,
-              );
+              const inCollection = tests.filter((test) => test.collection_slug === collection.slug);
               return (
                 <CollectionBlock
                   // Key kèm thứ tự server: sau lưu/refresh block remount nên bản
