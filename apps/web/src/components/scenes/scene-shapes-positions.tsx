@@ -61,27 +61,28 @@ function DiningChair() {
     <group>
       {[-0.19, 0.19].map((x) =>
         [-0.19, 0.19].map((z) => (
-          <Box key={`${x}${z}`} size={[0.07, 0.45, 0.07]} at={[x, 0, z]} color={PR.woodDark} />
+          <Box key={`${x}${z}`} size={[0.07, 0.46, 0.07]} at={[x, 0, z]} color={PR.woodDark} />
         )),
       )}
       <Box size={[0.45, 0.07, 0.45]} at={[0, 0.45, 0]} color={PR.woodGold} />
       {[-0.19, 0.19].map((x) => (
-        <Box key={x} size={[0.06, 0.48, 0.06]} at={[x, 0.52, -0.19]} color={PR.woodDark} />
+        <Box key={x} size={[0.06, 0.48, 0.06]} at={[x, 0.515, -0.19]} color={PR.woodDark} />
       ))}
       <Box size={[0.44, 0.3, 0.05]} at={[0, 0.62, -0.19]} color={PR.woodGold} />
     </group>
   );
 }
 
-/** Ghế bành mặt +Z: đế + nệm + lưng tới 1.0 + 2 tay. */
+/** Ghế bành mặt +Z: đế + nệm + lưng tới 1.0 + 2 tay. Mọi mặt hông đều thụt
+ *  vào trong mép đế (mặt nào trùng mép đế là nhấp nháy ở xa — §10.6). */
 function Armchair() {
   return (
     <group>
       <Box size={[0.9, 0.35, 0.8]} at={[0, 0, 0]} color={PR.fabricBlue} />
-      <Box size={[0.7, 0.15, 0.6]} at={[-0.1, 0.345, 0.05]} color={PR.cushionCream} />
-      <Box size={[0.9, 0.65, 0.18]} at={[0, 0.35, -0.31]} color={PR.fabricBlue} />
-      {[-0.375, 0.375].map((x) => (
-        <Box key={x} size={[0.15, 0.3, 0.8]} at={[x, 0.35, 0]} color={PR.fabricBlue} />
+      <Box size={[0.68, 0.15, 0.6]} at={[-0.09, 0.345, 0.05]} color={PR.cushionCream} />
+      <Box size={[0.88, 0.65, 0.18]} at={[0, 0.345, -0.295]} color={PR.fabricBlue} />
+      {[-0.37, 0.37].map((x) => (
+        <Box key={x} size={[0.15, 0.3, 0.8]} at={[x, 0.345, 0]} color={PR.fabricBlue} />
       ))}
     </group>
   );
@@ -100,8 +101,8 @@ function Loveseat() {
       {[-0.48, 0.48].map((x) => (
         <Box key={x} size={[0.9, 0.13, 0.8]} at={[x, 0.49, 0]} color={PR.cushionCream} />
       ))}
-      <Box size={[2.0, 0.6, 0.18]} at={[0, 0.4, -0.36]} color={PR.fabricGreen} />
-      {[-0.91, 0.91].map((x) => (
+      <Box size={[1.98, 0.6, 0.18]} at={[0, 0.4, -0.35]} color={PR.fabricGreen} />
+      {[-0.905, 0.905].map((x) => (
         <Box key={x} size={[0.18, 0.35, 0.9]} at={[x, 0.4, 0]} color={PR.fabricGreen} />
       ))}
     </group>
@@ -134,8 +135,8 @@ function WallWindow() {
       </mesh>
       <Box size={[0.06, 1.28, 0.04]} at={[0, 1.1, 0.04]} color={PR.cushionCream} />
       <Box size={[1.7, 0.06, 0.04]} at={[0, 1.71, 0.04]} color={PR.cushionCream} />
-      {/* bậu cửa lồi ra đỡ */}
-      <Box size={[2.1, 0.08, 0.25]} at={[0, 0.97, 0.08]} color={PR.woodGold} />
+      {/* bậu cửa lồi ra đỡ (cắm vào khung, không chạm khít) */}
+      <Box size={[2.1, 0.1, 0.25]} at={[0, 0.97, 0.08]} color={PR.woodGold} />
     </group>
   );
 }
@@ -147,7 +148,7 @@ function WallDoor({ facing }: { facing: "-x" | "-z" }) {
       {[-0.71, 0.71].map((x) => (
         <Box key={x} size={[0.12, 2.4, 0.14]} at={[x, 0, 0]} color={PR.woodDark} />
       ))}
-      <Box size={[1.54, 0.12, 0.14]} at={[0, 2.38, 0]} color={PR.woodDark} />
+      <Box size={[1.5, 0.12, 0.14]} at={[0, 2.38, 0]} color={PR.woodDark} />
       {/* cánh khép: lưng lút vào tường, mặt trước lộ */}
       <Box size={[1.3, 2.32, 0.1]} at={[0, 0.02, 0]} color={PR.fabricRed} />
       <Box size={[1.0, 0.9, 0.03]} at={[0, 1.25, 0.05]} color={PR.woodGold} />
@@ -171,7 +172,7 @@ function BookOnTable() {
     <group>
       {[-0.3, 0.3].map((x) =>
         [-0.3, 0.3].map((z) => (
-          <Box key={`${x}${z}`} size={[0.07, 0.49, 0.07]} at={[x, 0, z]} color={PR.woodDark} />
+          <Box key={`${x}${z}`} size={[0.07, 0.5, 0.07]} at={[x, 0, z]} color={PR.woodDark} />
         )),
       )}
       <Box size={[0.7, 0.06, 0.7]} at={[0, 0.49, 0]} color={PR.woodGold} />
@@ -187,7 +188,7 @@ function CrateUnderBench() {
     <group>
       {[-0.7, 0.7].map((x) =>
         [-0.18, 0.18].map((z) => (
-          <Box key={`${x}${z}`} size={[0.08, 0.45, 0.08]} at={[x, 0, z]} color={PR.woodDark} />
+          <Box key={`${x}${z}`} size={[0.08, 0.46, 0.08]} at={[x, 0, z]} color={PR.woodDark} />
         )),
       )}
       <Box size={[1.6, 0.1, 0.5]} at={[0, 0.45, 0]} color={PR.woodGold} />
@@ -206,10 +207,11 @@ function PaintingAboveSofa() {
       <group rotation={[0, Math.PI / 2, 0]}>
         <Loveseat />
       </group>
-      {/* tranh áp tường tây (mặt tường local x = −2.35): khung + mặt lồi dần */}
+      {/* tranh áp tường tây (mặt tường local x = −2.35): khung + mặt lồi dần.
+          Mảng đồi chỉ được nằm trong mặt canvas (±0.77) — lố ra là tràn khung. */}
       <group position={[-2.32, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <Box size={[1.7, 0.08, 0.07]} at={[0, 1.5, 0]} color={PR.woodDark} />
-        <Box size={[1.7, 0.08, 0.07]} at={[0, 2.42, 0]} color={PR.woodDark} />
+        <Box size={[1.62, 0.08, 0.07]} at={[0, 1.5, 0]} color={PR.woodDark} />
+        <Box size={[1.62, 0.08, 0.07]} at={[0, 2.42, 0]} color={PR.woodDark} />
         {[-0.81, 0.81].map((x) => (
           <Box key={x} size={[0.08, 1.0, 0.07]} at={[x, 1.5, 0]} color={PR.woodDark} />
         ))}
@@ -218,8 +220,8 @@ function PaintingAboveSofa() {
           <meshStandardMaterial color={PR.cushionCream} roughness={0.9} />
         </mesh>
         {/* mảng "tranh" trừu tượng deterministic: đồi + mặt trời */}
-        <mesh position={[-0.3, 1.84, 0.085]}>
-          <planeGeometry args={[1.5, 0.35]} />
+        <mesh position={[-0.2, 1.84, 0.085]}>
+          <planeGeometry args={[1.0, 0.35]} />
           <meshStandardMaterial color={PR.fabricGreen} roughness={0.9} />
         </mesh>
         <mesh position={[0.4, 2.19, 0.085]}>
@@ -231,17 +233,18 @@ function PaintingAboveSofa() {
   );
 }
 
-/** `below`: kệ sách gắn DƯỚI cửa sổ tường bắc. */
+/** `below`: kệ sách gắn DƯỚI cửa sổ tường bắc (cửa lút vào tường,
+ *  đỡ kệ cắm vào thân kệ — mặt nào chạm khít là nhấp nháy ở xa). */
 function ShelfBelowWindow() {
   return (
     <group>
-      <group position={[0, 0, -0.6]}>
+      <group position={[0, 0, -0.64]}>
         <WallWindow />
       </group>
       {/* kệ + 2 đỡ + 5 sách đứng (đáy lút mặt kệ) */}
       <Box size={[1.6, 0.07, 0.35]} at={[0, 0.78, -0.45]} color={PR.woodGold} />
       {[-0.6, 0.6].map((x) => (
-        <Box key={x} size={[0.08, 0.25, 0.3]} at={[x, 0.53, -0.48]} color={PR.steelDark} />
+        <Box key={x} size={[0.08, 0.26, 0.3]} at={[x, 0.53, -0.48]} color={PR.steelDark} />
       ))}
       {[-0.5, -0.28, -0.06, 0.16, 0.38].map((x, i) => (
         <Box
@@ -290,10 +293,10 @@ function CabinetBehindDesk() {
     <group>
       {/* bàn phía nam */}
       <group position={[0, 0, 1.3]}>
-        <Box size={[0.06, 0.7, 0.8]} at={[-0.77, 0, 0]} color={PR.woodDark} />
-        <Box size={[0.06, 0.7, 0.8]} at={[0.77, 0, 0]} color={PR.woodDark} />
+        <Box size={[0.06, 0.71, 0.8]} at={[-0.77, 0, 0]} color={PR.woodDark} />
+        <Box size={[0.06, 0.71, 0.8]} at={[0.77, 0, 0]} color={PR.woodDark} />
         <Box size={[1.6, 0.08, 0.8]} at={[0, 0.7, 0]} color={PR.woodGold} />
-        <Box size={[0.5, 0.25, 0.6]} at={[-0.45, 0.45, 0]} color={PR.woodDark} />
+        <Box size={[0.5, 0.26, 0.6]} at={[-0.45, 0.445, 0]} color={PR.woodDark} />
         <Box size={[0.35, 0.06, 0.25]} at={[0.3, 0.775, 0]} color={PR.bookBlue} />
         <mesh position={[0.55, 0.835, 0.15]} castShadow>
           <cylinderGeometry args={[0.05, 0.04, 0.12, 10]} />
@@ -357,13 +360,13 @@ function ShelfAgainstWall() {
       {[-0.87, 0.87].map((x) => (
         <Box key={x} size={[0.06, 2.2, 0.4]} at={[x, 0, -0.42]} color={PR.woodDark} />
       ))}
-      <Box size={[1.8, 0.06, 0.4]} at={[0, 2.14, -0.42]} color={PR.woodDark} />
-      <Box size={[1.8, 2.2, 0.04]} at={[0, 0, -0.6]} color={PR.woodDark} />
+      <Box size={[1.78, 0.06, 0.4]} at={[0, 2.14, -0.42]} color={PR.woodDark} />
+      <Box size={[1.78, 2.2, 0.04]} at={[0, 0, -0.6]} color={PR.woodDark} />
       {[0.5, 1.05, 1.6].map((y) => (
         <Box key={y} size={[1.68, 0.05, 0.36]} at={[0, y, -0.42]} color={PR.woodGold} />
       ))}
       {/* 3 tầng sách đứng, đáy lút mặt đợt */}
-      {[0.55, 1.1, 1.65].map((y, r) =>
+      {[0.545, 1.095, 1.645].map((y, r) =>
         [-0.6, -0.38, -0.16, 0.06, 0.28, 0.5].map((x, i) => (
           <Box
             key={`${r}${x}`}
@@ -390,7 +393,7 @@ function ChairsAroundTable() {
         <cylinderGeometry args={[0.3, 0.34, 0.05, 12]} />
         {paint(PR.woodDark)}
       </mesh>
-      <mesh position={[0, 0.69, 0]} castShadow receiveShadow>
+      <mesh position={[0, 0.685, 0]} castShadow receiveShadow>
         <cylinderGeometry args={[0.85, 0.85, 0.06, 20]} />
         {paint(PR.woodGold)}
       </mesh>
@@ -416,10 +419,10 @@ function CratesOnTopOfEachOther() {
   return (
     <group>
       <Crate s={0.7} />
-      <group position={[0.04, 0.695, -0.02]}>
+      <group position={[0.04, 0.69, -0.02]}>
         <Crate s={0.6} />
       </group>
-      <group position={[-0.03, 1.29, 0.03]}>
+      <group position={[-0.03, 1.28, 0.03]}>
         <Crate s={0.5} />
       </group>
     </group>
@@ -465,7 +468,7 @@ function RugInMiddleOfRoom() {
         <cylinderGeometry args={[1.3, 1.3, 0.04, 24]} />
         {paint(PR.fabricBlue)}
       </mesh>
-      <mesh position={[0, 0.0525, 0]} receiveShadow>
+      <mesh position={[0, 0.0475, 0]} receiveShadow>
         <cylinderGeometry args={[0.85, 0.85, 0.025, 24]} />
         {paint(PR.cushionCream)}
       </mesh>
@@ -609,7 +612,7 @@ function ChairNextToTable() {
     <group>
       {[-0.3, 0.3].map((x) =>
         [-0.3, 0.3].map((z) => (
-          <Box key={`${x}${z}`} size={[0.07, 0.49, 0.07]} at={[x, 0, z]} color={PR.woodDark} />
+          <Box key={`${x}${z}`} size={[0.07, 0.5, 0.07]} at={[x, 0, z]} color={PR.woodDark} />
         )),
       )}
       <Box size={[0.7, 0.06, 0.7]} at={[0, 0.49, 0]} color={PR.woodGold} />
@@ -627,13 +630,13 @@ function SlippersUnderBed() {
     <group>
       {[-0.7, 0.7].map((x) =>
         [-1.0, 1.0].map((z) => (
-          <Box key={`${x}${z}`} size={[0.1, 0.1, 0.1]} at={[x, 0, z]} color={PR.woodDark} />
+          <Box key={`${x}${z}`} size={[0.1, 0.11, 0.1]} at={[x, 0, z]} color={PR.woodDark} />
         )),
       )}
       <Box size={[1.6, 0.3, 2.2]} at={[0, 0.1, 0]} color={PR.woodDark} />
       <Box size={[1.5, 0.22, 2.0]} at={[0, 0.395, 0]} color={PR.cushionCream} />
       {/* đầu giường cao phía bắc + gối lút vào nệm */}
-      <Box size={[1.6, 1.0, 0.12]} at={[0, 0, -1.04]} color={PR.woodDark} />
+      <Box size={[1.56, 1.0, 0.12]} at={[0, 0, -1.04]} color={PR.woodDark} />
       <Box size={[0.6, 0.15, 0.4]} at={[-0.35, 0.61, -0.7]} color={PR.paperWhite} />
       <Box size={[0.6, 0.15, 0.4]} at={[0.35, 0.61, -0.7]} color={PR.paperWhite} />
       {/* dép thò nửa ra ngoài gầm (nhìn từ nam là thấy ngay) */}
@@ -668,8 +671,8 @@ function CabinetAdjacentDesk() {
   return (
     <group>
       <group position={[-0.55, 0, 0]}>
-        <Box size={[0.06, 0.7, 0.8]} at={[-0.77, 0, 0]} color={PR.woodDark} />
-        <Box size={[0.06, 0.7, 0.8]} at={[0.77, 0, 0]} color={PR.woodDark} />
+        <Box size={[0.06, 0.71, 0.8]} at={[-0.77, 0, 0]} color={PR.woodDark} />
+        <Box size={[0.06, 0.71, 0.8]} at={[0.77, 0, 0]} color={PR.woodDark} />
         <Box size={[1.6, 0.08, 0.8]} at={[0, 0.7, 0]} color={PR.woodGold} />
         <Box size={[0.35, 0.06, 0.25]} at={[-0.3, 0.775, 0]} color={PR.bookGreen} />
         <mesh position={[0.4, 0.835, 0.1]} castShadow>
@@ -700,8 +703,8 @@ function BooksAlongShelf() {
       {[-1.17, 1.17].map((x) => (
         <Box key={x} size={[0.06, 0.6, 0.4]} at={[x, 0, 0]} color={PR.woodDark} />
       ))}
-      <Box size={[2.4, 0.06, 0.4]} at={[0, 0.54, 0]} color={PR.woodGold} />
-      <Box size={[2.4, 0.08, 0.4]} at={[0, 0, 0]} color={PR.woodDark} />
+      <Box size={[2.34, 0.06, 0.4]} at={[0, 0.54, 0]} color={PR.woodGold} />
+      <Box size={[2.34, 0.08, 0.4]} at={[0, 0, 0]} color={PR.woodDark} />
       {/* 10 gáy sách dọc kệ + lọ cây chặn đầu */}
       {Array.from({ length: 10 }, (_, i) => (
         <Box
@@ -729,7 +732,7 @@ function ChairsAlongsideTable() {
     <group>
       {[-1.0, 1.0].map((x) =>
         [-0.28, 0.28].map((z) => (
-          <Box key={`${x}${z}`} size={[0.08, 0.68, 0.08]} at={[x, 0, z]} color={PR.woodDark} />
+          <Box key={`${x}${z}`} size={[0.08, 0.69, 0.08]} at={[x, 0, z]} color={PR.woodDark} />
         )),
       )}
       <Box size={[2.2, 0.08, 0.7]} at={[0, 0.68, 0]} color={PR.woodGold} />
@@ -755,9 +758,9 @@ function ChairFacingBookcase() {
         {[-0.57, 0.57].map((x) => (
           <Box key={x} size={[0.06, 1.0, 0.35]} at={[x, 0, 0]} color={PR.woodDark} />
         ))}
-        <Box size={[1.2, 0.06, 0.35]} at={[0, 0.94, 0]} color={PR.woodDark} />
+        <Box size={[1.14, 0.06, 0.35]} at={[0, 0.94, 0]} color={PR.woodDark} />
         <Box size={[1.08, 0.05, 0.32]} at={[0, 0.45, 0]} color={PR.woodGold} />
-        {[0.0, 0.55].map((y, r) =>
+        {[0.0, 0.495].map((y, r) =>
           [-0.36, -0.18, 0, 0.18, 0.36].map((x, i) => (
             <Box
               key={`${r}${x}`}
@@ -785,14 +788,14 @@ function StairsUpstairs() {
           color={i % 2 ? PR.floorWood : PR.floorDark}
         />
       ))}
-      {/* chiếu nghỉ trên cùng */}
-      <Box size={[0.6, 1.8, 1.2]} at={[1.5, 0, 0]} color={PR.floorWood} />
-      {/* lan can nam: 3 trụ đứng trên mặt bậc + thanh chéo qua 2 đầu mút
+      {/* chiếu nghỉ trên cùng (mép khít bậc cuối, không chồng mặt) */}
+      <Box size={[0.6, 1.8, 1.2]} at={[1.55, 0, 0]} color={PR.floorWood} />
+      {/* lan can nam: 3 trụ lút vào mặt bậc + thanh chéo qua 2 đầu mút
           (0.1, 1.3) → (3.1, 2.8): dài 3.35, góc atan2(1.5, 3.0) = 0.464 */}
       {[
-        [0.1, 0.3],
-        [1.6, 1.2],
-        [3.1, 1.8],
+        [0.1, 0.295],
+        [1.6, 1.195],
+        [3.1, 1.795],
       ].map(([x, base], i) => (
         <Box key={i} size={[0.08, 1.0, 0.08]} at={[x - 1.6, base, 0.56]} color={PR.woodDark} />
       ))}
@@ -808,12 +811,12 @@ function StairsUpstairs() {
 function VaseInsideCabinet() {
   return (
     <group>
-      <Box size={[1.2, 0.06, 0.5]} at={[0, 1.04, 0]} color={PR.woodDark} />
-      <Box size={[1.2, 0.06, 0.5]} at={[0, 0, 0]} color={PR.woodDark} />
+      <Box size={[1.14, 0.06, 0.5]} at={[0, 1.04, 0]} color={PR.woodDark} />
+      <Box size={[1.14, 0.06, 0.5]} at={[0, 0, 0]} color={PR.woodDark} />
       {[-0.57, 0.57].map((x) => (
         <Box key={x} size={[0.06, 1.1, 0.5]} at={[x, 0, 0]} color={PR.woodDark} />
       ))}
-      <Box size={[1.2, 1.1, 0.04]} at={[0, 0, -0.23]} color={PR.woodDark} />
+      <Box size={[1.14, 1.1, 0.04]} at={[0, 0, -0.23]} color={PR.woodDark} />
       <Box size={[1.08, 0.05, 0.44]} at={[0, 0.5, 0]} color={PR.woodGold} />
       {/* bình trên đợt giữa: thân + cổ + miệng */}
       <mesh position={[0.15, 0.68, 0]} castShadow>
@@ -855,7 +858,7 @@ function FlowerbedOutsideFence() {
       <Box size={[2.4, 0.15, 0.5]} at={[0, 0, 0.75]} color={PR.woodDark} />
       {[-0.9, -0.45, 0, 0.45, 0.9].map((x, i) => (
         <group key={x} position={[x, 0.15, 0.75]}>
-          <mesh position={[0, 0.15, 0]} castShadow>
+          <mesh position={[0, 0.145, 0]} castShadow>
             <cylinderGeometry args={[0.02, 0.02, 0.3, 6]} />
             {paint(PR.plantGreen)}
           </mesh>
