@@ -4,6 +4,7 @@ import { hotelRoomScene } from "@/content/scenes/hotel-room";
 import { museumScene } from "@/content/scenes/museum";
 import { officeScene } from "@/content/scenes/office";
 import { parkScene } from "@/content/scenes/park";
+import { positionsScene } from "@/content/scenes/positions";
 import { restaurantScene } from "@/content/scenes/restaurant";
 import { residenceScene } from "@/content/scenes/residence";
 import { supermarketScene } from "@/content/scenes/supermarket";
@@ -31,6 +32,7 @@ export const SCENES: SceneDef[] = [
   airportScene,
   hotelRoomScene,
   supermarketScene,
+  positionsScene,
 ];
 
 export function getScene(id: string): SceneDef | undefined {

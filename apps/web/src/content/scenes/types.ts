@@ -244,7 +244,32 @@ export type ShapeKey =
   | "curtain-pair"
   | "baggage-rack"
   | "rug-mat"
-  | "sofa-chair";
+  | "sofa-chair"
+  // phòng đọc — giới từ vị trí Part 1 (topic `positions`)
+  | "pos-book-on-table"
+  | "pos-crate-under-bench"
+  | "pos-painting-above-sofa"
+  | "pos-shelf-below-window"
+  | "pos-plant-beside-chair"
+  | "pos-plant-between-chairs"
+  | "pos-cabinet-behind-desk"
+  | "pos-mat-in-front-of-door"
+  | "pos-sofa-across-from-tv"
+  | "pos-shelf-against-wall"
+  | "pos-chairs-around-table"
+  | "pos-crates-on-top-of-each-other"
+  | "pos-stand-near-door"
+  | "pos-rug-in-middle-of-room"
+  | "pos-chair-next-to-table"
+  | "pos-slippers-under-bed"
+  | "pos-chairs-opposite"
+  | "pos-cabinet-adjacent-desk"
+  | "pos-books-along-shelf"
+  | "pos-chairs-alongside-table"
+  | "pos-chair-facing-bookcase"
+  | "pos-stairs-upstairs"
+  | "pos-vase-inside-cabinet"
+  | "pos-flowerbed-outside-fence";
 
 /**
  * Nhịp đi–về quanh một điểm neo: `range` là nửa quãng đường (mét), `speed` là
@@ -326,7 +351,8 @@ export interface SceneDef {
     | "restaurant-hall"
     | "airport-terminal"
     | "hotel-room"
-    | "supermarket-hall";
+    | "supermarket-hall"
+    | "positions-room";
   /**
    * Góc nhìn đầu của RIÊNG cảnh này. thiếu thì dùng mặc định của `SceneCanvas`.
    * Ngã tư đầy vật thể nhỏ hơn nhà kho nên cần khung hình chặt hơn.

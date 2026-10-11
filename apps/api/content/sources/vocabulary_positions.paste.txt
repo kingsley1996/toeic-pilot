@@ -1,0 +1,24 @@
+on | preposition | /ɑːn/ | touching the surface of something | trên (bề mặt) | A book is lying on the table. | Một quyển sách đang nằm trên bàn.
+under | preposition | /ˈʌndər/ | directly below something | bên dưới | A crate is stored under the bench. | Một chiếc thùng được cất bên dưới ghế dài.
+above | preposition | /əˈbʌv/ | higher than something, not touching it | phía trên | A painting hangs above the sofa. | Một bức tranh treo phía trên ghế sofa.
+below | preposition | /bɪˈloʊ/ | lower than something | phía dưới | A shelf is fixed below the window. | Một chiếc kệ được gắn phía dưới cửa sổ.
+beside | preposition | /bɪˈsaɪd/ | next to something, at its side | bên cạnh | A plant stands beside the armchair. | Một chậu cây đứng bên cạnh ghế bành.
+between | preposition | /bɪˈtwiːn/ | in the space separating two things | ở giữa (hai vật) | A plant sits between two armchairs. | Một chậu cây đặt ở giữa hai ghế bành.
+behind | preposition | /bɪˈhaɪnd/ | at the back of something | phía sau | A cabinet stands behind the desk. | Một chiếc tủ đứng phía sau bàn làm việc.
+in front of | phrase | /ɪn frʌnt əv/ | ahead of something, facing it | phía trước | A mat lies in front of the door. | Một tấm thảm nằm phía trước cửa ra vào.
+across from | phrase | /əˈkrɔːs frʌm/ | on the opposite side of a space | đối diện (qua một khoảng) | The sofa sits across from the television. | Ghế sofa đặt đối diện với chiếc tivi.
+against | preposition | /əˈɡenst/ | touching and supported by a surface | dựa vào, áp vào | A bookshelf stands against the wall. | Một giá sách đứng dựa vào tường.
+around | preposition | /əˈraʊnd/ | surrounding something on all sides | xung quanh | Chairs are arranged around the table. | Các ghế được xếp xung quanh bàn.
+on top of | phrase | /ɑːn tɑːp əv/ | resting on the highest part of something | trên đỉnh, trên cùng | Boxes are stacked on top of each other. | Các thùng hàng xếp chồng lên nhau.
+near | preposition | /nɪr/ | a short distance from something | gần | A coat stand is placed near the entrance. | Một giá treo áo đặt gần lối vào.
+in the middle of | phrase | /ɪn ðə ˈmɪdl əv/ | at the center of a space | ở giữa (một không gian) | A rug lies in the middle of the room. | Một tấm thảm nằm ở giữa phòng.
+next to | phrase | /ˈnekst tə/ | right beside something, very close | ngay cạnh | A chair stands next to the side table. | Một chiếc ghế đặt ngay cạnh bàn phụ.
+underneath | preposition | /ˌʌndərˈniːθ/ | directly under something, hidden by it | ngay bên dưới | A pair of slippers lies underneath the bed. | Một đôi dép lê nằm ngay bên dưới gầm giường.
+opposite | preposition | /ˈɑːpəzɪt/ | facing something from across a space | đối diện | Two armchairs sit opposite each other. | Hai ghế bành đặt đối diện nhau.
+adjacent to | phrase | /əˈdʒeɪsənt tə/ | very near or touching something | sát cạnh, kề bên | A cabinet stands adjacent to the desk. | Một chiếc tủ đứng sát cạnh bàn làm việc.
+along | preposition | /əˈlɔːŋ/ | following the length of something | dọc theo | Books are lined up along the shelf. | Sách được xếp dọc theo kệ.
+alongside | preposition | /əˌlɔːŋˈsaɪd/ | beside and parallel to something | dọc bên cạnh | Two chairs stand alongside the table. | Hai chiếc ghế đặt dọc bên bàn.
+facing | verb | /ˈfeɪsɪŋ/ | having the front turned toward something | hướng mặt về | An armchair faces the bookcase. | Một ghế bành hướng mặt về giá sách.
+upstairs | adverb | /ˌʌpˈsterz/ | on or to an upper floor | trên tầng, lên tầng trên | A staircase leads upstairs. | Một cầu thang dẫn lên tầng trên.
+inside | preposition | /ˌɪnˈsaɪd/ | in the inner part of something | bên trong | A vase stands inside the cabinet. | Một chiếc bình đứng bên trong tủ.
+outside | preposition | /ˌaʊtˈsaɪd/ | on the outer side of something | bên ngoài | Flowerbeds are planted outside the fence. | Các luống hoa trồng bên ngoài hàng rào.
