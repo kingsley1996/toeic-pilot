@@ -123,7 +123,9 @@ nói rõ thiếu gì, không "lỗi chung chung").
 - `/blog` (hub, SSR): hero + filter category (query param, SSR luôn để mỗi
   category có URL crawl được: `/blog?category=meo-part-3`) + lưới card
   (cover, title, excerpt, ngày, phút đọc). Title: "Blog luyện thi TOEIC…",
-  desc riêng.
+  desc riêng. **Khung trang: thanh trên + footer (`TopBarShell`), KHÔNG
+  sidebar** — blog là khu riêng biệt; sidebar "Học" cạnh bài viết chỉ mời
+  người đọc đi lạc, còn khung thanh trên giữ nguyên funnel về test/parts.
 - `/blog/[slug]` (SSR + ISR 600 như trang cảnh): breadcrumb, H1 = title,
   meta bài, cover, **`body_html` render thẳng qua một class CSS `article-blog`
   viết tay** (khổ chữ ~68ch, line-height 1.8, H2/H3 có anchor, blockquote /

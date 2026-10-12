@@ -110,6 +110,9 @@ const ASSISTANT_LINK: NavItem = {
  * `/login` và `/register` là cánh cửa vào. Dựng một cột điều hướng đầy mục cho
  * người chưa bước qua cửa là mời họ bấm vào những nơi sẽ đá họ ngược về đây.
  *
+ * Blog (`isBlogRoute` dưới đây) đi cùng khung này vì lý do riêng, xem chú thích
+ * ở đó — không gộp vào `TOP_BAR_ROUTES` vì nó là tiền tố động (`/blog/[slug]`).
+ *
  * Danh sách theo ĐƯỜNG DẪN chứ không theo trạng thái phiên. Trạng thái chỉ phân
  * giải được sau khi JS chạy (localStorage không tồn tại lúc render ở máy chủ),
  * nên chọn khung theo nó sẽ dựng một khung rồi đổi sang khung kia ngay trước
@@ -117,6 +120,17 @@ const ASSISTANT_LINK: NavItem = {
  * hiện ra thành một cú nhảy layout thay vì một cái nút sai.
  */
 const TOP_BAR_ROUTES = new Set(["/", "/login", "/register"]);
+
+/*
+ * Blog là khu RIÊNG BIỆT, không sidebar như các mục học tập.
+ *
+ * Người đọc blog (kể cả từ Google) không phải lúc nào cũng là học viên đang
+ * học dở — dựng sidebar "Học" cạnh bài viết là mời họ đi lạc khỏi bài, còn
+ * bareLayout thì mất luôn đường về. Thanh trên + footer là vừa: đọc xong bài
+ * vẫn thấy đường vào test đầu vào/luyện part (funnel của SPEC-BLOG §6), và
+ * khung này đã tồn tại nên không thêm loại layout thứ tư.
+ */
+const isBlogRoute = (pathname: string) => pathname === "/blog" || pathname.startsWith("/blog/");
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -155,7 +169,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  if (TOP_BAR_ROUTES.has(pathname)) {
+  if (TOP_BAR_ROUTES.has(pathname) || isBlogRoute(pathname)) {
     return (
       <TopBarShell
         links={topBarLinks}

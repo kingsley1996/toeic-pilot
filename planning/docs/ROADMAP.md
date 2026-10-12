@@ -166,7 +166,9 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       soạn→publish→đọc xanh, full suite 1463 passed. Dev từng sập vì
       `create_all` tạo bảng trước `alembic upgrade` — chữa bằng
       `stamp head` (ghi để lần sau restart container mà exit 1 thì nhìn
-      alembic_version trước).
+      alembic_version trước). **Blog tách khỏi sidebar (2026-10-12, khung
+      `TopBarShell`); danh sách 50 bài chốt ở `BLOG-CONTENT-PLAN.md`, viết
+      theo 4 đợt — xong đợt 1 (10 bài) mới hiện link nav.
 
 - [x] ~~Bài test đầu vào + planner V1~~ — **Xong (2026-09-07).** Đề
       `tp-placement-01` 84 câu pick theo nguyên cụm từ `tp-test-09` qua
