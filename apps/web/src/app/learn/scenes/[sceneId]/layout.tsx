@@ -9,7 +9,12 @@ import { getSeoWords } from "@/lib/seo-content";
  * Trang cảnh là client component (canvas 3D) nên không export metadata được —
  * layout server bọc ngoài này lo title/description riêng cho từng cảnh, để
  * crawler thấy 12 trang khác nhau thay vì 12 bản sao "TOEIC Pilot".
+ *
+ * ISR 10 phút: khối từ vựng fetch từ API lúc render — nếu build/deploy đúng lúc
+ * API free-tier đang ngủ thì bản tĩnh đầu thiếu section, 10 phút sau tự render
+ * lại có đủ. Không `force-dynamic`: mỗi lượt xem trả 25 request API là phí.
  */
+export const revalidate = 600;
 export async function generateMetadata({
   params,
 }: {

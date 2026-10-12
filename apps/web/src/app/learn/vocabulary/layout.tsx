@@ -4,7 +4,11 @@ import type { ReactNode } from "react";
 import { SeoTopicList } from "@/components/seo-topic-list";
 import { getSeoTopics } from "@/lib/seo-content";
 
-/* Trang hub là client component — metadata + khối SSR cho crawler nằm ở layout server này. */
+/* Trang hub là client component — metadata + khối SSR cho crawler nằm ở layout server này.
+ * ISR 10 phút cùng lý do với layout trang cảnh: API free-tier ngủ lúc build thì
+ * bản tĩnh đầu thiếu section, 10 phút sau tự có. */
+export const revalidate = 600;
+
 export const metadata: Metadata = {
   title: "Tuyển Tập Từ Vựng TOEIC Theo Chủ Điểm",
   description:
