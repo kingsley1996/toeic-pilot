@@ -17,11 +17,24 @@ draft → publish, hẹn giờ thì v2, tìm kiếm, sửa nhanh trên admin —
 trong repo không làm được mà không deploy lại web. Pattern đã có: grammar
 lesson cũng là bảng + admin CRUD + render bằng `MarkdownLite`.
 
-**Body viết bằng markdown-lite, không thêm engine mới.** `MarkdownLite`
-(`apps/web/src/components/markdown-lite.tsx`, 242 dòng) đã render được lesson
-ngữ pháp, giải thích, tactics — đủ cho bài blog (tiêu đề, in đậm/nghiêng,
-list, bảng, link, ảnh). Không remark, không MDX, không component nhúng trong
-bài ở v1. Muốn nhúng quiz/flashcard giữa bài thì để v2.
+**Soạn bằng editor trực quan Tiptap, không phải textarea markdown.**
+markdown-lite chỉ đủ cho lesson/quiz. Bài blog cần toolbar đầy đủ (heading,
+in đậm/nghiêng/gạch chân, list, trích dẫn, bảng, link, ảnh, căn lề) và xem
+đúng-như-hiển-thị lúc soạn. Tiptap (ProseMirror, headless, MIT, React-first)
+là lựa chọn: tài liệu là JSON có cấu trúc (dễ sinh mục lục, đếm chữ, chèn CTA
+lúc render), parse được HTML cũ nên không kẹt định dạng. Không dùng
+TinyMCE/CKEditor (nặng, dính branding/paywall), Quill (tables yếu, ít phát
+triển), Slate/Plate (lắp nhiều hơn được). H1 không có trong toolbar — H1 duy
+nhất là title bài (luật SEO, editor bắt đầu từ H2).
+
+**Lưu hai cột: `body_json` (gốc để soạn) + `body_html` (để đọc).** JSON là sự
+thật cho editor; HTML render sẵn từ editor lúc bấm Lưu để trang đọc SSR thẳng
+không cần DOM trên server. Hai cột suy từ một lần bấm Lưu nên không lệch nhau;
+server sanitize `body_html` bằng allowlist (dep `nh3`) vì đây là HTML ra trang
+public. Ảnh trong bài (cover + inline) đi luồng upload ảnh CÓ SẴN
+(`/media/images/ticket` → PUT → `/confirm`, cổng `can_edit`) — confirm trả về
+URL + width/height, editor chèn kèm kích thước để chống CLS. Vùng khoá mới
+`blog/` trong storage key, không rigidity thêm hạ tầng.
 
 **Slug bất biến sau publish.** Đổi slug gãy backlink và mất điểm SEO đã tích.
 Admin được sửa slug khi còn draft; đã published thì field khóa (muốn đổi phải
@@ -49,8 +62,10 @@ Upload file từ editor để v2.
 - `id UUID pk`, `slug TEXT UNIQUE NOT NULL` (lowercase, `a-z0-9-`, check
   constraint), `title TEXT NOT NULL` (≤120), `excerpt TEXT NOT NULL` (10–160
   ký tự — vừa là sapo vừa là meta description, một nguồn duy nhất),
-  `body TEXT NOT NULL` (markdown-lite, ≥300 ký tự ở cổng publish),
-  `cover_image_url TEXT NULL`, `category TEXT NOT NULL`
+  `body_json JSONB NOT NULL` (tài liệu Tiptap — gốc để mở lại editor soạn
+  tiếp; validate là dict `{"type": "doc"}`, trần 200KB),
+  `body_html TEXT NOT NULL` (HTML editor render lúc Lưu — cái trang đọc hiển
+  thị; server sanitize allowlist rồi mới cất, ≥300 ký tự text ở cổng publish),  `cover_image_url TEXT NULL`, `category TEXT NOT NULL`
   (v1 là text tự do theo danh mục chốt ở §5, không bảng taxonomy riêng),
   `tags TEXT[] NOT NULL DEFAULT '{}'`, `author_name TEXT NOT NULL DEFAULT 'ToeicPilot'`,
   `status TEXT NOT NULL DEFAULT 'draft'` (`draft|published`, check),
@@ -88,13 +103,20 @@ nói rõ thiếu gì, không "lỗi chung chung").
 
 - Danh sách: bảng title/category/status/published_at + nút Publish/Unpublish,
   filter status + category + ô tìm.
-- Form soạn (`lesson-form.tsx` của grammar là mẫu — copy cấu trúc, không trừu
-  tượng hóa chung): ô slug (tự gợi ý từ title, khóa sau publish), title +
-  đếm ký tự, excerpt + đếm 10–160, category dropdown, tags nhập phẩy,
-  cover URL + preview ảnh, textarea body + **preview `MarkdownLite` cạnh bên**
-  (đúng như form grammar đã làm), nút Lưu draft / Publish (hiện lỗi cổng
-  từng dòng).
-- E2E: soạn → publish → bài hiện ở hub public (giống test soạn grammar).
+- Form soạn: ô slug (tự gợi ý từ title, khóa sau publish), title + đếm ký tự,
+  excerpt + đếm 10–160, category dropdown, tags nhập phẩy, cover URL + preview
+  ảnh. Thân bài là **editor Tiptap** với toolbar v1: undo/redo · paragraph/H2/H3
+  (không H1) · bold/italic/underline/strike · bullet/numbered list · blockquote
+  · code block · link (tự `target=_blank rel=noopener` link ngoài) · ảnh
+  (chọn file/kéo-thả → ticket → PUT → confirm → chèn URL + width/height;
+  `title` của ảnh thành caption lúc hiển thị) · table (chèn 3×3, thêm/xóa
+  hàng/cột) · căn lề · divider · xóa định dạng · đếm chữ live.
+- Dep web mới: `@tiptap/react`, `@tiptap/starter-kit`,
+  `@tiptap/extension-{image,link,text-align,underline,table}` (+ `nh3` phía API
+  để sanitize). Toolbar tự vẽ bằng Tailwind theo design system, không kéo UI
+  kit editor — giao diện soạn phải trông như nhà, không như Word nhúng.
+- E2E: soạn (gõ + chèn heading/ảnh qua fixture) → publish → bài hiện ở hub
+  public với đúng định dạng.
 
 ## 4. Web public + SEO
 
@@ -103,8 +125,14 @@ nói rõ thiếu gì, không "lỗi chung chung").
   (cover, title, excerpt, ngày, phút đọc). Title: "Blog luyện thi TOEIC…",
   desc riêng.
 - `/blog/[slug]` (SSR + ISR 600 như trang cảnh): breadcrumb, H1 = title,
-  meta bài, cover, body qua `MarkdownLite`, tag link, khối "Bài liên quan"
-  (cùng category, trừ mình, 3 bài — query thuần, không engine gợi ý ở v1),
+  meta bài, cover, **`body_html` render thẳng qua một class CSS `article-blog`
+  viết tay** (khổ chữ ~68ch, line-height 1.8, H2/H3 có anchor, blockquote /
+  table zebra / code block / ảnh bo góc + caption từ `title`, link ngoài có
+  dấu hiệu nhận biết) — chỉn chu kiểu trang báo, không phải dump HTML.
+  Mục lục tự sinh từ H2/H3 (server rút từ `body_json` lúc đọc, ~10 dòng —
+  không lưu cột riêng): sticky bên phải trên desktop, thu gọn trên mobile.
+  Thanh tiến độ đọc + tag link + khối "Bài liên quan" (cùng category, trừ
+  mình, 3 bài — query thuần, không engine gợi ý ở v1),
   khối "Học tiếp" (CTA placement + luyện part, §6), nút chia sẻ: copy link +
   `navigator.share` fallback copy (không SDK Facebook/Zalo ở v1 — SDK bên thứ
   ba là nợ P1 kiểu Turnstile, đã học bài).
@@ -146,8 +174,9 @@ body (trùng nguyên văn bị Google coi là desc kém).
 
 - **P1 — API + DB (2–3 ngày):** migration `blog_post`, route public + admin,
   cổng publish, pytest (publish gate từng lỗi, draft 404, phân trang, `q`).
-- **P2 — Admin UI (2 ngày):** list + form soạn kiểu lesson-form, preview
-  MarkdownLite, e2e soạn→publish→hiện hub.
+- **P2 — Admin UI + editor (3–4 ngày):** list + form + tích hợp Tiptap
+  (toolbar §3, upload ảnh qua luồng ticket/confirm, submit `body_json` +
+  `body_html`), e2e soạn→publish→hiện hub đúng định dạng.
 - **P3 — Public + SEO (2–3 ngày):** `/blog`, `/blog/[slug]` SSR + ISR,
   JSON-LD, sitemap động, share/copy, khối Học tiếp + banner giữa bài, e2e
   public 0 4xx + check meta/canonical.
@@ -156,12 +185,14 @@ body (trùng nguyên văn bị Google coi là desc kém).
 - **P5 — Đo (sau mở 2–4 tuần):** Search Console (impression/click top bài),
   click-through CTA; quyết định v2 theo số.
 
-Tổng code ~1 tuần dev (không tính giờ viết bài). Không dependency mới, không
-bảng phụ, không SDK chia sẻ.
+Tổng code ~1,5–2 tuần dev (không tính giờ viết bài). Dependency mới duy nhất:
+cụm Tiptap (web) + `nh3` sanitize (API) — cả hai vì niềm tin biên tập, không
+vì sở thích.
 
 ## 8. Không làm ở v1 (ghi để khỏi ai "tiện tay" thêm)
 
 Bình luận, UGC/bài cộng đồng, like/bookmark, đếm view riêng, hẹn giờ đăng,
-series nhiều kỳ, newsletter/email, tìm kiếm FTS, upload ảnh từ editor,
+series nhiều kỳ, newsletter/email, tìm kiếm FTS,
 redirect 301 đổi slug, đa ngôn ngữ, AMP, paywall. Mỗi thứ là một spec riêng
-khi số liệu P5 đòi.
+khi số liệu P5 đòi. (Upload ảnh từ editor đã VÀO v1 qua luồng ticket/confirm
+có sẵn — không còn trong danh sách này.)
