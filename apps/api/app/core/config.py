@@ -185,6 +185,13 @@ class Settings(BaseSettings):
     turnstile_site_key: str = ""
     turnstile_secret_key: SecretStr = SecretStr("")
 
+    # Cửa hậu cho agent QA của chính ta: request mang header `x-qa-bypass` trùng
+    # khớp secret này được miễn xác minh Turnstile (rate limit vẫn chạy bình
+    # thường). Rỗng = không tồn tại cửa hậu. Secret CHỈ sống trong biến môi
+    # trường máy chủ, không bao giờ vào repo, log hay client — lộ secret thì
+    # xoay bằng cách đổi env, không cần deploy code.
+    qa_bypass_secret: str = ""
+
     # Gốc CÔNG KHAI của API, dùng để dựng redirect URI đăng ký với nhà cung cấp.
     # Phải khớp từng ký tự với thứ đã khai bên Google/Apple, kể cả dấu `/` cuối.
     oauth_callback_base_url: str = "http://localhost:8000"

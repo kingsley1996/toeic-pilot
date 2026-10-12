@@ -74,6 +74,11 @@ def require_turnstile(
     """
     if not turnstile.is_configured():
         return
+    if turnstile.bypass_ok(request.headers.get(turnstile.QA_BYPASS_HEADER, "")):
+        # Cửa hậu QA: secret khớp thì miễn xác minh. Ghi warning (không ghi
+        # secret) để có vết kiểm tra nếu secret lọt ra ngoài.
+        logger.warning("qa bypass accepted from %s", client_ip(request))
+        return
     token = cf_turnstile_response.strip()
     if not token or len(token) > turnstile.MAX_TOKEN_LENGTH:
         raise HTTPException(

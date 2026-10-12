@@ -159,3 +159,48 @@ def test_an_overlong_token_never_leaves_the_process(client, monkeypatch):
     )
     assert refused.status_code == 403
     assert called == []
+
+
+def test_qa_bypass_skips_verification_without_calling_cloudflare(client, monkeypatch):
+    """Secret QA khớp thì qua, và không tốn một vòng mạng nào."""
+    _turn_on(monkeypatch)
+    monkeypatch.setattr(settings, "qa_bypass_secret", "qa-secret-that-only-qa-knows")
+    called = _answer(monkeypatch, {"success": True})
+
+    created = client.post(
+        "/api/v1/auth/register",
+        json={"email": "qa-agent@example.com", "password": "mat-khau-du-dai-123"},
+        headers={turnstile.QA_BYPASS_HEADER: "qa-secret-that-only-qa-knows"},
+    )
+    assert created.status_code == 201, created.text
+    assert called == []
+
+
+def test_qa_bypass_with_wrong_secret_is_rejected(client, monkeypatch):
+    _turn_on(monkeypatch)
+    monkeypatch.setattr(settings, "qa_bypass_secret", "qa-secret-that-only-qa-knows")
+    called = _answer(monkeypatch, {"success": True})
+
+    refused = client.post(
+        "/api/v1/auth/register",
+        json={"email": "bot@example.com", "password": "mat-khau-du-dai-123"},
+        headers={turnstile.QA_BYPASS_HEADER: "wrong-secret"},
+    )
+    assert refused.status_code == 403
+    assert called == []
+
+
+def test_qa_bypass_does_not_exist_without_env(client, monkeypatch):
+    """Env trống thì header bypass là rác — không thể dựng cửa hậu bằng cách
+    đoán tên header."""
+    _turn_on(monkeypatch)
+    monkeypatch.setattr(settings, "qa_bypass_secret", "")
+    called = _answer(monkeypatch, {"success": True})
+
+    refused = client.post(
+        "/api/v1/auth/register",
+        json={"email": "bot@example.com", "password": "mat-khau-du-dai-123"},
+        headers={turnstile.QA_BYPASS_HEADER: "anything"},
+    )
+    assert refused.status_code == 403
+    assert called == []

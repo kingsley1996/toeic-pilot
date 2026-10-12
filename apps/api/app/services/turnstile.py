@@ -14,6 +14,7 @@ chung hạn mức với người ngồi cùng đường mạng.
 
 from __future__ import annotations
 
+import hmac
 import logging
 
 import httpx
@@ -31,6 +32,20 @@ TOKEN_HEADER = "cf-turnstile-response"
 # Token dài tối đa 2048 ký tự theo tài liệu. Cắt sớm ở đây để một header rác
 # không thành một request đi ra ngoài mạng.
 MAX_TOKEN_LENGTH = 2048
+
+# Header cửa hậu QA. Tên cố định để agent test biết gửi vào đâu; giá trị mới là
+# thứ bí mật, và nó nằm trong `QA_BYPASS_SECRET` ở env máy chủ.
+QA_BYPASS_HEADER = "x-qa-bypass"
+
+
+def bypass_ok(provided: str) -> bool:
+    """Secret QA có khớp không. Env rỗng thì luôn False — cửa hậu không tồn tại
+    cho tới khi có người cố ý dựng nó bằng một secret thật."""
+    secret = settings.qa_bypass_secret
+    if not secret or not provided:
+        return False
+    return hmac.compare_digest(provided, secret)
+
 
 _TIMEOUT = 5.0
 
