@@ -20,6 +20,7 @@ import {
   ListTree,
   Activity,
   HeartPulse,
+  Newspaper,
   Palette,
   PawPrint,
   Podcast,
@@ -100,6 +101,7 @@ const ADMIN_LINKS: AdminNavItem[] = [
     ],
   },
   { href: "/admin/grammar", label: "Grammar", Icon: GraduationCap, group: "Content" },
+  { href: "/admin/blog", label: "Blog", Icon: Newspaper, group: "Content" },
   { href: "/admin/parts", label: "Part tactics", Icon: BookOpenText, group: "Content" },
 
   { href: "/admin/appearance", label: "Appearance", Icon: Palette, group: "System" },

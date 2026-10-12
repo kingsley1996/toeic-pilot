@@ -2124,3 +2124,289 @@
     animation: none;
   }
 }
+
+/* Vùng gõ của editor blog (Tiptap/ProseMirror).
+ *
+ * Đây là "mặt soạn", không phải "mặt đọc": chữ đủ lớn để soạn lâu không mỏi,
+ * heading/table/quote hiện đúng cấu trúc nhưng không trang trí như bài xuất
+ * bản (mặt đọc là `.article-blog` ở trang đọc). Mọi màu qua token theme nên
+ * dark mode ăn theo không cần bản riêng. */
+.blog-edit-area {
+  min-height: 22rem;
+  padding: 1rem 1.25rem;
+  outline: none;
+  font-size: 1rem;
+  line-height: 1.75rem;
+  color: rgb(var(--ink));
+  overflow-wrap: break-word;
+}
+
+.blog-edit-area > *:first-child {
+  margin-top: 0;
+}
+
+.blog-edit-area h2 {
+  font-size: 1.375rem;
+  line-height: 2rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.blog-edit-area h3 {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.blog-edit-area p {
+  margin: 0.75rem 0;
+}
+
+.blog-edit-area ul,
+.blog-edit-area ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.blog-edit-area ul {
+  list-style: disc;
+}
+
+.blog-edit-area ol {
+  list-style: decimal;
+}
+
+.blog-edit-area blockquote {
+  margin: 0.75rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid rgb(var(--rule-strong));
+  color: rgb(var(--ink-muted));
+}
+
+.blog-edit-area pre {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: rgb(var(--recess));
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+
+.blog-edit-area a {
+  color: rgb(var(--action-ink));
+  text-decoration: underline;
+}
+
+.blog-edit-area img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 0.75rem auto;
+}
+
+.blog-edit-area img.ProseMirror-selectednode {
+  outline: 2px solid rgb(var(--action));
+  outline-offset: 2px;
+}
+
+.blog-edit-area table {
+  margin: 0.75rem 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.blog-edit-area th,
+.blog-edit-area td {
+  border: 1px solid rgb(var(--rule-strong));
+  padding: 0.375rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.blog-edit-area th {
+  background: rgb(var(--recess));
+  font-weight: 700;
+}
+
+.blog-edit-area hr {
+  margin: 1.5rem 0;
+  border-color: rgb(var(--rule-strong));
+}
+
+/* Mặt ĐỌC của bài blog: kiểu trang báo, khổ chữ tối ưu đọc dài.
+ *
+ * Cặp với `.blog-edit-area` (mặt soạn): editor hiện cấu trúc gọn để gõ nhanh,
+ * ở đây mới trang trí đầy đủ — người soạn không cần thấy shadow/màu khi đang
+ * gõ, người đọc thì cần. HTML đã qua allowlist ở server nên selector thẻ trần
+ * ở đây là an toàn (không có class để bám — Tiptap render thẻ sạch). */
+.article-blog {
+  margin-top: 1.5rem;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: rgb(var(--ink));
+  overflow-wrap: break-word;
+}
+
+.article-blog h2 {
+  font-size: 1.5rem;
+  line-height: 2.125rem;
+  font-weight: 800;
+  margin: 2.25rem 0 0.75rem;
+  scroll-margin-top: 1rem;
+}
+
+.article-blog h3 {
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+  font-weight: 700;
+  margin: 1.75rem 0 0.5rem;
+  scroll-margin-top: 1rem;
+}
+
+.article-blog p {
+  margin: 1rem 0;
+}
+
+.article-blog ul,
+.article-blog ol {
+  margin: 1rem 0;
+  padding-left: 1.75rem;
+}
+
+.article-blog ul {
+  list-style: disc;
+}
+
+.article-blog ol {
+  list-style: decimal;
+}
+
+.article-blog li + li {
+  margin-top: 0.375rem;
+}
+
+.article-blog blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 4px solid rgb(var(--action));
+  background: rgb(var(--recess));
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: rgb(var(--ink-muted));
+}
+
+.article-blog blockquote p {
+  margin: 0.5rem 0;
+}
+
+.article-blog pre {
+  margin: 1.25rem 0;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  background: rgb(var(--recess));
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.article-blog code {
+  font-size: 0.875em;
+}
+
+.article-blog p code,
+.article-blog li code {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.375rem;
+  background: rgb(var(--recess));
+}
+
+.article-blog a {
+  color: rgb(var(--action-ink));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.article-blog a[href^="http"]::after {
+  content: "↗";
+  font-size: 0.75em;
+  margin-left: 0.125rem;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.article-blog img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 1.25rem auto;
+  display: block;
+  box-shadow: var(--overlay-shadow);
+}
+
+.article-blog .blog-figure {
+  margin: 1.25rem 0;
+}
+
+.article-blog .blog-figure img {
+  margin: 0 auto;
+}
+
+.article-blog .blog-figure figcaption {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: rgb(var(--ink-faint));
+}
+
+.article-blog table {
+  margin: 1.25rem 0;
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9375rem;
+  display: block;
+  overflow-x: auto;
+}
+
+.article-blog th,
+.article-blog td {
+  border: 1px solid rgb(var(--rule-strong));
+  padding: 0.5rem 0.875rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.article-blog th {
+  background: rgb(var(--recess));
+  font-weight: 700;
+}
+
+.article-blog tbody tr:nth-child(even) {
+  background: rgb(var(--recess) / 0.4);
+}
+
+.article-blog hr {
+  margin: 2rem 0;
+  border-color: rgb(var(--rule-strong));
+}
+
+/* Hộp CTA trong/chân bài: cùng một class cho cả hai vị trí — sửa một chỗ là
+ * cả bài giữa lẫn bài cuối đổi theo (CTA giữa bài chèn render-time ở server,
+ * CTA cuối bài là JSX — hai đường khác nhau, một hình dạng). */
+.blog-cta {
+  margin: 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(var(--action));
+  background: rgb(var(--action-tint));
+  color: rgb(var(--ink));
+}
+
+.blog-cta p {
+  margin: 0.5rem 0;
+}
+
+.blog-cta a {
+  font-weight: 700;
+  color: rgb(var(--action-ink));
+}

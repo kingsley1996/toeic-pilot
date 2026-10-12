@@ -44,6 +44,10 @@ export type DictationSectionAdmin = components["schemas"]["DictationSectionAdmin
 export type DictationStoryAdmin = components["schemas"]["DictationStoryAdmin"];
 export type GrammarTopicAdmin = components["schemas"]["GrammarTopicAdmin"];
 export type GrammarLessonAdmin = components["schemas"]["GrammarLessonAdmin"];
+export type BlogPostCard = components["schemas"]["BlogPostCard"];
+export type BlogPostDetail = components["schemas"]["BlogPostDetail"];
+export type BlogPostAdmin = components["schemas"]["BlogPostAdmin"];
+export type TocEntry = components["schemas"]["TocEntry"];
 export type PartTacticsAdmin = components["schemas"]["PartTacticsAdmin"];
 export type GrammarTopicPublic = components["schemas"]["GrammarTopicPublic"];
 export type GrammarTopicDetail = components["schemas"]["GrammarTopicDetail"];
@@ -156,6 +160,8 @@ export type DictationStoryAdminPage = components["schemas"]["Page_DictationStory
 export type DictationSectionAdminPage = components["schemas"]["Page_DictationSectionAdmin_"];
 export type GrammarTopicAdminPage = components["schemas"]["Page_GrammarTopicAdmin_"];
 export type GrammarLessonAdminPage = components["schemas"]["Page_GrammarLessonAdmin_"];
+export type BlogPostCardPage = components["schemas"]["Page_BlogPostCard_"];
+export type BlogPostAdminPage = components["schemas"]["Page_BlogPostAdmin_"];
 export type TestAdminPage = components["schemas"]["Page_TestAdmin_"];
 export type QuestionPublic = components["schemas"]["QuestionPublic"];
 export type PassagePublic = components["schemas"]["PassagePublic"];
@@ -546,6 +552,13 @@ export const API_ROUTES = {
   adminDictationTopic: (id: string) => `/api/v1/admin/dictation/topics/${id}`,
   adminDictationSection: (id: string) => `/api/v1/admin/dictation/sections/${id}`,
   adminDictationStory: (id: string) => `/api/v1/admin/dictation/stories/${id}`,
+  // Blog editorial (SPEC-BLOG). Public đọc published, admin CRUD + publish.
+  blogPosts: "/api/v1/blog/posts",
+  blogPost: (slug: string) => `/api/v1/blog/posts/${slug}`,
+  adminBlogPosts: "/api/v1/admin/blog/posts",
+  adminBlogPost: (id: string) => `/api/v1/admin/blog/posts/${id}`,
+  adminBlogPostPublish: (id: string) => `/api/v1/admin/blog/posts/${id}/publish`,
+  adminBlogPostUnpublish: (id: string) => `/api/v1/admin/blog/posts/${id}/unpublish`,
   // Ngữ pháp (SPEC-GRAMMAR G1). Hai tầng chứ không ba: topic → lesson.
   adminGrammarTopics: "/api/v1/admin/grammar/topics",
   adminGrammarTopicsOrder: "/api/v1/admin/grammar/topics/order",

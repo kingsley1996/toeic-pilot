@@ -33,6 +33,10 @@ dependencies = [
     # TikTok chặn "Unexpected response from webpage request".
     "yt-dlp>=2025.1.0",
     "curl-cffi>=0.10.0",
+    # Sanitize `body_html` blog trước khi cất: HTML ra trang public đọc không
+    # đăng nhập, allowlist nhỏ ở `services/blog_html.py`. Người viết là staff
+    # nhưng tài khoản staff bị chiếm thì stored XSS là thật.
+    "nh3>=0.2.0",
 ]
 
 [project.optional-dependencies]

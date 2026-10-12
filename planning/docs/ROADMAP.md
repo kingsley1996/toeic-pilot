@@ -156,11 +156,17 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
 
 ### Tính năng còn thiếu
 
-- [ ] **Blog (bài viết + SEO)** — spec + plan xong ở `SPEC-BLOG.md`, chưa dựng.
-      V1 chỉ admin viết (không UGC/bình luận), 1 bảng `blog_post`, body
-      markdown-lite tái dùng, slug bất biến sau publish, public SSR + ISR +
-      JSON-LD `BlogPosting` + sitemap động, CTA funnel về placement/part.
-      5 pha: API+DB → admin UI → public+SEO → 10 bài mồi → đo Search Console.
+- [ ] **Blog (bài viết + SEO)** — spec ở `SPEC-BLOG.md`; **P1+P2+P3 code xong
+      (2026-10-12), còn P4 (10 bài mồi) + P5 (đo).** V1 chỉ admin viết (không
+      UGC/bình luận), 1 bảng `blog_post` (migration 099: `body_json` Tiptap +
+      `body_html` sanitize `nh3`), slug bất biến sau publish, editor Tiptap
+      toolbar đầy đủ (ảnh qua luồng ticket/confirm, `preventDefault` giữ focus
+      khi bấm toolbar), public SSR + ISR 600 + JSON-LD `BlogPosting` + sitemap
+      động + CTA funnel về placement/part. Test: 12 pytest, e2e
+      soạn→publish→đọc xanh, full suite 1463 passed. Dev từng sập vì
+      `create_all` tạo bảng trước `alembic upgrade` — chữa bằng
+      `stamp head` (ghi để lần sau restart container mà exit 1 thì nhìn
+      alembic_version trước).
 
 - [x] ~~Bài test đầu vào + planner V1~~ — **Xong (2026-09-07).** Đề
       `tp-placement-01` 84 câu pick theo nguyên cụm từ `tp-test-09` qua

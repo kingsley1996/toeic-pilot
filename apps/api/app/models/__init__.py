@@ -2,6 +2,7 @@ from app.models.ai import AI_INTERACTION_STATUSES, AiInteraction
 from app.models.ai_config import AiFeatureConfig
 from app.models.appearance import BackdropSetting
 from app.models.audio import AudioAsset
+from app.models.blog import BLOG_CATEGORIES, BlogPost
 from app.models.chat import CHAT_ROLES, CoachConversation, CoachMessage
 from app.models.coach import COACH_STATUSES, CoachExplanation, CoachFeedback
 from app.models.dictation import (
@@ -121,6 +122,8 @@ __all__ = [
     "CoachFeedback",
     "AudioAsset",
     "BackdropSetting",
+    "BlogPost",
+    "BLOG_CATEGORIES",
     "DictationAttempt",
     "DictationItem",
     "DictationSection",

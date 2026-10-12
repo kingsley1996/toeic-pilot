@@ -424,6 +424,79 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/blog/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List All */
+        get: operations["list_all_api_v1_admin_blog_posts_get"];
+        put?: never;
+        /** Create Post */
+        post: operations["create_post_api_v1_admin_blog_posts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/blog/posts/{post_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read Post
+         * @description Một bài (cả draft) để mở editor soạn tiếp.
+         */
+        get: operations["read_post_api_v1_admin_blog_posts__post_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Post */
+        patch: operations["update_post_api_v1_admin_blog_posts__post_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/blog/posts/{post_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Post */
+        post: operations["publish_post_api_v1_admin_blog_posts__post_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/blog/posts/{post_id}/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unpublish Post */
+        post: operations["unpublish_post_api_v1_admin_blog_posts__post_id__unpublish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/collocations": {
         parameters: {
             query?: never;
@@ -3418,6 +3491,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/blog/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Posts
+         * @description Hub blog: bài published mới nhất trước. Mỗi category có URL riêng để crawl.
+         */
+        get: operations["list_posts_api_v1_blog_posts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blog/posts/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Post */
+        get: operations["read_post_api_v1_blog_posts__slug__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/daily-tasks": {
         parameters: {
             query?: never;
@@ -6106,6 +6216,162 @@ export interface components {
             /** Unseen Count */
             unseen_count: number;
         };
+        /** BlogPostAdmin */
+        BlogPostAdmin: {
+            /** Author Name */
+            author_name: string;
+            /** Body Html */
+            body_html: string;
+            /** Body Json */
+            body_json: {
+                [key: string]: unknown;
+            };
+            /** Category */
+            category: string;
+            /** Cover Image Url */
+            cover_image_url: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Excerpt */
+            excerpt: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Published At */
+            published_at: string | null;
+            /** Reading Minutes */
+            reading_minutes: number;
+            /** Related */
+            related: components["schemas"]["BlogPostCard"][];
+            /** Related Part */
+            related_part: number | null;
+            /** Slug */
+            slug: string;
+            /** Status */
+            status: string;
+            /** Tags */
+            tags: string[];
+            /** Title */
+            title: string;
+            /** Toc */
+            toc: components["schemas"]["TocEntry"][];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** BlogPostCard */
+        BlogPostCard: {
+            /** Author Name */
+            author_name: string;
+            /** Category */
+            category: string;
+            /** Cover Image Url */
+            cover_image_url: string | null;
+            /** Excerpt */
+            excerpt: string;
+            /** Published At */
+            published_at: string | null;
+            /** Reading Minutes */
+            reading_minutes: number;
+            /** Slug */
+            slug: string;
+            /** Tags */
+            tags: string[];
+            /** Title */
+            title: string;
+        };
+        /** BlogPostCreate */
+        BlogPostCreate: {
+            /**
+             * Author Name
+             * @default ToeicPilot
+             */
+            author_name: string;
+            /** Body Html */
+            body_html: string;
+            /** Body Json */
+            body_json: {
+                [key: string]: unknown;
+            };
+            /**
+             * Category
+             * @enum {string}
+             */
+            category: "meo-lam-bai" | "ngu-phap" | "tu-vung" | "kinh-nghiem" | "thong-bao";
+            /** Cover Image Url */
+            cover_image_url?: string | null;
+            /** Excerpt */
+            excerpt: string;
+            /** Related Part */
+            related_part?: number | null;
+            /** Slug */
+            slug: string;
+            /** Tags */
+            tags?: string[];
+            /** Title */
+            title: string;
+        };
+        /** BlogPostDetail */
+        BlogPostDetail: {
+            /** Author Name */
+            author_name: string;
+            /** Body Html */
+            body_html: string;
+            /** Category */
+            category: string;
+            /** Cover Image Url */
+            cover_image_url: string | null;
+            /** Excerpt */
+            excerpt: string;
+            /** Published At */
+            published_at: string | null;
+            /** Reading Minutes */
+            reading_minutes: number;
+            /** Related */
+            related: components["schemas"]["BlogPostCard"][];
+            /** Related Part */
+            related_part: number | null;
+            /** Slug */
+            slug: string;
+            /** Tags */
+            tags: string[];
+            /** Title */
+            title: string;
+            /** Toc */
+            toc: components["schemas"]["TocEntry"][];
+        };
+        /** BlogPostUpdate */
+        BlogPostUpdate: {
+            /** Author Name */
+            author_name?: string | null;
+            /** Body Html */
+            body_html?: string | null;
+            /** Body Json */
+            body_json?: {
+                [key: string]: unknown;
+            } | null;
+            /** Category */
+            category?: ("meo-lam-bai" | "ngu-phap" | "tu-vung" | "kinh-nghiem" | "thong-bao") | null;
+            /** Cover Image Url */
+            cover_image_url?: string | null;
+            /** Excerpt */
+            excerpt?: string | null;
+            /** Related Part */
+            related_part?: number | null;
+            /** Slug */
+            slug?: string | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Title */
+            title?: string | null;
+        };
         /** Body_callback_post_api_v1_auth__provider_id__callback_post */
         Body_callback_post_api_v1_auth__provider_id__callback_post: {
             /**
@@ -8729,6 +8995,28 @@ export interface components {
             /** Total */
             total: number;
         };
+        /** Page[BlogPostAdmin] */
+        Page_BlogPostAdmin_: {
+            /** Items */
+            items: components["schemas"]["BlogPostAdmin"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[BlogPostCard] */
+        Page_BlogPostCard_: {
+            /** Items */
+            items: components["schemas"]["BlogPostCard"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+        };
         /** Page[ChatMessagePublic] */
         Page_ChatMessagePublic_: {
             /** Items */
@@ -10934,6 +11222,15 @@ export interface components {
             /** Title */
             title?: string | null;
         };
+        /** TocEntry */
+        TocEntry: {
+            /** Id */
+            id: string;
+            /** Level */
+            level: number;
+            /** Text */
+            text: string;
+        };
         /** TokenResponse */
         TokenResponse: {
             /** Access Token */
@@ -12241,6 +12538,200 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BackdropPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_all_api_v1_admin_blog_posts_get: {
+        parameters: {
+            query?: {
+                status?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_BlogPostAdmin_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_post_api_v1_admin_blog_posts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlogPostCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlogPostAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_post_api_v1_admin_blog_posts__post_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlogPostAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_post_api_v1_admin_blog_posts__post_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlogPostUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlogPostAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_post_api_v1_admin_blog_posts__post_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlogPostAdmin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unpublish_post_api_v1_admin_blog_posts__post_id__unpublish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlogPostAdmin"];
                 };
             };
             /** @description Validation Error */
@@ -17876,6 +18367,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BackdropPublic"];
+                };
+            };
+        };
+    };
+    list_posts_api_v1_blog_posts_get: {
+        parameters: {
+            query?: {
+                category?: string | null;
+                tag?: string | null;
+                q?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_BlogPostCard_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_post_api_v1_blog_posts__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlogPostDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
