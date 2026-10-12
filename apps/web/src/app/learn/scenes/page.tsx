@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
+
 import { Page, PageHeader } from "@/components/ui";
 import { SceneCard } from "@/components/scenes/scene-card";
 import { SCENES } from "@/content/scenes";
+
+export const metadata: Metadata = {
+  title: "Học Từ Vựng TOEIC Qua Cảnh 3D",
+  description:
+    "12 bối cảnh 3D trực quan từ sân bay, siêu thị tới văn phòng: chạm vào đồ vật để học từ vựng TOEIC trong ngữ cảnh thật, nghe phát âm và ôn bằng SM-2.",
+  alternates: { canonical: "/learn/scenes" },
+};
 
 /*
  * Danh sách cảnh là RSC thuần: nội dung nằm trong repo (`SPEC-VISUAL-VOCAB-3D`

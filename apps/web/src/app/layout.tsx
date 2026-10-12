@@ -4,6 +4,7 @@ import { Archivo, Be_Vietnam_Pro, IBM_Plex_Mono } from "next/font/google";
 import { AppShell } from "@/components/app-shell";
 import { SessionUnreachable } from "@/components/session-unreachable";
 import { SessionProvider } from "@/lib/session";
+import { SITE_URL } from "@/lib/site";
 import { ToastProvider } from "@/lib/toast";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { SIDEBAR_INIT_SCRIPT } from "@/lib/sidebar";
@@ -37,8 +38,23 @@ const data = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TOEIC Pilot",
-  description: "Học tiếng Anh mỗi ngày và luyện thi TOEIC",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Học TOEIC Online Mỗi Ngày — TOEIC Pilot",
+    template: "%s — TOEIC Pilot",
+  },
+  description:
+    "Học từ vựng TOEIC theo chủ điểm với cảnh 3D trực quan, luyện nghe, dictation và đề thi thử — ôn đúng lúc sắp quên với lịch lặp lại thông minh.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "vi_VN",
+    siteName: "TOEIC Pilot",
+    title: "Học TOEIC Online Mỗi Ngày — TOEIC Pilot",
+    description:
+      "Học từ vựng TOEIC theo chủ điểm với cảnh 3D trực quan, luyện nghe, dictation và đề thi thử.",
+    images: [{ url: "/scenes/park-grounds-01.webp", width: 1280, height: 576 }],
+  },
 };
 
 /* Nối trước tới origin API: fetch đầu tiên của mỗi lượt tải trang đỡ một vòng
@@ -58,6 +74,21 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preconnect" href={API_ORIGIN} />
       </head>
       <body className={`${display.variable} ${body.variable} ${data.variable}`}>
+        {/* Schema cho crawler: trang giới thiệu là WebSite dạy TOEIC tiếng Việt. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "TOEIC Pilot",
+              url: SITE_URL,
+              inLanguage: "vi",
+              description:
+                "Học từ vựng TOEIC theo chủ điểm với cảnh 3D trực quan, luyện nghe, dictation và đề thi thử.",
+            }),
+          }}
+        />
         {/* Provider bọc cả shell lẫn các trang: header đọc đúng phiên mà các
             trang đọc, và đó là thứ ngăn nó mời "Đăng nhập" với người đã đăng
             nhập rồi. */}

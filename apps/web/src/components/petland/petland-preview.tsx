@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { TIER_LABEL, TIER_TONE, tileStyle } from "@/components/petland/petland-creature";
 import { parseMap, SHEET_COLS, TILE, type MapData } from "@/components/petland/petland-map";
+import { API_BASE } from "@/lib/api";
 
 /**
  * Petland trên trang giới thiệu: bản đồ thật và vài con thú, cả hai vẽ ra từ
@@ -118,7 +119,9 @@ export function usePetlandMapCanvas() {
     let alive = true;
 
     void (async () => {
-      const live = await fetch(API_ROUTES.petlandMap).catch(() => null);
+      // Hỏi thẳng API origin: đường tương đối đập vào domain web (404 + một
+      // dòng console error mỗi lượt xem), trong khi API sống ở origin khác.
+      const live = await fetch(`${API_BASE}${API_ROUTES.petlandMap}`).catch(() => null);
       const raw =
         live && live.status === 200
           ? await live.json().catch(() => null)

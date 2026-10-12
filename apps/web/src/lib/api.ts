@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 /* Một request treo thì UI treo theo — `SessionProvider` kẹt `loading` vĩnh
    viễn là ca đã xảy ra. Không ai chờ một lượt đọc quá chừng này. */

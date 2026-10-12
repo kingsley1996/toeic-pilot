@@ -14,6 +14,11 @@ test.use({ deviceScaleFactor: 2, viewport: { width: 1280, height: 860 } });
  *
  *   SCENE_PREVIEWS=1 pnpm exec playwright test e2e/scene-previews.spec.ts
  *
+ * Spec chụp ra `.png` rồi PHẢI đổi sang `.webp` (card đọc `.webp`): với mỗi
+ * file chụp, chạy `sips -Z 1280 <file>.png && cwebp -q 75 <file>.png -o
+ * <file>.webp`, xong xóa `.png`. Không commit `.png` — 12 file webp ~250KB,
+ * png gốc ~4.5MB.
+ *
  * `locator("canvas").screenshot()` crop khung hình TẠI hộp canvas — mọi lớp phủ DOM
  * đè lên hộp đó (nhãn từ, panel) VẪN lọt vào ảnh. Thumbnail dựng bằng `?plain=1`
  * (tắt nhãn ngay từ đầu) nên hình là 3D thuần, không chữ.

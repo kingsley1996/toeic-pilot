@@ -205,11 +205,13 @@ function VocabularyLanding() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`/scenes/${SCENES[SCENES.length - 2]!.id}.png`}
+            src={`/scenes/${SCENES[SCENES.length - 2]!.id}.webp`}
             alt=""
             aria-hidden
-            width={1980}
-            height={892}
+            width={1280}
+            height={576}
+            loading="lazy"
+            decoding="async"
             className="hidden w-36 shrink-0 rounded border border-rule bg-recess object-cover transition-transform duration-300 group-hover:scale-105 sm:block"
           />
           <span className="min-w-0 flex-1">

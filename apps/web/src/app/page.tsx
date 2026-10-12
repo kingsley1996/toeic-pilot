@@ -389,7 +389,7 @@ export default function HomePage() {
                 )}
                 <div className="l-pipe">
                   <div className="l-num">{String(i + 1).padStart(2, "0")}</div>
-                  <h4>{p.title}</h4>
+                  <h3>{p.title}</h3>
                   <p>{p.body}</p>
                 </div>
               </div>

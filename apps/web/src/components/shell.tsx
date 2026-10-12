@@ -510,6 +510,7 @@ export function SidebarShell({
               là mục đầu tiên của sidebar. */}
           <Link
             href="/"
+            aria-label="TOEIC Pilot — trang chủ"
             className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
           >
             <BrandMark />
@@ -713,6 +714,7 @@ export function TopBarShell({
 
           <Link
             href="/"
+            aria-label="TOEIC Pilot — trang chủ"
             className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
           >
             <BrandMark />

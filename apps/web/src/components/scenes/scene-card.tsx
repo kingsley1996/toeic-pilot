@@ -29,11 +29,14 @@ export function SceneCard({ scene }: { scene: SceneDef }) {
           trong `public/` (cùng lý do với brand.tsx). */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={`/scenes/${scene.id}.png`}
+        src={`/scenes/${scene.id}.webp`}
         alt=""
         aria-hidden
-        width={1980}
-        height={892}
+        width={1280}
+        height={576}
+        loading="lazy"
+        fetchPriority="low"
+        decoding="async"
         className="aspect-[3/2] w-full border-b border-rule bg-recess object-cover transition-transform duration-300 group-hover:scale-105"
       />
       <div className="flex flex-1 flex-col p-3">
