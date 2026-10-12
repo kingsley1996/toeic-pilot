@@ -560,10 +560,9 @@ def test_a_topic_sesion_is_per_learner_and_starts_absent(
     db_session.add(VocabularyTopic(entry_id=entry.id, topic_id=topic.id))
     db_session.commit()
 
-    # Chưa từng lưu: 404 — client hiểu là "xáo một bàn mới".
+    # Chưa từng lưu: 200 + null — client hiểu là "xáo một bàn mới", không phải lỗi.
     assert (
-        client.get(f"/api/v1/vocabulary-topic-sessions/{topic.id}", headers=headers).status_code
-        == 404
+        client.get(f"/api/v1/vocabulary-topic-sessions/{topic.id}", headers=headers).json() is None
     )
 
     client.put(
@@ -577,10 +576,8 @@ def test_a_topic_sesion_is_per_learner_and_starts_absent(
     db_session.commit()
     other_headers = {"Authorization": f"Bearer {create_access_token(str(other.id))}"}
     assert (
-        client.get(
-            f"/api/v1/vocabulary-topic-sessions/{topic.id}", headers=other_headers
-        ).status_code
-        == 404
+        client.get(f"/api/v1/vocabulary-topic-sessions/{topic.id}", headers=other_headers).json()
+        is None
     )
 
 

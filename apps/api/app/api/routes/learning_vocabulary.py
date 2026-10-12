@@ -807,24 +807,24 @@ def list_topic_sessions(
     ]
 
 
-@router.get("/vocabulary-topic-sessions/{topic_id}", response_model=TopicSession)
+@router.get("/vocabulary-topic-sessions/{topic_id}", response_model=TopicSession | None)
 def get_topic_session(
     topic_id: uuid.UUID,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
-) -> TopicSession:
-    """Bàn cờ đã lưu của học viên trong chủ đề này; 404 nếu chưa có.
+) -> TopicSession | None:
+    """Bàn cờ đã lưu của học viên trong chủ đề này; 200 + null nếu chưa có.
 
-    404 cho cả topic không tồn tại và "chưa từng lưu" — từ phía client hai thứ
-    giống nhau: bắt đầu xáo một bàn mới. Lọc `published`: client không nhìn thấy
-    nháp, thì phiên học gắn với nháp cũng không có lý do tồn tại.
+    404 chỉ cho topic không tồn tại: "chưa từng lưu" là trạng thái bình thường
+    của người mới (client xáo bàn mới), không phải lỗi — trả 404 cho nó làm đỏ
+    console mỗi lần mở chủ đề mới mà không cho thêm thông tin gì.
     """
     topic = db.scalars(select(Topic).where(Topic.id == topic_id, Topic.status == PUBLISHED)).first()
     if topic is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
     session = db.get(VocabularyTopicSession, (current_user.id, topic_id))
     if session is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No saved session")
+        return None
     return _topic_session_public(session)
 
 

@@ -30097,7 +30097,7 @@
     },
     "/api/v1/vocabulary-topic-sessions/{topic_id}": {
       "get": {
-        "description": "Bàn cờ đã lưu của học viên trong chủ đề này; 404 nếu chưa có.\n\n404 cho cả topic không tồn tại và \"chưa từng lưu\" — từ phía client hai thứ\ngiống nhau: bắt đầu xáo một bàn mới. Lọc `published`: client không nhìn thấy\nnháp, thì phiên học gắn với nháp cũng không có lý do tồn tại.",
+        "description": "Bàn cờ đã lưu của học viên trong chủ đề này; 200 + null nếu chưa có.\n\n404 chỉ cho topic không tồn tại: \"chưa từng lưu\" là trạng thái bình thường\ncủa người mới (client xáo bàn mới), không phải lỗi — trả 404 cho nó làm đỏ\nconsole mỗi lần mở chủ đề mới mà không cho thêm thông tin gì.",
         "operationId": "get_topic_session_api_v1_vocabulary_topic_sessions__topic_id__get",
         "parameters": [
           {
@@ -30116,7 +30116,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TopicSession"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/TopicSession"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Get Topic Session Api V1 Vocabulary Topic Sessions  Topic Id  Get"
                 }
               }
             },

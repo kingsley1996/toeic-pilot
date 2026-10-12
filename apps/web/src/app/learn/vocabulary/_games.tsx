@@ -133,8 +133,8 @@ export function TopicSession({
     [topicId, token],
   );
 
-  // Đọc bàn cờ ĐÚNG MỘT LẦN khi mở: có thì nối tiếp, không (404) hay lệch hồ
-  // từ thì xáo bàn mới và ghi lại ngay cho ván này có chỗ lưu.
+  // Đọc bàn cờ ĐÚNG MỘT LẦN khi mở: có thì nối tiếp, null (chưa từng lưu)
+  // hay lệch hồ từ thì xáo bàn mới và ghi lại ngay cho ván này có chỗ lưu.
   useEffect(() => {
     let stale = false;
     const startFresh = () => {
@@ -144,9 +144,13 @@ export function TopicSession({
       setDone(false);
       void persistBoard(fresh, 0);
     };
-    apiFetch<TopicSessionState>(API_ROUTES.vocabularyTopicSession(topicId), { token })
+    apiFetch<TopicSessionState | null>(API_ROUTES.vocabularyTopicSession(topicId), { token })
       .then((saved) => {
         if (stale) return;
+        if (!saved) {
+          startFresh();
+          return;
+        }
         const restored = restoreBoard(saved, pool);
         if (!restored) {
           startFresh();
@@ -157,8 +161,9 @@ export function TopicSession({
         setDone(saved.done || saved.position >= restored.length);
       })
       .catch(() => {
-        // 404 = chưa từng lưu; lỗi mạng khác thì cũng không đáng chặn học —
-        // xáo bàn mới, ván vẫn ghi điểm qua /review như thường.
+        // Lỗi mạng thì cũng không đáng chặn học — xáo bàn mới, ván vẫn ghi
+        // điểm qua /review như thường. (404 "chưa từng lưu" giờ đã là 200 +
+        // null ở trên, nên vào đây chỉ còn lỗi thật.)
         if (!stale) startFresh();
       });
     return () => {

@@ -5330,11 +5330,11 @@ export interface paths {
         };
         /**
          * Get Topic Session
-         * @description Bàn cờ đã lưu của học viên trong chủ đề này; 404 nếu chưa có.
+         * @description Bàn cờ đã lưu của học viên trong chủ đề này; 200 + null nếu chưa có.
          *
-         *     404 cho cả topic không tồn tại và "chưa từng lưu" — từ phía client hai thứ
-         *     giống nhau: bắt đầu xáo một bàn mới. Lọc `published`: client không nhìn thấy
-         *     nháp, thì phiên học gắn với nháp cũng không có lý do tồn tại.
+         *     404 chỉ cho topic không tồn tại: "chưa từng lưu" là trạng thái bình thường
+         *     của người mới (client xáo bàn mới), không phải lỗi — trả 404 cho nó làm đỏ
+         *     console mỗi lần mở chủ đề mới mà không cho thêm thông tin gì.
          */
         get: operations["get_topic_session_api_v1_vocabulary_topic_sessions__topic_id__get"];
         /**
@@ -20262,7 +20262,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TopicSession"];
+                    "application/json": components["schemas"]["TopicSession"] | null;
                 };
             };
             /** @description Validation Error */
