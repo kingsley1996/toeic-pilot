@@ -126,10 +126,16 @@ export default function HomePage() {
             <p className="l-lead">{landing.hero.lead}</p>
 
             <div className="l-actions">
-              {status !== "loading" && (
+              {/* Giữ nút chiếm chỗ lúc session chưa xong (`visibility`, không
+                  phải bỏ hẳn): nút hiện ra muộn đẩy nút phụ xuống là CLS. */}
+              {status !== "loading" ? (
                 <Link className="l-btn l-btn-primary" href={cta.href}>
                   {cta.label} <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
                 </Link>
+              ) : (
+                <span className="l-btn l-btn-primary invisible" aria-hidden>
+                  {landing.hero.ctaSignedOut} <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
+                </span>
               )}
               <a className="l-btn l-btn-secondary" href="#features">
                 {landing.hero.ctaSecondary}
@@ -176,18 +182,20 @@ export default function HomePage() {
                       <b>{r.value}</b>
                     </div>
                   ))}
-                  {/* Ô duy nhất mang số THẬT: bản mẫu để "438 words" ở đúng đây. */}
-                  {words !== null && (
-                    <div className="l-ministat">
-                      <span>{landing.dashboard.vocabularyLabel}</span>
-                      <b>
-                        {landing.dashboard.vocabularyValue.replace(
-                          "{n}",
-                          words.toLocaleString("vi-VN"),
-                        )}
-                      </b>
-                    </div>
-                  )}
+                  {/* Ô duy nhất mang số THẬT: bản mẫu để "438 words" ở đúng đây.
+                      Luôn dựng hàng này (kể cả lúc số chưa về, hiện "…") để
+                      chiều cao khối không nhảy khi fetch xong — nhảy là CLS. */}
+                  <div className="l-ministat">
+                    <span>{landing.dashboard.vocabularyLabel}</span>
+                    <b>
+                      {words === null
+                        ? landing.dashboard.vocabularyValue.replace("{n}", "…")
+                        : landing.dashboard.vocabularyValue.replace(
+                            "{n}",
+                            words.toLocaleString("vi-VN"),
+                          )}
+                    </b>
+                  </div>
                 </div>
 
                 <div className="l-card">
