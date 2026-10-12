@@ -156,6 +156,12 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
 
 ### Tính năng còn thiếu
 
+- [ ] **Blog (bài viết + SEO)** — spec + plan xong ở `SPEC-BLOG.md`, chưa dựng.
+      V1 chỉ admin viết (không UGC/bình luận), 1 bảng `blog_post`, body
+      markdown-lite tái dùng, slug bất biến sau publish, public SSR + ISR +
+      JSON-LD `BlogPosting` + sitemap động, CTA funnel về placement/part.
+      5 pha: API+DB → admin UI → public+SEO → 10 bài mồi → đo Search Console.
+
 - [x] ~~Bài test đầu vào + planner V1~~ — **Xong (2026-09-07).** Đề
       `tp-placement-01` 84 câu pick theo nguyên cụm từ `tp-test-09` qua
       `app/content/make_placement.py` (định mức §0 của spec), máy thi tái dùng
