@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { SeoWordList } from "@/components/seo-word-list";
 import { getScene } from "@/content/scenes";
+import { getSeoWords } from "@/lib/seo-content";
 
 /*
  * Trang cảnh là client component (canvas 3D) nên không export metadata được —
@@ -29,6 +31,22 @@ export async function generateMetadata({
   };
 }
 
-export default function SceneLayout({ children }: { children: ReactNode }) {
-  return children;
+export default async function SceneLayout({
+  children,
+  params,
+}: {
+  children: ReactNode;
+  params: Promise<{ sceneId: string }>;
+}) {
+  // Khối SEO SSR dưới canvas: crawler đọc được từ + nghĩa + ví dụ mà không cần
+  // WebGL. API hỏng thì bỏ qua — trang tương tác phía trên không phụ thuộc nó.
+  const { sceneId } = await params;
+  const scene = getScene(sceneId);
+  const words = scene ? await getSeoWords(scene.topicSlug) : null;
+  return (
+    <>
+      {children}
+      {scene && words ? <SeoWordList words={words} sceneTitle={scene.title} /> : null}
+    </>
+  );
 }

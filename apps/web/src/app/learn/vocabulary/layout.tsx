@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-/* Trang hub là client component — metadata nằm ở layout server bọc ngoài. */
+import { SeoTopicList } from "@/components/seo-topic-list";
+import { getSeoTopics } from "@/lib/seo-content";
+
+/* Trang hub là client component — metadata + khối SSR cho crawler nằm ở layout server này. */
 export const metadata: Metadata = {
   title: "Tuyển Tập Từ Vựng TOEIC Theo Chủ Điểm",
   description:
@@ -9,6 +12,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/learn/vocabulary" },
 };
 
-export default function VocabularyLayout({ children }: { children: ReactNode }) {
-  return children;
+export default async function VocabularyLayout({ children }: { children: ReactNode }) {
+  const topics = await getSeoTopics();
+  return (
+    <>
+      {children}
+      {topics ? <SeoTopicList topics={topics} /> : null}
+    </>
+  );
 }
