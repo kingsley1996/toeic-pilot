@@ -172,7 +172,10 @@ chặn RAG (**834/855**, ngưỡng `ADR-003` §3.3 vượt xa), và giáo trình
       (2026-10-12): 10 bài đã publish, validator skill sạch, hub đủ 10/10.**
       Chưa: hiện link Blog ở nav, ảnh bìa (card đang rơi về nền chữ), sync
       prod (chưa có script export blog — xem `scripts/export-content.sh` làm
-      mẫu khi cần).
+      mẫu khi cần). **Sync prod xong (2026-10-14): `scripts/export-blog.sh`
+      (upsert theo slug, user-id dev → NULL), diễn tập scratch 10/10 hai lần,
+      prod API total 10 published, web prod hub 10/10 + chi tiết 200 + cover
+      200, QA prod 0 lỗi 4xx/console.**
 
 - [x] ~~Bài test đầu vào + planner V1~~ — **Xong (2026-09-07).** Đề
       `tp-placement-01` 84 câu pick theo nguyên cụm từ `tp-test-09` qua
