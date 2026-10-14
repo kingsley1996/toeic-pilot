@@ -42,6 +42,16 @@ export async function getBlogSlugs(): Promise<string[]> {
   return page?.items.map((item) => item.slug) ?? [];
 }
 
+/** Nhãn tiếng Việt của chuyên mục — dùng chung hub + trang bài (đừng để một
+ *  nơi hiện "Mẹo làm bài", một nơi hiện slug thô "meo-lam-bai"). */
+export const BLOG_CATEGORY_LABEL: Record<string, string> = {
+  "meo-lam-bai": "Mẹo làm bài",
+  "ngu-phap": "Ngữ pháp",
+  "tu-vung": "Từ vựng",
+  "kinh-nghiem": "Kinh nghiệm",
+  "thong-bao": "Thông báo",
+};
+
 /**
  * Bọc ảnh có `title` thành figure + caption lúc render (SPEC-BLOG: `title`
  * của ảnh thành caption). Chạy trên HTML đã sanitize — regex chỉ bắt thẻ

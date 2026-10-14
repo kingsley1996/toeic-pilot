@@ -4,7 +4,7 @@ import type { BlogPostCard } from "@toeic-pilot/shared";
 import Link from "next/link";
 
 import { EmptyState, Page, PageHeader, Tag } from "@/components/ui";
-import { getBlogPosts } from "@/lib/blog-source";
+import { BLOG_CATEGORY_LABEL, getBlogPosts } from "@/lib/blog-source";
 
 export const revalidate = 600;
 
@@ -24,9 +24,7 @@ const CATEGORIES = [
   { slug: "thong-bao", label: "Thông báo" },
 ] as const;
 
-const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
-  CATEGORIES.map((c) => [c.slug, c.label]),
-);
+const CATEGORY_LABEL: Record<string, string> = BLOG_CATEGORY_LABEL;
 
 function formatDate(iso: string | null): string {
   if (!iso) return "";

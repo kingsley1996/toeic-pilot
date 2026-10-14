@@ -9,6 +9,7 @@ import {
   Headphones,
   House,
   Map,
+  Newspaper,
   Sparkles,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -132,6 +133,15 @@ const TOP_BAR_ROUTES = new Set(["/", "/login", "/register"]);
  */
 const isBlogRoute = (pathname: string) => pathname === "/blog" || pathname.startsWith("/blog/");
 
+/*
+ * Blog trong menu "Thêm" của thanh trên — nhưng KHÔNG trong CONTENT_LINKS.
+ *
+ * CONTENT_LINKS nuôi cả sidebar ("Hôm nay", "Kế hoạch", ...): nhét Blog vào đó
+ * là nó hiện ở sidebar, đúng thứ quyết định tách blog thành khu riêng đã loại.
+ * Nối riêng ở `more` dưới đây thì chỉ thanh trên có Blog, sidebar không biết.
+ */
+const BLOG_LINK: NavItem = { href: "/blog", label: "Blog", Icon: Newspaper };
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const due = useDueCount();
@@ -176,7 +186,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         // Nav ngang: hai mục chính thẳng hàng, phần còn lại gộp vào "Thêm"
         // (yêu cầu bố cục 2026-09-07). Ngăn kéo mobile vẫn hiện phẳng cả bộ
         // — `TopBarShell` tự lọc, đây chỉ là NGUỒN.
-        more={topBarLinks.filter((l) => ["/learn/grammar", "/learn/parts"].includes(l.href))}
+        more={[
+          ...topBarLinks.filter((l) => ["/learn/grammar", "/learn/parts"].includes(l.href)),
+          BLOG_LINK,
+        ]}
         sectionLabel="Học"
         footer={<SiteFooter links={topBarLinks} />}
       >

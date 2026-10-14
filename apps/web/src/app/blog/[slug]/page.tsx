@@ -7,7 +7,13 @@ import { notFound } from "next/navigation";
 import { BlogShare, ReadingProgress } from "@/components/blog-client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Page, Tag } from "@/components/ui";
-import { getBlogPost, withCaptions, withHeadingIds, withMidCta } from "@/lib/blog-source";
+import {
+  BLOG_CATEGORY_LABEL,
+  getBlogPost,
+  withCaptions,
+  withHeadingIds,
+  withMidCta,
+} from "@/lib/blog-source";
 import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 600;
@@ -82,7 +88,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <article>
           <p className="mb-2 flex flex-wrap items-center gap-2 text-label text-ink-faint">
-            <Tag>{post.category}</Tag>
+            <Tag>{BLOG_CATEGORY_LABEL[post.category] ?? post.category}</Tag>
             <span>
               {formatDate(post.published_at)} · {post.reading_minutes} phút đọc · {post.author_name}
             </span>
