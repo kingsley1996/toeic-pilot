@@ -7,19 +7,19 @@ tags: ["từ vựng", "chủ đề"]
 related_part: null
 ---
 
-Bạn học 20 từ mỗi ngày theo danh sách A–Z mà tới lúc làm đề vẫn không nhớ từ nào? Vấn đề không nằm ở trí nhớ của bạn, mà nằm ở cách sắp xếp từ. Hơn 70% câu hỏi trong đề TOEIC dính tới từ vựng công sở và kinh doanh, từ Part 3 tới Part 7 đều xoay quanh văn phòng, họp hành, tuyển dụng, du lịch và mua bán. Bạn học từ rời theo bảng chữ cái thì tới lúc gặp đoạn hội thoại đặt vé máy bay, bạn không gợi lại được gì.
+Học 20 từ mỗi ngày theo danh sách A–Z mà tới lúc làm đề vẫn không nhớ từ nào là tình trạng phổ biến. Vấn đề thường không nằm ở trí nhớ mà ở cách sắp xếp từ. Hơn 70% câu hỏi trong đề TOEIC dính tới từ vựng công sở và kinh doanh, từ Part 3 tới Part 7 đều xoay quanh văn phòng, họp hành, tuyển dụng, du lịch và mua bán. Học từ rời theo bảng chữ cái thì tới lúc gặp đoạn hội thoại đặt vé máy bay, đầu óc không gợi lại được gì.
 
-ToeicPilot khuyên bạn học 600 từ cốt lõi theo chủ đề thay vì học vẹt từ điển. Mỗi chủ đề là một bối cảnh có thật trong đề, mỗi từ đi kèm một câu ví dụ ngắn để bạn nhớ theo tình huống. Bài này cho bạn năm nhóm chủ đề lớn, mỗi nhóm 8–10 từ mẫu, kèm cách ôn bằng lặp lại cách quãng và cụm từ đi chung. Bạn đọc xong thì mở [board từ vựng của ToeicPilot](/learn/vocabulary) để lưu các từ này vào bộ ôn của mình.
+Cách thay thế là học 600 từ cốt lõi theo chủ đề thay vì học vẹt từ điển. Mỗi chủ đề là một bối cảnh có thật trong đề, mỗi từ đi kèm một câu ví dụ ngắn để nhớ theo tình huống. Bài này giới thiệu năm nhóm chủ đề lớn, mỗi nhóm 8–10 từ mẫu, kèm cách ôn bằng lặp lại cách quãng và cụm từ đi chung. Các từ này có thể lưu vào [board từ vựng của ToeicPilot](/learn/vocabulary) để đưa vào lịch ôn của mình.
 
-## Vì sao học theo chủ đề nhớ lâu hơn học A–Z?
+## Vì sao học từ vựng theo chủ đề nhớ lâu hơn học A–Z?
 
-Trí nhớ của bạn gắn từ với bối cảnh, không gắn từ với chữ cái đầu. Khi bạn học cùng lúc các từ *meeting*, *agenda*, *minutes*, *postpone*, bạn đang dựng lại một cuộc họp trong đầu, và tới lúc nghe Part 3 về cuộc họp bị hoãn, cả chùm từ đó bật ra cùng lúc. Bạn học A–Z thì mỗi từ nằm một nơi, tới lúc cần thì không gọi được từ nào.
+Trí nhớ gắn từ với bối cảnh, không gắn từ với chữ cái đầu. Học cùng lúc các từ *meeting*, *agenda*, *minutes*, *postpone* là dựng lại một cuộc họp trong đầu, và tới lúc nghe Part 3 về cuộc họp bị hoãn, cả chùm từ đó bật ra cùng lúc. Học A–Z thì mỗi từ nằm một nơi, tới lúc cần thì không gọi được từ nào.
 
-Học theo chủ đề còn giúp bạn đoán nghĩa khi gặp từ mới. Đề TOEIC lặp lại bối cảnh rất nhiều, chỉ đổi tên công ty và con số. Bạn đã quen với email xin nghỉ phép thì dù đề dùng từ *absence* thay vì *leave*, bạn vẫn đoán được nhờ các từ xung quanh như *manager*, *approve*, *shift*. Bạn học 600 từ theo 10–12 chủ đề là bạn đã phủ được phần lớn bối cảnh đề thi, thay vì học 2.000 từ rời mà không dùng được.
+Học theo chủ đề còn giúp đoán nghĩa khi gặp từ mới. Đề TOEIC lặp lại bối cảnh rất nhiều, chỉ đổi tên công ty và con số. Đã quen với email xin nghỉ phép thì dù đề dùng từ *absence* thay vì *leave*, vẫn đoán được nhờ các từ xung quanh như *manager*, *approve*, *shift*. Học 600 từ theo 10–12 chủ đề là phủ được phần lớn bối cảnh đề thi, thay vì học 2.000 từ rời mà không dùng được.
 
-## Năm nhóm chủ đề cốt lõi và 45 từ mẫu
+## Năm nhóm từ vựng chủ đề cốt lõi và 45 từ mẫu
 
-Năm nhóm dưới đây là phần bạn gặp nhiều nhất. Mỗi từ đều có nghĩa và một câu ví dụ ngắn đúng văn phong TOEIC. Bạn đọc lướt để nhận mặt từ, rồi chọn 10–15 từ mình hay quên nhất để lưu vào [board từ vựng](/learn/vocabulary) và ôn trong tuần.
+Năm nhóm dưới đây là phần gặp nhiều nhất. Mỗi từ đều có nghĩa và một câu ví dụ ngắn đúng văn phong TOEIC. Nên đọc lướt để nhận mặt từ, rồi chọn 10–15 từ mình hay quên nhất để lưu vào [board từ vựng](/learn/vocabulary) và ôn trong tuần.
 
 ### 1. Văn phòng và công việc hằng ngày
 
@@ -83,15 +83,12 @@ Năm nhóm dưới đây là phần bạn gặp nhiều nhất. Mỗi từ đề
 
 ## Cách học để nhớ 600 từ mà không học vẹt
 
-Bạn có danh sách từ chưa đủ, bạn cần cách ôn để từ đi vào trí nhớ dài hạn. Ba cách dưới đây tốn ít thời gian nhưng giữ từ lâu hơn nhiều so với chép từ 10 lần.
+Có danh sách từ chưa đủ, cần cách ôn để từ đi vào trí nhớ dài hạn. Ba cách dưới đây tốn ít thời gian nhưng giữ từ lâu hơn nhiều so với chép từ 10 lần.
 
-Thứ nhất, bạn ôn cách quãng theo SM-2. Ngày đầu bạn học 10 từ mới, ngày hôm sau bạn tự kiểm tra lại 10 từ đó trước khi học từ mới, ba ngày sau bạn kiểm tra lại một lần nữa. Từ nào bạn quên thì cho ôn lại sớm hơn, từ nào bạn nhớ thì giãn khoảng cách ra. [Board từ vựng của ToeicPilot](/learn/vocabulary) đã sắp lịch ôn này cho bạn, việc của bạn là mở ra ôn đúng ngày và đừng bỏ dở giữa chừng.
+Thứ nhất, ôn cách quãng theo SM-2. Ngày đầu học 10 từ mới, ngày hôm sau tự kiểm tra lại 10 từ đó trước khi học từ mới, ba ngày sau kiểm tra lại một lần nữa. Từ nào quên thì cho ôn lại sớm hơn, từ nào nhớ thì giãn khoảng cách ra. [Board từ vựng của ToeicPilot](/learn/vocabulary) đã sắp lịch ôn này sẵn, việc còn lại là mở ra ôn đúng ngày và đừng bỏ dở giữa chừng.
 
-Thứ hai, bạn học cả cụm đi chung chứ không học từ đơn. Bạn đừng nhớ *appointment* là cuộc hẹn rồi dừng lại, bạn nhớ luôn *make an appointment*, *cancel an appointment*. Bạn đừng nhớ *discount* rồi thôi, bạn nhớ *get a 20% discount*. Đề TOEIC kiểm tra cụm nhiều hơn từ đơn, đặc biệt ở Part 5 dạng từ vựng. Bạn làm thêm [câu hỏi Part 5](/learn/parts/5) để thấy các cụm này lặp lại ra sao.
+Thứ hai, học cả cụm đi chung chứ không học từ đơn. Đừng nhớ *appointment* là cuộc hẹn rồi dừng lại, hãy nhớ luôn *make an appointment*, *cancel an appointment*. Đừng nhớ *discount* rồi thôi, hãy nhớ *get a 20% discount*. Đề TOEIC kiểm tra cụm nhiều hơn từ đơn, đặc biệt ở Part 5 dạng từ vựng. Các [câu hỏi Part 5](/learn/parts/5) cho thấy các cụm này lặp lại ra sao.
 
-Thứ ba, mỗi lần gặp từ đã học trong đề, bạn tra lại và ôn ngay. Bạn làm đề và khoanh mọi từ mình đoán sai hoặc đoán đúng mà không chắc, rồi tra nghĩa và thêm câu ví dụ trong đề vào sổ từ. Một từ bạn gặp trong ba đề khác nhau sẽ nhớ lâu hơn một từ bạn chép 10 lần trong một buổi. Bạn cũng nên gặp lại từ trong bối cảnh nghe và nhìn, ví dụ luyện [chép chính tả](/learn/dictation) và dạo qua [cảnh 3D](/learn/scenes) để nghe lại từ văn phòng trong tình huống thật.
+Thứ ba, mỗi lần gặp từ đã học trong đề thì tra lại và ôn ngay. Làm đề và khoanh mọi từ mình đoán sai hoặc đoán đúng mà không chắc, rồi tra nghĩa và thêm câu ví dụ trong đề vào sổ từ. Một từ gặp trong ba đề khác nhau sẽ nhớ lâu hơn một từ chép 10 lần trong một buổi. Việc gặp lại từ trong bối cảnh nghe và nhìn cũng giúp ích, ví dụ luyện [chép chính tả](/learn/dictation) và dạo qua [cảnh 3D](/learn/scenes) để nghe lại từ văn phòng trong tình huống thật.
 
-> 
-Bạn không cần học hết 600 từ trong một tháng. Bạn học chắc 10 từ mỗi ngày theo chủ đề, ôn lại đúng lịch, sau hai tháng bạn đã có vốn từ đủ để đọc Part 6 và Part 7 mà không phải dừng lại tra từ điển sau mỗi câu.
-
-Bạn bắt đầu từ nhóm văn phòng vì nó xuất hiện trong cả bốn kỹ năng nghe đọc, rồi sang nhân sự và kinh doanh. Khi bạn [nộp bài](/learn/tests) luyện tập, bạn mở lại danh sách từ của mình và đánh dấu những từ vừa gặp trong đề. Học theo chủ đề giúp bạn nhớ lâu hơn học vẹt A–Z, vì mỗi đề bạn làm xong đều là một lần ôn lại.
+> Học chắc 10 từ mỗi ngày theo chủ đề, ôn lại đúng lịch, sau hai tháng đã có vốn từ đủ để đọc Part 6 và Part 7 mà không phải dừng lại tra từ điển sau mỗi câu. Nên bắt đầu từ nhóm văn phòng vì nó xuất hiện trong cả bốn kỹ năng nghe đọc, rồi sang nhân sự và kinh doanh. Mỗi đề làm xong, đối chiếu với danh sách từ của mình khi [nộp bài](/learn/tests) và đánh dấu những từ vừa gặp — đó cũng là một lần ôn lại.
