@@ -1,7 +1,9 @@
 "use client";
 
-import { Check, Link2, Share2 } from "lucide-react";
+import { Check, Link2, ListTree, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
+
+import type { TocEntry } from "@toeic-pilot/shared";
 
 /** Nút chia sẻ bài: native share nếu có, không thì copy link (không SDK ngoài). */
 export function BlogShare({ title, url }: { title: string; url: string }) {
@@ -70,5 +72,45 @@ export function ReadingProgress() {
     <div className="fixed inset-x-0 top-0 z-40 h-0.5 bg-transparent" aria-hidden>
       <div className="h-full bg-action" style={{ width: `${Math.round(ratio * 100)}%` }} />
     </div>
+  );
+}
+
+/**
+ * Mục lục bài viết: bấm là cuộn MƯỢT tới heading, không nhảy cục.
+ *
+ * `<a href="#id">` thuần của trình duyệt nhảy ngay lập tức — đọc bài dài mà
+ * khung hình teleport thì mất mạch. `scroll-behavior: smooth` toàn cục thì
+ * vạ lây cả app (cuộn code cũng mượt theo), nên gắn hành vi vào đúng cú bấm
+ * ở đây. Tôn trọng giảm chuyển động của hệ điều hành.
+ */
+export function BlogToc({ toc }: { toc: TocEntry[] }) {
+  function go(event: React.MouseEvent, id: string) {
+    event.preventDefault();
+    const el = document.getElementById(id);
+    if (!el) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    window.history.replaceState(null, "", `#${id}`);
+  }
+
+  return (
+    <nav className="sticky top-4 rounded border border-rule bg-panel p-4" aria-label="Mục lục">
+      <p className="mb-2 flex items-center gap-1.5 text-small font-bold">
+        <ListTree size={14} aria-hidden /> Mục lục
+      </p>
+      <ul className="space-y-1.5">
+        {toc.map((entry) => (
+          <li key={entry.id} className={entry.level === 3 ? "pl-4" : ""}>
+            <a
+              href={`#${entry.id}`}
+              onClick={(e) => go(e, entry.id)}
+              className="text-small text-ink-muted hover:text-ink"
+            >
+              {entry.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }

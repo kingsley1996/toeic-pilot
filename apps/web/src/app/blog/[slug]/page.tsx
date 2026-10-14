@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
-import { ListTree, Newspaper } from "lucide-react";
+import { Newspaper } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { BlogShare, ReadingProgress } from "@/components/blog-client";
+import { BlogShare, BlogToc, ReadingProgress } from "@/components/blog-client";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Page, Tag } from "@/components/ui";
 import {
@@ -162,21 +162,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </article>
 
         {post.toc.length > 0 && (
-          <aside className="hidden lg:block" aria-label="Mục lục">
-            <nav className="sticky top-4 rounded border border-rule bg-panel p-4">
-              <p className="mb-2 flex items-center gap-1.5 text-small font-bold">
-                <ListTree size={14} aria-hidden /> Mục lục
-              </p>
-              <ul className="space-y-1.5">
-                {post.toc.map((entry) => (
-                  <li key={entry.id} className={entry.level === 3 ? "pl-4" : ""}>
-                    <a href={`#${entry.id}`} className="text-small text-ink-muted hover:text-ink">
-                      {entry.text}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+          <aside className="hidden lg:block">
+            <BlogToc toc={post.toc} />
           </aside>
         )}
       </div>
