@@ -41,7 +41,8 @@ export function SiteFooter({ links }: { links: readonly NavItem[] }) {
         : [];
 
   return (
-    <footer className="border-t border-rule">
+    <footer className="site-footer border-t border-rule bg-recess">
+      {/* Nền đặc cùng token `recess` với các dải `.l-alt` của landing. */}
       {/* Cột link ÔM lấy chữ (`auto`) và khối thương hiệu ăn hết phần dư
             (`1fr`). Chia đều ba cột cho ra hai cột rộng 290px chứa ba chữ, và
             khoảng trống ấy đọc ra là ba khối rời nhau chứ không phải một chân

@@ -70,7 +70,7 @@ export function NavLink({
       title={title}
       aria-current={active ? "page" : undefined}
       className={cx(
-        "relative inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded px-2.5 py-1.5 text-small font-semibold transition-colors",
+        "relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-2 py-1.5 text-small font-semibold transition-colors",
         active ? "bg-action-tint text-action-ink" : "text-ink-muted hover:bg-recess hover:text-ink",
         "rail:justify-center rail:px-0",
         className,

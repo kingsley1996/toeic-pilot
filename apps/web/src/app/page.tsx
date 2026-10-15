@@ -1,20 +1,25 @@
 "use client";
 
-import { API_ROUTES, type VocabularyPage } from "@toeic-pilot/shared";
 import {
   ArrowRight,
   BarChart3,
+  BatteryMedium,
   BookOpen,
   Check,
   Clock,
   Flame,
   Headphones,
+  House,
+  Map,
   PencilLine,
+  Signal,
+  Sparkles,
   Target,
+  Wifi,
 } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import {
   DICTATION_DURATION,
@@ -23,7 +28,6 @@ import {
   landing,
   VOCAB_DURATION,
 } from "@/content/landing";
-import { apiFetch } from "@/lib/api";
 import { useSession } from "@/lib/session";
 
 /*
@@ -71,6 +75,9 @@ const ICONS: Record<IconName, typeof BookOpen> = {
   "bar-chart": BarChart3,
   clock: Clock,
   flame: Flame,
+  house: House,
+  map: Map,
+  sparkles: Sparkles,
 };
 
 /*
@@ -81,8 +88,9 @@ const ICONS: Record<IconName, typeof BookOpen> = {
  * khung cửa sổ nghiêng — nhưng **màu thì theo hệ**: biến `--l-*` ở cuối
  * `globals.css` chỉ là bí danh trỏ vào token, nên chế độ tối tự đúng.
  *
- * Con số duy nhất đọc từ máy chủ là số từ vựng, cắm vào đúng ô mà bản mẫu để
- * "438 words". Còn lại là số minh hoạ của bản mẫu.
+ * Khung minh hoạ ở hero ("trang Hôm nay", điện thoại, mascot) là hình minh hoạ
+ * tĩnh với số liệu minh hoạ — nó không đọc gì từ máy chủ và không thay thế màn
+ * hình thật trong app.
  *
  * **Không có chữ hiển thị nào viết thẳng trong tệp này** — tất cả ở
  * `content/landing.ts`, để sửa lời hay dịch sang ngôn ngữ khác không phải mở
@@ -91,25 +99,41 @@ const ICONS: Record<IconName, typeof BookOpen> = {
 
 export default function HomePage() {
   const { status } = useSession();
-  const [words, setWords] = useState<number | null>(null);
-
-  useEffect(() => {
-    /*
-     * Số từ lấy từ `total` của trang đầu, KHÔNG phải tổng `entry_count` các chủ
-     * đề: `vocabulary_topic` là quan hệ nhiều-nhiều, nên một từ nằm ở hai chủ đề
-     * sẽ được cộng hai lần và trang này khoe nhiều hơn số thật.
-     */
-    apiFetch<VocabularyPage>(`${API_ROUTES.vocabulary}?limit=1`)
-      .then((p) => setWords(p.total))
-      .catch(() => {});
-  }, []);
 
   // Ba trạng thái, không phải hai: `loading` khác `anonymous`, vì localStorage
   // chưa tồn tại lúc máy chủ dựng trang.
+  //
+  // Nút chính luôn là bài test đầu vào: đã đăng nhập thì vào thẳng placement,
+  // chưa thì đăng ký xong quay lại đúng đó (`?next=`, register hỗ trợ sẵn).
   const cta =
     status === "authenticated"
-      ? { href: "/dashboard", label: landing.hero.ctaSignedIn }
-      : { href: "/register", label: landing.hero.ctaSignedOut };
+      ? { href: "/learn/placement", label: landing.hero.ctaPrimary }
+      : { href: "/register?next=/learn/placement", label: landing.hero.ctaPrimary };
+  const v = landing.heroVisual;
+
+  /* Hiện dần khi cuộn cho section problems: chỉ thêm class `l-in`, CSS lo
+     hiệu ứng. Không có IntersectionObserver (trình duyệt rất cũ) thì hiện
+     luôn để không giấu nội dung. */
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll(".l-reveal"));
+    if (!("IntersectionObserver" in window)) {
+      els.forEach((el) => el.classList.add("l-in"));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("l-in");
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.2 },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
 
   return (
     <div className="landing">
@@ -134,7 +158,7 @@ export default function HomePage() {
                 </Link>
               ) : (
                 <span className="l-btn l-btn-primary invisible" aria-hidden>
-                  {landing.hero.ctaSignedOut} <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
+                  {landing.hero.ctaPrimary} <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
                 </span>
               )}
               <a className="l-btn l-btn-secondary" href="#features">
@@ -143,86 +167,169 @@ export default function HomePage() {
             </div>
 
             <div className="l-trust">
-              {landing.hero.trust.map((t) => (
-                <span key={t}>
-                  <Check size={13} strokeWidth={3.5} aria-hidden />
-                  {t}
-                </span>
+              {landing.hero.features.map((f) => (
+                <span key={f.title}>{f.title}</span>
               ))}
             </div>
           </div>
 
-          <div className="l-window">
-            <div className="l-window-top" aria-hidden>
-              <i className="l-dot" />
-              <i className="l-dot" />
-              <i className="l-dot" />
-            </div>
-            <div className="l-window-body">
-              <div className="l-window-head">
-                <div>
-                  <div className="l-label">{landing.dashboard.greeting}</div>
-                  <div style={{ fontWeight: 800 }}>{landing.dashboard.title}</div>
-                </div>
-                <span className="l-pill">{landing.dashboard.goal}</span>
+          {/* Minh hoạ tĩnh "trang Hôm nay": số liệu minh hoạ, không đọc API.
+              `aria-hidden` vì đây là hình trang trí — lời kêu gọi thật nằm ở
+              cột trái. */}
+          <div className="l-hero-visual" aria-hidden>
+            <div className="l-dashcard">
+              <div className="l-dashcard-top">
+                <span className="l-dashcard-brand">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/brand/mark.png" alt="" width={20} height={20} />
+                  {v.brand}
+                </span>
+                <span className="l-dashcard-right">
+                  <span className="l-dashcard-ruby">{v.ruby}</span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    className="l-dashcard-avatar"
+                    src="/brand/pilot-idle.png"
+                    alt=""
+                    width={22}
+                    height={22}
+                  />
+                </span>
               </div>
-
-              <div className="l-dash">
-                <div className="l-card l-card-tall">
-                  <div className="l-label">{landing.dashboard.progressLabel}</div>
-                  <div className="l-big">
-                    {landing.dashboard.score} <span>{landing.dashboard.scoreOf}</span>
-                  </div>
-                  <div className="l-bar">
-                    <i style={{ width: "72%" }} />
-                  </div>
-                  {landing.dashboard.rows.map((r) => (
-                    <div key={r.label} className="l-ministat">
-                      <span>{r.label}</span>
-                      <b>{r.value}</b>
-                    </div>
+              <div className="l-dashcard-body">
+                <div className="l-dashcard-nav">
+                  {v.nav.map((item, i) => (
+                    <span key={item} className={i === 0 ? "l-dashcard-nav-active" : undefined}>
+                      {item}
+                    </span>
                   ))}
-                  {/* Ô duy nhất mang số THẬT: bản mẫu để "438 words" ở đúng đây.
-                      Luôn dựng hàng này (kể cả lúc số chưa về, hiện "…") để
-                      chiều cao khối không nhảy khi fetch xong — nhảy là CLS. */}
-                  <div className="l-ministat">
-                    <span>{landing.dashboard.vocabularyLabel}</span>
-                    <b>
-                      {words === null
-                        ? landing.dashboard.vocabularyValue.replace("{n}", "…")
-                        : landing.dashboard.vocabularyValue.replace(
-                            "{n}",
-                            words.toLocaleString("vi-VN"),
-                          )}
-                    </b>
+                </div>
+                <div className="l-dashcard-main">
+                  <div className="l-dashcard-hello">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      className="l-dashcard-avatar"
+                      src="/brand/pilot-idle.png"
+                      alt=""
+                      width={30}
+                      height={30}
+                    />
+                    <span>
+                      <b>{v.greeting}</b>
+                      <small>{v.greetingNote}</small>
+                    </span>
+                  </div>
+                  <div className="l-dashcard-stats">
+                    <div className="l-dashcard-stat">
+                      <span>{v.levelLabel}</span>
+                      <b>{v.levelValue}</b>
+                      <i className="l-dashcard-bar">
+                        <i style={{ width: "42%" }} />
+                      </i>
+                    </div>
+                    <div className="l-dashcard-stat">
+                      <span>{v.tasksLabel}</span>
+                      <b>{v.tasksValue}</b>
+                      <i className="l-dashcard-bar">
+                        <i style={{ width: "67%" }} />
+                      </i>
+                    </div>
+                  </div>
+                  <div className="l-dashcard-continue">{v.continueLabel}</div>
+                  <div className="l-dashcard-row">
+                    <span>
+                      <b>{v.courseTitle}</b>
+                      <small>{v.courseMeta}</small>
+                    </span>
+                    <em>{v.courseCta}</em>
+                  </div>
+                  <div className="l-dashcard-row">
+                    <span>
+                      <b>{v.reviewTitle}</b>
+                      <small>{v.reviewMeta}</small>
+                    </span>
+                    <em>{v.reviewCta}</em>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                <div className="l-card">
-                  <div className="l-label">{landing.dashboard.todayLabel}</div>
-                  <div className="l-activity">
-                    <div className="l-icon-box">
-                      <BookOpen size={17} strokeWidth={1.9} aria-hidden />
-                    </div>
-                    <div>
-                      <b>{landing.dashboard.todayTitle}</b>
-                      <small>{landing.dashboard.todayNote}</small>
-                    </div>
-                  </div>
-                </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="l-mascot"
+              src="/brand/pilot-cheer.png"
+              alt=""
+              width={110}
+              height={110}
+            />
 
-                <div className="l-card">
-                  <div className="l-label">{landing.dashboard.nextLabel}</div>
-                  <div className="l-activity">
-                    <div className="l-icon-box">
-                      <Headphones size={17} strokeWidth={1.9} aria-hidden />
-                    </div>
-                    <div>
-                      <b>{landing.dashboard.nextTitle}</b>
-                      <small>{landing.dashboard.nextNote}</small>
-                    </div>
-                  </div>
+            <div className="l-cheer">
+              <span>{landing.hero.cheer}</span>
+              <svg viewBox="0 0 60 40" aria-hidden>
+                <path
+                  d="M6 4 C 30 6, 48 12, 52 34 M52 34 l-9 -6 M52 34 l1 -11"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+
+            {/* Điện thoại minh hoạ giao diện app thật: thanh trạng thái, đầu
+                trang, tiến độ, thẻ bài học, tab dưới, vạch home. Chữ lấy từ
+                `heroVisual` như dashboard, "9:41" là số giờ mẫu như iPhone. */}
+            <div className="l-phone">
+              <div className="l-phone-screen">
+                <div className="l-phone-status">
+                  <span>9:41</span>
+                  <i className="l-phone-island" />
+                  <span className="l-phone-status-icons">
+                    <Signal size={10} strokeWidth={2.5} aria-hidden />
+                    <Wifi size={10} strokeWidth={2.5} aria-hidden />
+                    <BatteryMedium size={13} strokeWidth={2} aria-hidden />
+                  </span>
                 </div>
+                <div className="l-phone-app">
+                  <span className="l-phone-brand">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/brand/mark.png" alt="" width={18} height={18} />
+                    {v.brand}
+                  </span>
+                  <span className="l-dashcard-ruby">{v.ruby}</span>
+                </div>
+                <div className="l-phone-hello">
+                  <b>{v.greeting}</b>
+                  <small>
+                    {v.tasksLabel} {v.tasksValue}
+                  </small>
+                  <i className="l-dashcard-bar">
+                    <i style={{ width: "67%" }} />
+                  </i>
+                </div>
+                <div className="l-phone-card">
+                  <span>{v.unfinishedLabel}</span>
+                  <b>{v.courseTitle}</b>
+                  <small>{v.courseMeta}</small>
+                  <em>{v.courseCta}</em>
+                </div>
+                <div className="l-phone-card">
+                  <b>{v.reviewTitle}</b>
+                  <small>{v.reviewMeta}</small>
+                  <em>{v.reviewCta}</em>
+                </div>
+                <div className="l-phone-tabs">
+                  {v.tabs.map((t) => {
+                    const Icon = ICONS[t.icon];
+                    return (
+                      <span key={t.label}>
+                        <Icon size={14} strokeWidth={2.2} aria-hidden />
+                        {t.label}
+                      </span>
+                    );
+                  })}
+                </div>
+                <i className="l-phone-home" />
               </div>
             </div>
           </div>
@@ -230,19 +337,27 @@ export default function HomePage() {
       </section>
 
       {/* ── Vì sao học TOEIC hay thất bại ────────────────────────────────── */}
-      <section className="l-section l-alt">
+      <section className="l-section l-alt l-problems">
         <div className="l-container">
-          <div className="l-head">
+          <div className="l-head l-reveal">
             <div className="l-kicker">{landing.problems.kicker}</div>
             <h2>{landing.problems.title}</h2>
             <p>{landing.problems.lead}</p>
           </div>
           <div className="l-grid-3">
             {landing.problems.items.map((p, i) => (
-              <article key={p.title} className="l-tile">
+              <article
+                key={p.title}
+                className="l-tile l-reveal"
+                style={{ transitionDelay: `${(i + 1) * 100}ms` }}
+              >
                 <div className="l-num">{String(i + 1).padStart(2, "0")}</div>
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
+                {/* Mỗi vấn đề chốt bằng đúng tính năng gỡ nó: ô vấn đề không còn
+                    là ngõ cụt, và mọi con số đều lấy từ USER-GUIDE (không hứa
+                    điểm, không gọi placement là điểm thi thật). */}
+                <div className="l-solution">{p.answer}</div>
               </article>
             ))}
           </div>
@@ -259,23 +374,51 @@ export default function HomePage() {
           </div>
           <div className="l-loop">
             <div className="l-loop-visual">
-              <div className="l-flow">
+              {/* Ba bước trên một quỹ đạo xoay: vòng đứt nét quay chậm cùng ba
+                  mũi tên chỉ chiều học, nút tròn nào cũng đọc từ `loop.steps`.
+                  Trang trí thuần CSS, tắt khi giảm chuyển động. */}
+              <div className="l-orbit" aria-hidden>
+                <svg className="l-orbit-ring" viewBox="0 0 300 300">
+                  <defs>
+                    <linearGradient id="l-orbit-grad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" className="l-g1" />
+                      <stop offset="0.45" className="l-g1" />
+                      <stop offset="0.7" className="l-g0" />
+                      <stop offset="1" className="l-g0" />
+                    </linearGradient>
+                  </defs>
+                  <circle className="l-orbit-track" cx="150" cy="150" r="118" fill="none" />
+                  <circle
+                    className="l-orbit-flow"
+                    cx="150"
+                    cy="150"
+                    r="118"
+                    fill="none"
+                    stroke="url(#l-orbit-grad)"
+                    strokeWidth="2.5"
+                    strokeDasharray="6 8"
+                    strokeLinecap="round"
+                  />
+                  {/* Mũi tên nằm GIỮA các nút (góc -30/90/210°), không đè nút. */}
+                  <g transform="translate(252,91) rotate(60)">
+                    <path className="l-orbit-head" d="M-7,-6 L7,0 L-7,6 Z" />
+                  </g>
+                  <g transform="translate(150,268) rotate(180)">
+                    <path className="l-orbit-head" d="M-7,-6 L7,0 L-7,6 Z" />
+                  </g>
+                  <g transform="translate(48,91) rotate(300)">
+                    <path className="l-orbit-head" d="M-7,-6 L7,0 L-7,6 Z" />
+                  </g>
+                </svg>
                 {landing.loop.steps.map((s, i) => (
-                  <div key={s.label} className="contents">
-                    {i > 0 && (
-                      <div className="l-arrow" aria-hidden>
-                        <ArrowRight size={16} strokeWidth={2} />
-                      </div>
-                    )}
-                    <div className="l-flow-item">
-                      <div className="l-flow-box">
-                        {(() => {
-                          const Icon = ICONS[s.icon];
-                          return <Icon size={25} strokeWidth={1.6} aria-hidden />;
-                        })()}
-                      </div>
-                      <b>{s.label}</b>
-                    </div>
+                  <div key={s.label} className={`l-orbit-node l-pos-${i}`}>
+                    <span className="l-orbit-dot">
+                      {(() => {
+                        const Icon = ICONS[s.icon];
+                        return <Icon size={24} strokeWidth={1.8} aria-hidden />;
+                      })()}
+                    </span>
+                    <b>{s.label}</b>
                   </div>
                 ))}
               </div>

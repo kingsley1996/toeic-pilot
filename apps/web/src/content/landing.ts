@@ -17,41 +17,70 @@
  */
 
 export type IconName =
-  "book-open" | "headphones" | "pencil-line" | "target" | "bar-chart" | "clock" | "flame";
+  | "book-open"
+  | "headphones"
+  | "pencil-line"
+  | "target"
+  | "bar-chart"
+  | "clock"
+  | "flame"
+  | "house"
+  | "map"
+  | "sparkles";
 
 export const landing = {
   hero: {
-    eyebrow: "Học TOEIC theo cách dễ duy trì hơn",
+    eyebrow: "Ứng dụng luyện thi TOEIC cho người Việt",
     titleTop: "Học TOEIC.",
     titleAccent: "Tinh gọn, hiệu quả.",
     lead: "Học từ vựng, luyện nghe chép chính tả và làm đề TOEIC Listening & Reading — tất cả trong một nền tảng giúp bạn học đều đặn và biết mình đang tiến bộ ở đâu.",
-    ctaSignedIn: "Vào học",
-    ctaSignedOut: "Bắt đầu miễn phí",
-    ctaSecondary: "Khám phá nền tảng",
-    trust: ["Luyện từ vựng", "Nghe chép chính tả", "Luyện đề TOEIC LR"],
+    ctaPrimary: "Làm bài test đầu vào",
+    ctaSecondary: "Khám phá tính năng",
+    features: [
+      { title: "Lộ trình cá nhân hóa", icon: "map" as IconName },
+      { title: "Hàng nghìn bài tập", icon: "book-open" as IconName },
+      { title: "Trợ lý AI & giải thích", icon: "sparkles" as IconName },
+      { title: "Động lực mỗi ngày", icon: "flame" as IconName },
+    ],
+    cheer: "Cố lên! Bạn làm được!",
   },
 
-  /** Khung "màn hình sản phẩm" ở hero. Số là minh hoạ trừ dòng từ vựng. */
-  dashboard: {
-    greeting: "Chào buổi tối",
-    title: "Tổng quan việc học",
-    goal: "Mục tiêu 700",
-    progressLabel: "Tiến độ TOEIC",
-    score: "560",
-    scoreOf: "/ 700",
-    rows: [
-      { label: "Listening", value: "62%" },
-      { label: "Reading", value: "71%" },
+  /** Khung minh hoạ "trang Hôm nay" ở hero. Số là minh hoạ, cố ý. */
+  heroVisual: {
+    brand: "ToeicPilot",
+    ruby: "◆ 120",
+    nav: [
+      "Hôm nay",
+      "Kế hoạch học",
+      "Từ vựng",
+      "Visual Words",
+      "Dictation",
+      "Listening Lab",
+      "Thư viện",
+      "Blog",
     ],
-    vocabularyLabel: "Từ vựng",
-    /** `{n}` được thay bằng số từ đọc từ máy chủ. */
-    vocabularyValue: "{n} từ",
-    todayLabel: "Hôm nay",
-    todayTitle: "Từ vựng",
-    todayNote: "10 phút",
-    nextLabel: "Tiếp theo",
-    nextTitle: "Nghe chép chính tả",
-    nextNote: "Part 3",
+    greeting: "Chào bạn!",
+    greetingNote: "Cùng hoàn thành nhiệm vụ của hôm nay nhé!",
+    levelLabel: "Trình độ hiện tại",
+    levelValue: "A2 – Pre-Intermediate",
+    tasksLabel: "Nhiệm vụ hôm nay",
+    tasksValue: "2 / 3",
+    continueLabel: "Tiếp tục học",
+    courseTitle: "Từ vựng · Business",
+    courseMeta: "Đã học 12 / 30 từ",
+    courseCta: "Tiếp tục",
+    reviewTitle: "Ôn tập nhanh",
+    reviewMeta: "10 từ cần ôn",
+    reviewCta: "Bắt đầu",
+    unfinishedLabel: "Bài học đang dở",
+    assistantLabel: "Trợ lý AI",
+    /* Nhãn thanh tab của điện thoại minh hoạ ở hero. Ngắn để vừa 4 tab. */
+    tabs: [
+      { label: "Hôm nay", icon: "house" as IconName },
+      { label: "Từ vựng", icon: "book-open" as IconName },
+      { label: "Nghe", icon: "headphones" as IconName },
+      { label: "Tiến độ", icon: "target" as IconName },
+    ],
   },
 
   problems: {
@@ -62,14 +91,19 @@ export const landing = {
       {
         title: "Học mãi một kiểu sẽ dễ chán",
         body: "Học từ vựng, làm hết câu này đến câu khác rồi lặp lại mỗi ngày rất dễ biến việc học thành một nhiệm vụ nhàm chán.",
+        answer:
+          "ToeicPilot: từ vựng 3 cách học cùng minigame, nghe chép chính tả, luyện từng part và đề thi thử đầy đủ.",
       },
       {
         title: "Dễ mất động lực giữa chừng",
         body: "Điểm mục tiêu có thể còn khá xa, trong khi bạn lại khó cảm nhận được thành quả từ những buổi học nhỏ mỗi ngày.",
+        answer: "ToeicPilot: 3 nhiệm vụ mỗi ngày, chuỗi ngày học, ruby và góc thú cưng tuỳ chọn.",
       },
       {
         title: "Không biết mình nên tập trung vào đâu",
         body: "Bạn có thể làm rất nhiều bài nhưng vẫn không rõ mình yếu ở kỹ năng nào, đang tiến bộ ra sao và nên học gì tiếp theo.",
+        answer:
+          "ToeicPilot: test đầu vào 84 câu, kế hoạch theo mục tiêu và gợi ý đúng chủ điểm còn yếu.",
       },
     ],
   },

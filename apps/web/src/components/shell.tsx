@@ -625,7 +625,7 @@ function NavMore({ items, active }: { items: NavItem[]; active: string | undefin
         aria-expanded={open}
         onClick={() => setOpenedAt(open ? null : pathname)}
         className={cx(
-          "relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-2.5 py-1.5 text-small font-semibold transition-colors",
+          "relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-2 py-1.5 text-small font-semibold transition-colors",
           activeInside || open
             ? "bg-action-tint text-action-ink"
             : "text-ink-muted hover:bg-recess hover:text-ink",
@@ -695,34 +695,60 @@ export function TopBarShell({
   const menuOpen = openedAt === pathname;
   const hasNav = links.length > 0;
 
+  /*
+   * Thanh nổi kiểu pill: ở đỉnh trang thì trong suốt full-bleed, cuộn xuống
+   * thì co ngang đối xứng vào giữa (mx-auto) thành viên thuốc (viền + blur).
+   * Chỉ co NGANG để chiều cao header không đổi — không cú nhảy bố cục nào.
+   * Nội dung GIỮ NGUYÊN cả hai trạng thái (không ẩn nav khi cuộn) nên giãn/nén
+   * đều mượt; pill phải đủ rộng chứa (~1055px) nên lấy max-w-6xl.
+   * Nav ngang chỉ từ xl: dưới đó burger gánh (vốn cũng là vùng 768–1024 trước
+   * đây không có lối nav nào). Nghe `scroll` thụ động như `modal.tsx`.
+   */
+  const [scrolled, setScrolled] = useState(
+    () => typeof window !== "undefined" && window.scrollY > 12,
+  );
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col">
       <GridBackdrop />
       {/* `z-30` chứ không `z-20`: ngăn kéo ở `z-20` và đứng sau trong DOM, nên
           header ngang cơ sẽ bị chính nó phủ mất — cùng nút vừa dùng để mở. */}
-      <header className="sticky top-0 z-30 border-b border-rule bg-ground/85 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4">
+      <header className="sticky top-0 z-30 h-[76px] px-3">
+        <div
+          className={cx(
+            "mx-auto mt-3 flex h-14 items-center gap-2 px-3 transition-all duration-300 motion-reduce:transition-none",
+            scrolled
+              ? "max-w-[1080px] rounded-pill border border-rule bg-ground/70 backdrop-blur"
+              : "max-w-6xl border border-transparent bg-transparent",
+          )}
+        >
           {hasNav && (
             <IconButton
               icon={menuOpen ? X : Menu}
               aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
               aria-expanded={menuOpen}
               onClick={() => setOpenedAt(menuOpen ? null : pathname)}
-              className="md:hidden"
+              className="xl:hidden"
             />
           )}
 
           <Link
             href="/"
             aria-label="TOEIC Pilot — trang chủ"
-            className="flex shrink-0 items-center gap-2 font-display text-subtitle font-semibold tracking-tight"
+            className="flex shrink-0 items-center gap-1.5 font-display text-subtitle font-semibold tracking-tight"
           >
             <BrandMark />
             <span className="hidden sm:inline">TOEIC Pilot</span>
           </Link>
 
           {hasNav && (
-            <nav className="ml-1 hidden items-center gap-0.5 lg:flex">
+            <nav className="topbar-nav ml-1 hidden items-center gap-0.5 xl:flex">
               {direct.map((link) => (
                 <NavLink key={link.href} {...link} active={link.href === active} />
               ))}
@@ -730,7 +756,7 @@ export function TopBarShell({
             </nav>
           )}
 
-          <div className="ml-auto flex shrink-0 items-center gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
             {/* Giữ nguyên nút CHỮ ở mọi bề rộng (yêu cầu rõ ràng): nav chỉ còn
                 3 mục + "Thêm", nên hàng đủ chỗ cho cả cặp. Trên mobile chúng
                 vẫn vào ngăn kéo burger (qua `AccountBlock`) — hiện cả hai nơi
@@ -766,7 +792,7 @@ export function TopBarShell({
        * `LEARN_LINKS` phải hiện ra ở cả hai khung mà không ai phải nhớ.
        */}
       {hasNav && menuOpen && (
-        <div className="fixed inset-0 top-16 z-20 bg-ground md:hidden">
+        <div className="fixed inset-0 top-[76px] z-20 bg-ground xl:hidden">
           <SidebarContent
             links={links}
             active={active}

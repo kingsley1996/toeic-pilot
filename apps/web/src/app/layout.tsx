@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Be_Vietnam_Pro, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, Be_Vietnam_Pro, Dancing_Script, IBM_Plex_Mono } from "next/font/google";
 
 import { AppShell } from "@/components/app-shell";
 import { SessionUnreachable } from "@/components/session-unreachable";
@@ -12,9 +12,10 @@ import { SIDEBAR_INIT_SCRIPT } from "@/lib/sidebar";
 import "./globals.css";
 
 /*
- * `subsets` PHẢI có "vietnamese" ở cả ba font. Thiếu nó thì `ế` `ộ` `ữ` rơi về
+ * `subsets` PHẢI có "vietnamese" ở cả bốn font. Thiếu nó thì `ế` `ộ` `ữ` rơi về
  * font hệ thống và một dòng chữ sẽ lẫn hai kiểu chữ khác nhau — rất dễ lọt vì
- * chữ tiếng Anh trông vẫn hoàn hảo. Đã xác minh cả ba có subset này.
+ * chữ tiếng Anh trông vẫn hoàn hảo. Đã xác minh cả bốn có subset này
+ * (Dancing Script kiểm trực tiếp trên css2: có khối U+1EA0–1EF9).
  */
 const display = Archivo({
   variable: "--font-display",
@@ -34,6 +35,15 @@ const data = IBM_Plex_Mono({
   variable: "--font-data",
   subsets: ["latin", "vietnamese"],
   weight: ["500"],
+  display: "swap",
+});
+
+/* Chữ viết tay cho lời thoại mascot ở landing. Chỉ một weight (700) vì cỡ
+   nhỏ mà mảnh thì mất nét; không dùng ở chỗ nào khác. */
+const hand = Dancing_Script({
+  variable: "--font-hand",
+  subsets: ["latin", "vietnamese"],
+  weight: ["700"],
   display: "swap",
 });
 
@@ -73,7 +83,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
         <link rel="preconnect" href={API_ORIGIN} />
       </head>
-      <body className={`${display.variable} ${body.variable} ${data.variable}`}>
+      <body className={`${display.variable} ${body.variable} ${data.variable} ${hand.variable}`}>
         {/* Schema cho crawler: trang giới thiệu là WebSite dạy TOEIC tiếng Việt. */}
         <script
           type="application/ld+json"
