@@ -18297,6 +18297,46 @@
       }
     },
     "/api/v1/admin/blog/posts/{post_id}": {
+      "delete": {
+        "description": "Xóa hẳn (không có gì tham chiếu tới bài — khác lesson gắn câu).",
+        "operationId": "delete_post_api_v1_admin_blog_posts__post_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "post_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Post Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Post",
+        "tags": [
+          "admin-blog"
+        ]
+      },
       "get": {
         "description": "Một bài (cả draft) để mở editor soạn tiếp.",
         "operationId": "read_post_api_v1_admin_blog_posts__post_id__get",

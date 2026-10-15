@@ -456,7 +456,11 @@ export interface paths {
         get: operations["read_post_api_v1_admin_blog_posts__post_id__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete Post
+         * @description Xóa hẳn (không có gì tham chiếu tới bài — khác lesson gắn câu).
+         */
+        delete: operations["delete_post_api_v1_admin_blog_posts__post_id__delete"];
         options?: never;
         head?: never;
         /** Update Post */
@@ -12636,6 +12640,35 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["BlogPostAdmin"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_post_api_v1_admin_blog_posts__post_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {
