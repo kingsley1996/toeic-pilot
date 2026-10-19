@@ -49,7 +49,7 @@ dev = [
 # Offline content pipeline only. The production image is built with --no-dev and
 # without this extra, so nothing reachable from app.main may import app.content.
 content = [
-    "edge-tts>=7.0.0",
+    "edge-tts>=7.3.1",
     "mutagen>=1.47.0",
     "pillow>=11.0.0",
     # Giao diện tương tác của pipeline sinh đề (`generate_exam interact`). Chỉ

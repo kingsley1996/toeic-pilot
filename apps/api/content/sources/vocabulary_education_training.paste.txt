@@ -1,0 +1,50 @@
+curriculum | noun | /kəˈrɪkjələm/ | the subjects taught in a course or school | chương trình giảng dạy | The curriculum includes two modules on business writing. | Chương trình giảng dạy gồm hai học phần về viết thương mại.
+syllabus | noun | /ˈsɪləbəs/ | a plan listing what a course will cover | đề cương môn học | The syllabus is posted online before the first class. | Đề cương môn học được đăng trực tuyến trước buổi học đầu tiên.
+enrollment | noun | /ɪnˈroʊlmənt/ | the act of joining a course or school | sự ghi danh | Enrollment for the spring semester opens in November. | Việc ghi danh cho học kỳ xuân mở vào tháng Mười Một.
+enroll | verb | /ɪnˈroʊl/ | to officially join a course or school | ghi danh, đăng ký học | Employees may enroll in the language program free of charge. | Nhân viên có thể ghi danh chương trình ngoại ngữ miễn phí.
+tuition | noun | /tuˈɪʃn/ | money paid for being taught | học phí | Tuition is paid in two installments. | Học phí được đóng thành hai đợt.
+scholarship | noun | /ˈskɑːlərʃɪp/ | money given to a student to help pay for study | học bổng | She won a full scholarship to study abroad. | Cô ấy giành được học bổng toàn phần để du học.
+faculty | noun | /ˈfæklti/ | the teaching staff of a school or university | khoa, giảng viên | The faculty voted to update the grading policy. | Giảng viên đã bỏ phiếu cập nhật chính sách chấm điểm.
+lecturer | noun | /ˈlektʃərər/ | a person who teaches at a university | giảng viên | The lecturer handed out the reading list on day one. | Giảng viên phát danh sách tài liệu đọc ngay ngày đầu.
+instructor | noun | /ɪnˈstrʌktər/ | a person who teaches a skill or subject | người hướng dẫn | Each group is assigned a safety instructor. | Mỗi nhóm được phân một người hướng dẫn an toàn.
+seminar | noun | /ˈsemɪnɑːr/ | a class or meeting for discussion | hội thảo, buổi chuyên đề | The seminar on negotiation was fully booked. | Buổi chuyên đề về đàm phán đã kín chỗ.
+tutorial | noun | /tuˈtɔːriəl/ | a small class teaching a particular skill | buổi hướng dẫn | New staff attend a tutorial on the booking system. | Nhân viên mới tham gia buổi hướng dẫn về hệ thống đặt chỗ.
+credential | noun | /krəˈdenʃl/ | a qualification that shows you are able to do something | chứng chỉ, bằng cấp | Applicants must submit proof of their credentials. | Ứng viên phải nộp bằng chứng về bằng cấp của mình.
+qualification | noun | /ˌkwɑːlɪfɪˈkeɪʃn/ | an exam or skill that makes you suitable for a job | trình độ, bằng cấp | The post requires a teaching qualification. | Vị trí này yêu cầu bằng cấp giảng dạy.
+accredited | adjective | /əˈkredɪtɪd/ | officially approved as meeting a standard | được công nhận | Only accredited training centers can issue the certificate. | Chỉ các trung tâm đào tạo được công nhận mới được cấp chứng chỉ.
+accreditation | noun | /əˌkredɪˈteɪʃn/ | official approval of an institution or program | sự công nhận | The college applied for international accreditation. | Trường đã nộp đơn xin công nhận quốc tế.
+internship | noun | /ˈɪntɜːrnʃɪp/ | a period of work experience for a student | kỳ thực tập | The summer internship lasts ten weeks. | Kỳ thực tập mùa hè kéo dài mười tuần.
+apprentice | noun | /əˈprentɪs/ | a person learning a trade from a skilled worker | người học việc | Each apprentice works alongside an experienced technician. | Mỗi người học việc làm cùng một kỹ thuật viên giàu kinh nghiệm.
+apprenticeship | noun | /əˈprentɪʃɪp/ | a period of learning a trade while working | chương trình học nghề | The apprenticeship combines classroom study with paid work. | Chương trình học nghề kết hợp học trên lớp với làm việc có lương.
+trainee | noun | /ˌtreɪˈniː/ | a person being trained for a job | nhân viên tập sự | Trainees rotate through every department in the first year. | Nhân viên tập sự luân chuyển qua mọi phòng ban trong năm đầu.
+trainer | noun | /ˈtreɪnər/ | a person who teaches skills for a job | giảng viên đào tạo | The trainer demonstrated the new software step by step. | Giảng viên đào tạo hướng dẫn phần mềm mới từng bước.
+module | noun | /ˈmɑːdʒuːl/ | one unit of a course | học phần | The course is made up of six modules. | Khóa học gồm sáu học phần.
+assignment | noun | /əˈsaɪnmənt/ | work given to a student or employee | bài tập, nhiệm vụ | The final assignment is due on the last Friday of term. | Bài tập cuối kỳ phải nộp vào thứ Sáu cuối khóa.
+assessment | noun | /əˈsesmənt/ | the process of judging someone's ability | sự đánh giá | The assessment includes a written test and an interview. | Việc đánh giá gồm bài kiểm tra viết và một buổi phỏng vấn.
+grade | noun | /ɡreɪd/ | a mark showing how well someone did | điểm, cấp bậc | Students must earn a passing grade in every module. | Học viên phải đạt điểm đỗ ở mọi học phần.
+transcript | noun | /ˈtrænskrɪpt/ | an official record of a student's results | bảng điểm | A copy of your transcript must accompany the application. | Bản sao bảng điểm phải kèm theo đơn đăng ký.
+diploma | noun | /dɪˈploʊmə/ | a document showing you completed a course | bằng tốt nghiệp, chứng chỉ | The diploma is awarded after the final exam. | Bằng tốt nghiệp được trao sau kỳ thi cuối.
+degree | noun | /dɪˈɡriː/ | a qualification from a university | bằng đại học | A degree in accounting is required for this role. | Vị trí này yêu cầu bằng đại học kế toán.
+graduate | noun | /ˈɡrædʒuət/ | a person who has finished a course of study | người tốt nghiệp | The company hires twenty graduates each year. | Công ty tuyển hai mươi người tốt nghiệp mỗi năm.
+undergraduate | noun | /ˌʌndərˈɡrædʒuət/ | a student studying for a first degree | sinh viên đại học | Undergraduates may apply for the summer program. | Sinh viên đại học có thể đăng ký chương trình mùa hè.
+postgraduate | noun | /ˌpoʊstˈɡrædʒuət/ | a student studying after a first degree | học viên sau đại học | The library reserves a floor for postgraduate study. | Thư viện dành một tầng cho học viên sau đại học.
+alumni | noun | /əˈlʌmnaɪ/ | former students of a school or university | cựu sinh viên | The alumni network organizes career events twice a year. | Mạng lưới cựu sinh viên tổ chức sự kiện nghề nghiệp hai lần một năm.
+campus | noun | /ˈkæmpəs/ | the land and buildings of a school or university | khuôn viên trường | The new campus has a modern training center. | Khuôn viên mới có một trung tâm đào tạo hiện đại.
+dormitory | noun | /ˈdɔːrmətɔːri/ | a building where students live | ký túc xá | The dormitory is a ten-minute walk from the lecture halls. | Ký túc xá cách các giảng đường mười phút đi bộ.
+lecture | noun | /ˈlektʃər/ | a formal talk given to a class | bài giảng | The morning lecture covers contract law. | Bài giảng buổi sáng đề cập luật hợp đồng.
+prerequisite | noun | /ˌpriːˈrekwəzɪt/ | something required before starting a course | điều kiện tiên quyết | Accounting 101 is a prerequisite for this course. | Kế toán 101 là điều kiện tiên quyết của khóa này.
+elective | noun | /ɪˈlektɪv/ | a course you choose rather than must take | môn tự chọn | Students may take two electives in the final term. | Học viên có thể chọn hai môn tự chọn trong học kỳ cuối.
+competency | noun | /ˈkɑːmpətənsi/ | the ability to do something well | năng lực | The role requires proven competency in data analysis. | Vị trí này yêu cầu năng lực đã được chứng minh về phân tích dữ liệu.
+proficiency | noun | /prəˈfɪʃnsi/ | a high level of skill in something | sự thành thạo | A proficiency test is given before the course begins. | Một bài kiểm tra thành thạo được tổ chức trước khi khóa học bắt đầu.
+fluent | adjective | /ˈfluːənt/ | able to speak a language easily and well | trôi chảy | The position requires fluent English. | Vị trí này yêu cầu tiếng Anh trôi chảy.
+literacy | noun | /ˈlɪtərəsi/ | the ability to read and write | khả năng đọc viết | The program includes basic computer literacy. | Chương trình bao gồm kỹ năng máy tính cơ bản.
+numeracy | noun | /ˈnuːmərəsi/ | the ability to work with numbers | khả năng tính toán | Applicants are tested on literacy and numeracy. | Ứng viên được kiểm tra khả năng đọc viết và tính toán.
+distance learning | noun | /ˈdɪstəns ˌlɜːrnɪŋ/ | studying at home rather than at school | học từ xa | Distance learning lets staff study while they work. | Học từ xa cho phép nhân viên vừa học vừa làm.
+vocational | adjective | /voʊˈkeɪʃənl/ | relating to skills for a particular job | thuộc hướng nghiệp | He completed a vocational course in welding. | Anh ấy hoàn thành khóa học nghề hàn.
+placement test | noun | /ˈpleɪsmənt test/ | a test to decide the right class level | bài kiểm tra xếp lớp | New students take a placement test on the first day. | Học viên mới làm bài kiểm tra xếp lớp vào ngày đầu tiên.
+refresher course | noun | /rɪˈfreʃər kɔːrs/ | a short course to update skills | khóa ôn tập, bồi dưỡng | All drivers must attend a refresher course every two years. | Mọi tài xế phải tham gia khóa bồi dưỡng hai năm một lần.
+professional development | noun | /prəˈfeʃənl dɪˈveləpmənt/ | training to improve job skills | phát triển chuyên môn | The company budgets for professional development each year. | Công ty có ngân sách cho phát triển chuyên môn hằng năm.
+upskill | verb | /ˈʌpskl/ | to learn new skills for your job | nâng cao kỹ năng | The factory is paying staff to upskill in automation. | Nhà máy trả tiền cho nhân viên nâng cao kỹ năng tự động hóa.
+retrain | verb | /ˌriːˈtreɪn/ | to teach someone a new job skill | đào tạo lại nghề | Workers were retrained to operate the new machines. | Công nhân được đào tạo lại để vận hành máy móc mới.
+orientation | noun | /ˌɔːriənˈteɪʃn/ | an introduction session for new people | buổi định hướng | Orientation for new hires is held every Monday. | Buổi định hướng cho nhân viên mới được tổ chức vào mỗi thứ Hai.
+course fee | noun | /kɔːrs fiː/ | the money charged for a course | học phí khóa học | The course fee includes all materials. | Học phí khóa học đã bao gồm toàn bộ tài liệu.

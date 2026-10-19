@@ -1,0 +1,50 @@
+contract | noun | /ˈkɑːntrækt/ | a written legal agreement between parties | hợp đồng | Both parties signed the contract on Monday. | Hai bên đã ký hợp đồng vào thứ Hai.
+agreement | noun | /əˈɡriːmənt/ | an arrangement accepted by all sides | thỏa thuận | The two companies reached an agreement after weeks of talks. | Hai công ty đạt được thỏa thuận sau nhiều tuần đàm phán.
+clause | noun | /klɔːz/ | one section of a legal document | điều khoản | The payment clause requires a deposit of 20 percent. | Điều khoản thanh toán yêu cầu đặt cọc 20 phần trăm.
+termination | noun | /ˌtɜːrmɪˈneɪʃn/ | the act of ending a contract or job | việc chấm dứt | Either side may give 30 days' notice of termination. | Mỗi bên có thể thông báo chấm dứt trước 30 ngày.
+renewal | noun | /rɪˈnuːəl/ | the act of extending a contract for another period | việc gia hạn | The lease is up for renewal in March. | Hợp đồng thuê sẽ đến hạn gia hạn vào tháng Ba.
+expiry | noun | /ɪkˈspaɪəri/ | the date when something stops being valid | ngày hết hạn | Please note the expiry date on the warranty card. | Vui lòng chú ý ngày hết hạn trên thẻ bảo hành.
+validity | noun | /vəˈlɪdəti/ | the state of being legally or officially acceptable | tính hiệu lực | The court questioned the validity of the signature. | Tòa án đặt nghi vấn về tính hiệu lực của chữ ký.
+void | adjective | /vɔɪd/ | having no legal force | vô hiệu | The agreement became void when the deadline passed. | Thỏa thuận trở nên vô hiệu khi quá thời hạn.
+enforceable | adjective | /ɪnˈfɔːrsəbl/ | able to be made to happen by law | có thể thi hành | A verbal promise is rarely enforceable in court. | Một lời hứa miệng hiếm khi có thể thi hành trước tòa.
+binding | adjective | /ˈbaɪndɪŋ/ | that must be obeyed by law or agreement | có tính ràng buộc | The quote is not binding until it is signed. | Bản báo giá không có tính ràng buộc cho đến khi được ký.
+obligation | noun | /ˌɑːblɪˈɡeɪʃn/ | something you must do because of a rule or contract | nghĩa vụ | The supplier has an obligation to deliver by the end of June. | Nhà cung cấp có nghĩa vụ giao hàng trước cuối tháng Sáu.
+liable | adjective | /ˈlaɪəbl/ | legally responsible for something | chịu trách nhiệm pháp lý | The carrier is liable for any damage during transit. | Đơn vị vận chuyển chịu trách nhiệm pháp lý cho mọi hư hỏng trong quá trình vận chuyển.
+liability | noun | /ˌlaɪəˈbɪləti/ | legal responsibility for something | trách nhiệm pháp lý | The contract limits the company's liability to the value of the goods. | Hợp đồng giới hạn trách nhiệm pháp lý của công ty ở giá trị hàng hóa.
+indemnity | noun | /ɪnˈdemnəti/ | protection against loss, usually by payment | sự bồi thường, bảo đảm | The policy provides indemnity against theft. | Hợp đồng bảo hiểm cung cấp bảo đảm chống trộm cắp.
+indemnify | verb | /ɪnˈdemnɪfaɪ/ | to promise to pay someone for a loss | bồi thường, bảo đảm | The contractor agreed to indemnify the client against claims. | Nhà thầu đồng ý bồi thường cho khách hàng nếu có khiếu kiện.
+confidentiality | noun | /ˌkɑːnfɪˌdenʃiˈæləti/ | the state of keeping information secret | tính bảo mật | All staff must sign a confidentiality agreement. | Mọi nhân viên phải ký thỏa thuận bảo mật.
+disclose | verb | /dɪsˈkloʊz/ | to make information known | tiết lộ | Candidates must disclose any conflicts of interest. | Ứng viên phải tiết lộ mọi xung đột lợi ích.
+disclosure | noun | /dɪsˈkloʊʒər/ | the act of making information public | sự tiết lộ | The report requires full disclosure of fees. | Báo cáo yêu cầu tiết lộ đầy đủ các khoản phí.
+proprietary | adjective | /prəˈpraɪəteri/ | owned by a company and kept secret | độc quyền, sở hữu riêng | The software uses proprietary code that cannot be shared. | Phần mềm dùng mã độc quyền không thể chia sẻ.
+copyright | noun | /ˈkɑːpiraɪt/ | the legal right to control use of a work | bản quyền | The images are protected by copyright. | Các hình ảnh được bảo vệ bởi bản quyền.
+trademark | noun | /ˈtreɪdmɑːrk/ | a name or symbol that identifies a company | nhãn hiệu | The logo is a registered trademark of the firm. | Biểu trưng là nhãn hiệu đã đăng ký của công ty.
+patent | noun | /ˈpætnt/ | a legal right to an invention | bằng sáng chế | The engineer filed a patent for the new design. | Kỹ sư đã nộp đơn xin bằng sáng chế cho thiết kế mới.
+infringement | noun | /ɪnˈfrɪndʒmənt/ | the breaking of a law or right | sự xâm phạm | The company was sued for copyright infringement. | Công ty bị kiện vì xâm phạm bản quyền.
+lawsuit | noun | /ˈlɔːsuːt/ | a legal case brought to a court | vụ kiện | The supplier faces a lawsuit over the defective goods. | Nhà cung cấp đối mặt với vụ kiện vì hàng hóa lỗi.
+plaintiff | noun | /ˈpleɪntɪf/ | the person who brings a case to court | nguyên đơn | The plaintiff claims the goods were never delivered. | Nguyên đơn cho rằng hàng hóa chưa bao giờ được giao.
+defendant | noun | /dɪˈfendənt/ | the person accused in a court case | bị đơn | The defendant denied breaking the agreement. | Bị đơn phủ nhận việc vi phạm thỏa thuận.
+settlement | noun | /ˈsetlmənt/ | an official agreement ending a disagreement | sự hòa giải, dàn xếp | The parties reached a settlement out of court. | Các bên đạt được dàn xếp ngoài tòa.
+arbitrate | verb | /ˈɑːrbɪtreɪt/ | to settle a dispute as a neutral judge | phân xử | A retired judge was appointed to arbitrate the dispute. | Một thẩm phán đã nghỉ hưu được chỉ định phân xử tranh chấp.
+arbitration | noun | /ˌɑːrbɪˈtreɪʃn/ | the process of settling a dispute outside court | trọng tài | The contract requires arbitration rather than litigation. | Hợp đồng yêu cầu trọng tài thay vì kiện ra tòa.
+mediate | verb | /ˈmiːdieɪt/ | to help two sides reach an agreement | hòa giải | A lawyer was hired to mediate between the two firms. | Một luật sư được thuê để hòa giải giữa hai công ty.
+mediation | noun | /ˌmiːdiˈeɪʃn/ | the process of helping sides reach agreement | sự hòa giải | Mediation is cheaper and faster than a trial. | Hòa giải rẻ và nhanh hơn xét xử.
+jurisdiction | noun | /ˌdʒʊrɪsˈdɪkʃn/ | the area or court where a case is heard | thẩm quyền | The case falls under the jurisdiction of the local court. | Vụ việc thuộc thẩm quyền của tòa án địa phương.
+compliance | noun | /kəmˈplaɪəns/ | the act of obeying rules and laws | sự tuân thủ | The factory passed its annual compliance inspection. | Nhà máy đã vượt qua kỳ thanh tra tuân thủ hằng năm.
+regulation | noun | /ˌreɡjuˈleɪʃn/ | an official rule made by a government | quy định | New safety regulations take effect in January. | Các quy định an toàn mới có hiệu lực vào tháng Một.
+statute | noun | /ˈstætʃuːt/ | a law passed by a parliament | đạo luật | The statute sets a minimum wage for all workers. | Đạo luật quy định mức lương tối thiểu cho mọi lao động.
+provision | noun | /prəˈvɪʒn/ | a condition in a law or contract | điều khoản, quy định | The lease contains a provision about pets. | Hợp đồng thuê có một điều khoản về vật nuôi.
+amendment | noun | /əˈmendmənt/ | a change made to a law or document | sự sửa đổi | Both sides accepted the amendment to the payment terms. | Hai bên chấp nhận sửa đổi đối với điều khoản thanh toán.
+amend | verb | /əˈmend/ | to change a document or law slightly | sửa đổi | The contract was amended to extend the deadline. | Hợp đồng được sửa đổi để kéo dài thời hạn.
+covenant | noun | /ˈkʌvənənt/ | a formal promise in a contract | giao kèo, cam kết | The covenant restricts the use of the land. | Giao kèo hạn chế việc sử dụng khu đất.
+waiver | noun | /ˈweɪvər/ | an official statement giving up a right | sự từ bỏ quyền | The tenant signed a waiver of the repair claim. | Người thuê ký giấy từ bỏ quyền khiếu nại sửa chữa.
+waive | verb | /weɪv/ | to give up a right or a rule | từ bỏ | The bank agreed to waive the transfer fee. | Ngân hàng đồng ý miễn phí chuyển khoản.
+stipulate | verb | /ˈstɪpjuleɪt/ | to state a condition clearly in an agreement | quy định rõ | The contract stipulates delivery within ten days. | Hợp đồng quy định rõ việc giao hàng trong vòng mười ngày.
+stipulation | noun | /ˌstɪpjuˈleɪʃn/ | a clear condition in an agreement | điều kiện quy định | The main stipulation is that the work must be finished by May. | Điều kiện quy định chính là công việc phải hoàn thành trước tháng Năm.
+rescind | verb | /rɪˈsɪnd/ | to officially cancel an agreement | hủy bỏ | The buyer may rescind the contract if delivery is late. | Người mua có thể hủy hợp đồng nếu giao hàng trễ.
+force majeure | noun | /ˌfɔːrs mæˈʒɜːr/ | unexpected events that excuse a contract obligation | bất khả kháng | The delay was caused by force majeure, so no penalty applies. | Việc chậm trễ do bất khả kháng nên không bị phạt.
+governing law | noun | /ˈɡʌvərnɪŋ lɔː/ | the law that applies to a contract | luật điều chỉnh | The governing law of the agreement is Vietnamese law. | Luật điều chỉnh của thỏa thuận là luật Việt Nam.
+legal counsel | noun | /ˈliːɡl ˈkaʊnsl/ | a lawyer or team of lawyers | cố vấn pháp lý | Please review the draft with legal counsel first. | Vui lòng xem lại bản nháp với cố vấn pháp lý trước.
+notary | noun | /ˈnoʊtəri/ | an official who certifies documents | công chứng viên | The signature must be certified by a notary. | Chữ ký phải được công chứng viên chứng nhận.
+affidavit | noun | /ˌæfɪˈdeɪvɪt/ | a written statement confirmed by oath | bản khai có tuyên thệ | She signed an affidavit describing the incident. | Cô ấy ký bản khai có tuyên thệ mô tả sự việc.
+testimony | noun | /ˈtestɪmoʊni/ | a formal statement given in court | lời khai | His testimony supported the plaintiff's claim. | Lời khai của anh ấy ủng hộ yêu cầu của nguyên đơn.

@@ -1,0 +1,50 @@
+retailer | noun | /ˈriːteɪlər/ | a company or shop that sells goods to the public | nhà bán lẻ | The retailer operates 40 stores across the country. | Nhà bán lẻ vận hành 40 cửa hàng trên khắp cả nước.
+merchandise | noun | /ˈmɜːrtʃəndaɪs/ | goods offered for sale | hàng hóa | All merchandise is displayed near the entrance. | Toàn bộ hàng hóa được trưng bày gần lối vào.
+browse | verb | /braʊz/ | to look at goods without a fixed plan to buy | xem hàng, duyệt | Customers can browse the catalog online. | Khách hàng có thể xem danh mục trực tuyến.
+voucher | noun | /ˈvaʊtʃər/ | a printed piece of paper used instead of money | phiếu quà tặng, phiếu mua hàng | The voucher can be used on any purchase over $50. | Phiếu mua hàng có thể dùng cho mọi đơn từ 50 đô la.
+loyalty | noun | /ˈlɔɪəlti/ | continued support for a brand or shop | lòng trung thành | The loyalty program rewards repeat customers. | Chương trình khách hàng thân thiết thưởng cho khách quay lại.
+membership | noun | /ˈmembərʃɪp/ | the state of belonging to a group or club | tư cách thành viên | Membership gives you free delivery for a year. | Tư cách thành viên cho bạn miễn phí giao hàng trong một năm.
+fitting room | noun | /ˈfɪtɪŋ ruːm/ | a small room for trying on clothes | phòng thử đồ | The fitting rooms are at the back of the store. | Phòng thử đồ nằm ở cuối cửa hàng.
+mannequin | noun | /ˈmænɪkɪn/ | a model of a human body used to display clothes | ma-nơ-canh | The new jacket is on the mannequin by the window. | Chiếc áo khoác mới được mặc trên ma-nơ-canh cạnh cửa sổ.
+scanner | noun | /ˈskænər/ | a device that reads barcodes | máy quét | The cashier passed each item over the scanner. | Thu ngân quét từng món hàng qua máy quét.
+packaging | noun | /ˈpækɪdʒɪŋ/ | the material used to wrap and protect goods | bao bì | The company switched to recyclable packaging. | Công ty đã chuyển sang bao bì tái chế.
+bundle | noun | /ˈbʌndl/ | a group of products sold together | gói, combo | The bundle includes a printer and two ink cartridges. | Gói sản phẩm gồm một máy in và hai hộp mực.
+limited edition | noun | /ˈlɪmɪtɪd ɪˈdɪʃn/ | a product made in small numbers | phiên bản giới hạn | The limited edition sold out in a single day. | Phiên bản giới hạn bán hết chỉ trong một ngày.
+bestseller | noun | /ˌbestˈselər/ | a product that sells in very large numbers | sản phẩm bán chạy nhất | The new phone was the store's bestseller last quarter. | Chiếc điện thoại mới là sản phẩm bán chạy nhất của cửa hàng quý trước.
+outlet | noun | /ˈaʊtlet/ | a shop that sells goods at reduced prices | cửa hàng giảm giá | The outlet sells last season's stock at half price. | Cửa hàng giảm giá bán hàng tồn mùa trước với giá một nửa.
+e-commerce | noun | /ˈiː kɑːmɜːrs/ | buying and selling on the internet | thương mại điện tử | E-commerce now accounts for a third of total sales. | Thương mại điện tử hiện chiếm một phần ba tổng doanh số.
+online store | noun | /ˌɑːnˈlaɪn stɔːr/ | a website where goods are sold | cửa hàng trực tuyến | The online store offers faster checkout than the app. | Cửa hàng trực tuyến thanh toán nhanh hơn ứng dụng.
+product line | noun | /ˈprɑːdʌkt laɪn/ | a group of related products sold by a company | dòng sản phẩm | The company added a new product line for home offices. | Công ty bổ sung một dòng sản phẩm mới cho văn phòng tại nhà.
+product launch | noun | /ˈprɑːdʌkt lɔːntʃ/ | the introduction of a new product to the market | ra mắt sản phẩm | The product launch is scheduled for early October. | Việc ra mắt sản phẩm dự kiến vào đầu tháng Mười.
+product range | noun | /ˈprɑːdʌkt reɪndʒ/ | all the products a company offers | dải sản phẩm | The retailer expanded its product range to include furniture. | Nhà bán lẻ mở rộng dải sản phẩm để bao gồm đồ nội thất.
+shelf life | noun | /ˈʃelf laɪf/ | the length of time goods stay usable | hạn sử dụng | Fresh bread has a shelf life of only two days. | Bánh mì tươi chỉ có hạn sử dụng hai ngày.
+stockroom | noun | /ˈstɑːkruːm/ | a room where extra goods are kept | kho hàng | Staff restock the shelves from the stockroom each morning. | Nhân viên bổ sung hàng lên kệ từ kho mỗi sáng.
+sales floor | noun | /ˈseɪlz flɔːr/ | the area of a shop where goods are displayed | khu bán hàng | The sales floor was rearranged for the holiday season. | Khu bán hàng được sắp xếp lại cho mùa lễ.
+sales associate | noun | /ˈseɪlz əˈsoʊʃiət/ | a shop employee who serves customers | nhân viên bán hàng | A sales associate helped us find the right size. | Một nhân viên bán hàng giúp chúng tôi tìm đúng cỡ.
+shop assistant | noun | /ˈʃɑːp əsɪstənt/ | a person who serves customers in a shop | nhân viên cửa hàng | The shop assistant offered to gift-wrap the purchase. | Nhân viên cửa hàng đề nghị gói quà món hàng.
+retail price | noun | /ˈriːteɪl praɪs/ | the price a customer pays in a shop | giá bán lẻ | The retail price is printed on the back of the box. | Giá bán lẻ được in ở mặt sau hộp.
+price comparison | noun | /praɪs kəmˈperɪsn/ | the act of checking prices at different shops | so sánh giá | Price comparison sites help buyers find the lowest offer. | Các trang so sánh giá giúp người mua tìm được giá thấp nhất.
+markdown | noun | /ˈmɑːrkdaʊn/ | a reduction in the price of goods | việc giảm giá | The winter coats are on markdown this week. | Áo khoác mùa đông đang được giảm giá tuần này.
+profit margin | noun | /ˈprɑːfɪt mɑːrdʒɪn/ | the difference between cost and selling price | biên lợi nhuận | Discounts of 30 percent leave very little profit margin. | Giảm giá 30 phần trăm để lại rất ít biên lợi nhuận.
+volume discount | noun | /ˈvɑːljuːm ˈdɪskaʊnt/ | a lower price for buying in large amounts | chiết khấu theo số lượng | A volume discount applies to orders over 500 units. | Chiết khấu theo số lượng áp dụng cho đơn trên 500 sản phẩm.
+bulk order | noun | /bʌlk ˈɔːrdər/ | a large order of goods | đơn hàng số lượng lớn | Bulk orders are shipped by freight. | Đơn hàng số lượng lớn được gửi bằng đường vận tải hàng hóa.
+minimum order | noun | /ˈmɪnɪməm ˈɔːrdər/ | the smallest amount you must buy | đơn hàng tối thiểu | The minimum order for free delivery is $75. | Đơn hàng tối thiểu để được miễn phí giao hàng là 75 đô la.
+order confirmation | noun | /ˈɔːrdər kənfərˈmeɪʃn/ | a message confirming an order was received | xác nhận đơn hàng | An order confirmation was emailed within minutes. | Xác nhận đơn hàng được gửi qua email trong vài phút.
+shipping fee | noun | /ˈʃɪpɪŋ fiː/ | the money charged to send goods | phí vận chuyển | The shipping fee depends on the delivery address. | Phí vận chuyển phụ thuộc vào địa chỉ giao hàng.
+delivery fee | noun | /dɪˈlɪvəri fiː/ | the charge for bringing goods to a customer | phí giao hàng | The delivery fee is waived for members. | Phí giao hàng được miễn cho thành viên.
+free shipping | noun | /friː ˈʃɪpɪŋ/ | delivery at no extra cost | miễn phí vận chuyển | The store offers free shipping on orders over $50. | Cửa hàng miễn phí vận chuyển cho đơn trên 50 đô la.
+same-day delivery | noun | /ˌseɪm ˈdeɪ dɪˈlɪvəri/ | a service that delivers on the day of order | giao hàng trong ngày | Same-day delivery is available in the city center. | Giao hàng trong ngày có sẵn ở khu trung tâm thành phố.
+return label | noun | /rɪˈtɜːrn ˈleɪbl/ | a printed label for sending goods back | nhãn trả hàng | A return label is included in every parcel. | Mỗi kiện hàng đều kèm một nhãn trả hàng.
+store credit | noun | /stɔːr ˈkredɪt/ | money owed by a shop that can be spent there | tín dụng cửa hàng | Instead of a refund, she accepted store credit. | Thay vì hoàn tiền, cô ấy nhận tín dụng cửa hàng.
+gift card | noun | /ɡɪft kɑːrd/ | a card worth a set amount to spend in a shop | thẻ quà tặng | Gift cards can be used both online and in store. | Thẻ quà tặng dùng được cả trực tuyến và tại cửa hàng.
+loyalty points | noun | /ˈlɔɪəlti pɔɪnts/ | points earned for purchases and exchanged for rewards | điểm thân thiết | Members collect loyalty points on every purchase. | Thành viên tích điểm thân thiết mỗi khi mua hàng.
+wish list | noun | /wɪʃ lɪst/ | a list of things someone wants to buy | danh sách yêu thích | You can save items to your wish list for later. | Bạn có thể lưu sản phẩm vào danh sách yêu thích để xem sau.
+product review | noun | /ˈprɑːdʌkt rɪˈvjuː/ | a customer's opinion about a product | đánh giá sản phẩm | Read the product reviews before choosing a model. | Đọc đánh giá sản phẩm trước khi chọn mẫu.
+star rating | noun | /stɑːr ˈreɪtɪŋ/ | a score shown with stars | xếp hạng sao | The app has an average star rating of 4.6. | Ứng dụng có xếp hạng sao trung bình là 4,6.
+upselling | noun | /ˈʌpselɪŋ/ | persuading customers to buy a more expensive item | bán nâng cấp | Staff are trained in upselling without being pushy. | Nhân viên được đào tạo bán nâng cấp mà không gây khó chịu.
+cross-selling | noun | /ˈkrɔːsselɪŋ/ | selling related products to an existing customer | bán chéo | The checkout page suggests accessories for cross-selling. | Trang thanh toán gợi ý phụ kiện để bán chéo.
+counterfeit | adjective | /ˈkaʊntərfɪt/ | made to look real in order to deceive | hàng giả | Customs seized a shipment of counterfeit handbags. | Hải quan thu giữ một lô túi xách giả.
+point of sale | noun | /pɔɪnt əv seɪl/ | the place where a customer pays | điểm bán hàng | The new point of sale system accepts mobile payments. | Hệ thống điểm bán hàng mới chấp nhận thanh toán di động.
+cash register | noun | /kæʃ ˈredʒɪstər/ | a machine that holds money and records sales | máy tính tiền | The cash register was down for ten minutes. | Máy tính tiền bị lỗi trong mười phút.
+contactless payment | noun | /ˈkɑːntæktləs ˈpeɪmənt/ | paying by holding a card near a reader | thanh toán không tiếp xúc | Contactless payment is now accepted at every branch. | Thanh toán không tiếp xúc hiện được chấp nhận ở mọi chi nhánh.
+flash sale | noun | /flæʃ seɪl/ | a sale lasting a very short time | khuyến mãi chớp nhoáng | The flash sale runs for only six hours. | Đợt khuyến mãi chớp nhoáng chỉ kéo dài sáu giờ.
