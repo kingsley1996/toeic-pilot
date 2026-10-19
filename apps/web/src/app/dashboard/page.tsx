@@ -420,13 +420,16 @@ export default function TodayPage() {
               value={progress?.total ?? stats?.vocabulary_total ?? null}
             />
             {/* Số duy nhất ở đây ĐÒI hành động, nên nó là số duy nhất được tô
-                màu khi khác 0 — màu là tín hiệu, không phải trang trí (§6.3). */}
+                màu khi khác 0 — màu là tín hiệu, không phải trang trí (§6.3).
+                Con số là TỔNG của phiên (đến hạn + từ mới), đúng bằng huy hiệu
+                trên nav và nút bên dưới; nhãn "Đến hạn" cũ là lời nói dối với
+                người mới — từ chưa từng gặp thì chưa đến hạn. */}
             <StatTile
               Icon={TrendingUp}
               tint="bg-warn-tint text-warn"
-              label="Đến hạn"
-              value={session?.due_count ?? progress?.due ?? null}
-              tone={session && session.due_count > 0 ? "text-warn" : undefined}
+              label="Thẻ hôm nay"
+              value={waiting}
+              tone={waiting !== null && waiting > 0 ? "text-warn" : undefined}
             />
             <StatTile
               Icon={BookOpen}
@@ -466,9 +469,10 @@ export default function TodayPage() {
                chiếm cả chiều ngang như ảnh mẫu: trên một bảng điều khiển đầy số,
                việc cần làm phải to hơn thứ đang mô tả tình hình. */
             <div className="mt-6 flex flex-col gap-2 border-t border-rule pt-5">
-              {/* Hai badge riêng thay vì một con số gộp: tổng trên nút bằng
-                  tổng thẻ trong lô, mà không tách thì số đó mâu thuẫn với
-                  huy hiệu "đến hạn" trên nav khi lô có kèm từ mới. */}
+              {/* Hai badge riêng là phần tách ra của con số trên nút — cùng
+                  con số với huy hiệu trên nav, vì cả hai đọc chung một endpoint
+                  (`reviewSession?include_cards=false`). Không tách thì người
+                  học không biết lô có bao nhiêu từ mới. */}
               <div className="flex flex-wrap gap-2">
                 {session && session.due_count > 0 && (
                   <Tag tone="warn">{session.due_count} ôn lại</Tag>

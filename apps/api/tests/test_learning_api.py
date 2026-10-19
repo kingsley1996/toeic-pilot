@@ -6,7 +6,8 @@ showing the content — no error, no log line.
 """
 
 import uuid
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
 import pytest
 from fastapi.testclient import TestClient
@@ -19,6 +20,7 @@ from app.models import (
     DictationItem,
     Topic,
     User,
+    UserProfile,
     VocabularyAudio,
     VocabularyCollection,
     VocabularyCollectionItem,
@@ -28,7 +30,13 @@ from app.models import (
     VocabularyTopic,
     XpEvent,
 )
-from app.services.srs import GRADE_FORGOT, GRADE_GOOD, GRADE_HARD, GRADE_MASTERED
+from app.services.srs import (
+    GRADE_FORGOT,
+    GRADE_GOOD,
+    GRADE_HARD,
+    GRADE_MASTERED,
+    NEW_CARDS_PER_DAY,
+)
 from tests.test_domain_model import make_audio
 
 
@@ -273,6 +281,77 @@ def test_an_overdue_card_comes_back(
     body = client.get("/api/v1/vocabulary-review/session", headers=headers).json()
     assert body["due_count"] == 1
     assert body["cards"][0]["is_new"] is False
+
+
+def _set_noon_timezone(db_session: Session, learner: User) -> ZoneInfo:
+    """Đặt múi giờ hồ sơ sao cho giờ địa phương là 12:00, trả về zone.
+
+    Hai test dưới nói về biên NGÀY địa phương; chạy lúc 23:59 giờ Việt Nam thì
+    "1 giờ nữa" và "23 giờ tối qua" đều rơi sang ngày khác, và test đỏ vì đồng
+    hồ chứ không vì code. Kéo giờ địa phương về buổi trưa làm các khoảng cách
+    trong ngày trở nên xác định.
+    """
+    offset = 12 - datetime.now(UTC).hour
+    zone = ZoneInfo("Etc/UTC" if offset == 0 else f"Etc/GMT{-offset:+d}")
+    db_session.add(UserProfile(user_id=learner.id, timezone=str(zone)))
+    db_session.commit()
+    return zone
+
+
+def test_a_word_due_later_today_is_already_in_the_session(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    """Đến hạn TRONG hôm nay là đủ — mở phiên lúc nào cũng nhận.
+
+    Cùng cửa sổ `day_bounds` với huy hiệu và daily task: con số đứng yên suốt
+    ngày (người mở app buổi sáng thấy đúng con số người mở buổi tối thấy) thay
+    vì nhích lên theo từng thẻ đến hạn.
+    """
+    _set_noon_timezone(db_session, learner)
+    entry = make_word(db_session, "invoice", marker="a")
+    db_session.add(
+        VocabularyReviewState(
+            user_id=learner.id,
+            entry_id=entry.id,
+            interval_days=1,
+            repetitions=1,
+            due_at=datetime.now(UTC) + timedelta(hours=1),
+        )
+    )
+    db_session.commit()
+
+    body = client.get("/api/v1/vocabulary-review/session", headers=headers).json()
+    assert body["due_count"] == 1
+
+
+def test_the_daily_new_budget_resets_at_local_midnight(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    """Ngạch từ mới tính theo NGÀY địa phương, không phải 24 giờ trượt.
+
+    Mười hai tiếng trước (23 giờ tối HÔM QUA theo giờ địa phương) người học đã
+    mở đủ ngạch từ mới. Cửa sổ 24 giờ trượt vẫn tính chúng, nhưng đã qua nửa
+    đêm — hôm nay phải có ngạch mới, nếu không ai học tối là sáng hôm sau
+    không còn từ mới nào.
+    """
+    zone = _set_noon_timezone(db_session, learner)
+    midnight_utc = datetime.combine(
+        datetime.now(UTC).astimezone(zone).date(), time.min, tzinfo=zone
+    ).astimezone(UTC)
+    late_last_night = midnight_utc - timedelta(hours=1)
+
+    for index in range(NEW_CARDS_PER_DAY):
+        entry = make_word(db_session, f"word{index}", marker=str(index))
+        db_session.add(
+            VocabularyReviewState(
+                user_id=learner.id, entry_id=entry.id, created_at=late_last_night
+            )
+        )
+    make_word(db_session, "unseen", marker="z")
+    db_session.commit()
+
+    body = client.get("/api/v1/vocabulary-review/session", headers=headers).json()
+    assert body["new_count"] == 1
 
 
 def test_a_draft_entry_never_enters_a_session(

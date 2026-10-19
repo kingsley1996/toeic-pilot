@@ -20,7 +20,7 @@ import { FeedbackDock } from "@/components/feedback-dock";
 import { PetlandCard } from "@/components/petland/petland-card";
 import { SidebarShell, TopBarShell } from "@/components/shell";
 import { SiteFooter } from "@/components/site-footer";
-import { useDueCount } from "@/lib/due-count";
+import { useReviewCount } from "@/lib/review-count";
 import { useSession } from "@/lib/session";
 
 /*
@@ -144,13 +144,15 @@ const BLOG_LINK: NavItem = { href: "/blog", label: "Blog", Icon: Newspaper };
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const due = useDueCount();
+  const reviewCount = useReviewCount();
   const { status } = useSession();
   const signedIn = status === "authenticated";
   // Gắn huy hiệu vào đúng mục từ vựng. Ghép theo `href`, không theo chỉ số:
   // thêm hay đổi thứ tự mục thì huy hiệu vẫn bám đúng chỗ.
   const withBadge = (list: NavItem[]): NavItem[] =>
-    list.map((link) => (link.href === "/learn/vocabulary" ? { ...link, badge: due } : link));
+    list.map((link) =>
+      link.href === "/learn/vocabulary" ? { ...link, badge: reviewCount } : link,
+    );
 
   // Thanh trên của trang giới thiệu: LUÔN đúng ba kho nội dung, không phụ thuộc
   // phiên. Sidebar thì thêm các mục của tài khoản khi đã đăng nhập, giữ nguyên

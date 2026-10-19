@@ -151,7 +151,6 @@ export type VocabularyPage =
 export type CollocationRow = components["schemas"]["CollocationRow"];
 export type CollocationParseResponse = components["schemas"]["CollocationParseResponse"];
 export type CollocationUpdate = components["schemas"]["CollocationUpdate"];
-export type ReviewDueCount = components["schemas"]["ReviewDueCount"];
 export type DictationPage = components["schemas"]["Page_DictationSummary_"];
 export type VocabularyAdminPage = components["schemas"]["Page_VocabularyAdmin_"];
 export type DictationAdminPage = components["schemas"]["Page_DictationAdmin_"];
@@ -418,7 +417,6 @@ export const API_ROUTES = {
   vocabularyCollocations: "/api/v1/vocabulary-collocations",
   collocationAnswer: (id: string) => `/api/v1/vocabulary/${id}/collocation-answer`,
   reviewSession: "/api/v1/vocabulary-review/session",
-  reviewDueCount: "/api/v1/vocabulary-review/due-count",
   // Gạch nối, không phải `/vocabulary/progress`: route `/vocabulary/{entry_id}`
   // sẽ bắt "progress" trước rồi 422 khi parse nó thành UUID.
   vocabularyProgress: "/api/v1/vocabulary-progress",

@@ -268,8 +268,11 @@ function WordList() {
             </span>
             <div className="flex-1" />
             {progress.due > 0 ? (
+              // Không kèm con số: nút mở phiên ôn TOÀN CỤC, còn `progress.due`
+              // chỉ đếm từ đến hạn của chủ đề này — "Ôn 5 từ đến hạn" rồi nhận
+              // một phiên 40 thẻ là con số hứa sai.
               <ButtonLink href="/learn/review" size="sm">
-                Ôn {progress.due} từ đến hạn
+                Ôn tập ngay
               </ButtonLink>
             ) : (
               <ButtonLink

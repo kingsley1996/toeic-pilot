@@ -350,3 +350,55 @@ def test_forgetting_a_word_that_was_learned_still_counts() -> None:
     # cho mỗi từ mãi mãi.
     again = review(ReviewState(interval_days=1, repetitions=0, lapses=1), GRADE_FORGOT, now)
     assert again.lapses == 2
+
+
+def test_passing_a_mastered_word_does_not_drop_it_back_to_six_days() -> None:
+    """Lượt pass sau "Thành thạo" phải giãn ra, không rơi về 6 ngày.
+
+    Thẻ vừa bấm grade 6 có repetitions = 1, interval = 21; lượt pass kế tiếp
+    rơi đúng vào nhánh `repetitions == 2` và từng bị kéo về 6 — nút Thành thạo
+    tự giáng cấp ở ngay lượt sau, và `mastery()` đọc lại thành "đang học".
+    """
+    from app.services.srs import (
+        GRADE_GOOD,
+        GRADE_MASTERED,
+        MASTERED_INTERVAL_DAYS,
+        MASTERY_MASTERED,
+        ReviewState,
+        mastery,
+        review,
+    )
+
+    now = datetime(2026, 8, 10, tzinfo=UTC)
+    mastered = review(ReviewState(), GRADE_MASTERED, now)
+    again = review(
+        ReviewState(
+            ease_factor=mastered.ease_factor,
+            interval_days=mastered.interval_days,
+            repetitions=mastered.repetitions,
+            lapses=mastered.lapses,
+        ),
+        GRADE_GOOD,
+        now,
+    )
+    assert again.interval_days > MASTERED_INTERVAL_DAYS
+    assert mastery(ReviewState(interval_days=again.interval_days)) == MASTERY_MASTERED
+
+    # Và bước nhảy 1 → 6 vẫn nguyên cho thẻ mới: điều kiện thêm vào không được
+    # tắt luôn nhánh đó.
+    first = review(ReviewState(), GRADE_GOOD, now)
+    second = review(
+        ReviewState(interval_days=first.interval_days, repetitions=first.repetitions),
+        GRADE_GOOD,
+        now,
+    )
+    assert second.interval_days == 6
+
+
+def test_pressing_mastered_again_never_shortens_a_longer_interval() -> None:
+    """Thẻ đã giãn 60 ngày mà bấm Thành thạo lần nữa vẫn giữ 60, không về 21."""
+    from app.services.srs import GRADE_MASTERED, ReviewState, review
+
+    now = datetime(2026, 8, 10, tzinfo=UTC)
+    out = review(ReviewState(interval_days=60, repetitions=4), GRADE_MASTERED, now)
+    assert out.interval_days == 60

@@ -23,6 +23,7 @@ from app.models.vocabulary import (
     VocabularyReviewState,
 )
 from app.schemas.profile import LearningStats, StudyDay
+from app.services.daily_tasks import day_bounds
 from app.services.srs import MASTERED_INTERVAL_DAYS
 
 PUBLISHED = "published"
@@ -160,6 +161,10 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
     now = datetime.now(UTC)
     since = now - timedelta(days=STREAK_WINDOW_DAYS)
     today = now.astimezone(zone).date()
+    # "Đến hạn" là đến hạn trong HÔM NAY theo múi giờ người học (`day_bounds`),
+    # không phải đến hạn ngay lúc này: con số này phải khớp với con số trên
+    # huy hiệu và trong phiên ôn, cùng một định nghĩa ngày.
+    _, due_hi = day_bounds(today, timezone)
 
     # --- từ vựng: cùng mẫu số với `GET /vocabulary-progress`, tức là chỉ những
     # từ đã publish. Đếm cả từ draft sẽ cho ra một tổng mà học viên không bao giờ
@@ -192,7 +197,7 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
             .where(
                 VocabularyReviewState.user_id == user_id,
                 published,
-                VocabularyReviewState.due_at <= now,
+                VocabularyReviewState.due_at < due_hi,
             ),
             select(literal("reviews_total"), func.count())
             .select_from(VocabularyReviewLog)

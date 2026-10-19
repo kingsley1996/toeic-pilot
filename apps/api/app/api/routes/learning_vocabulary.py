@@ -13,7 +13,7 @@ import logging
 import random
 import uuid
 from collections.abc import Sequence
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -52,7 +52,6 @@ from app.schemas.learning import (
     RecallResult,
     RecallSubmit,
     ReviewCard,
-    ReviewDueCount,
     ReviewResult,
     ReviewSession,
     ReviewSubmit,
@@ -71,6 +70,7 @@ from app.schemas.learning import (
     VocabularyTopicProgress,
 )
 from app.services import progression, ruby
+from app.services.daily_tasks import day_bounds
 from app.services.pet_state import StudyReward, reward_study
 from app.services.profile import ensure_profile
 from app.services.recall import VERDICT_UNKNOWN, grade_for, judge
@@ -1023,34 +1023,6 @@ def _review_result(
 # --- review session -------------------------------------------------------
 
 
-@router.get("/vocabulary-review/due-count", response_model=ReviewDueCount)
-def review_due_count(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> ReviewDueCount:
-    """Bao nhiêu từ đang đến hạn, và không gì khác.
-
-    Huy hiệu trên thanh điều hướng gọi endpoint này ở mọi lần đổi trang, nên nó
-    phải là MỘT lượt `COUNT` chứ không phải một lượt dựng danh sách rồi đếm.
-
-    Đếm KHÔNG có `limit`, khác `review_session`: ở đó `limit` là kích thước một
-    buổi học, còn ở đây con số là toàn bộ hàng đợi. Mượn `due_count` của session
-    sẽ chặn ở 100 và người có 150 từ đến hạn thấy 100 — sai mà vẫn hợp lý, nên
-    không ai phát hiện.
-    """
-    due = db.scalar(
-        select(func.count())
-        .select_from(VocabularyReviewState)
-        .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
-        .where(
-            VocabularyReviewState.user_id == current_user.id,
-            VocabularyReviewState.due_at <= datetime.now(UTC),
-            VocabularyEntry.status == PUBLISHED,
-        )
-    )
-    return ReviewDueCount(due=due or 0)
-
-
 @router.get("/vocabulary-review/session", response_model=ReviewSession)
 def review_session(
     limit: int = Query(default=MAX_SESSION_CARDS, ge=1, le=MAX_SESSION_CARDS),
@@ -1066,7 +1038,7 @@ def review_session(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ReviewSession:
-    """Cards due now, then new ones up to the daily cap.
+    """Cards due today, then new ones up to the daily cap.
 
     Due before new on purpose: reviewing what is about to be forgotten is worth
     more than meeting something for the first time, and if the session is cut
@@ -1079,28 +1051,42 @@ def review_session(
     đọc code.
     """
     now = datetime.now(UTC)
+    # "Hôm nay" theo múi giờ người học, cùng định nghĩa ngày với chuỗi ngày và
+    # daily task (`day_bounds`): con số của phiên chỉ đổi khi nửa đêm địa
+    # phương đi qua, không chảy dần theo từng giờ như cửa sổ 24 giờ trượt.
+    #
+    # Đến hạn TRONG hôm nay (`due_at < hi`) chứ không phải đến hạn ngay bây
+    # giờ: ôn sớm vài tiếng là hành vi bình thường, và người mở app buổi sáng
+    # phải thấy cùng con số với người mở buổi tối.
+    timezone = ensure_profile(db, current_user).timezone
+    lo, hi = day_bounds(progression.local_today(now, timezone), timezone)
 
     due_states = db.scalars(
         select(VocabularyReviewState)
         .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
         .where(
             VocabularyReviewState.user_id == current_user.id,
-            VocabularyReviewState.due_at <= now,
+            VocabularyReviewState.due_at < hi,
             VocabularyEntry.status == PUBLISHED,
         )
-        .order_by(VocabularyReviewState.due_at)
+        # Tiebreaker: hàng loạt thẻ cùng hạn trong một ngày, và không có nó thì
+        # thứ tự giữa chúng (kể cả tập con mà `limit` cắt ra) đổi giữa hai lần
+        # đọc cùng dữ liệu.
+        .order_by(VocabularyReviewState.due_at, VocabularyReviewState.entry_id)
         .limit(limit)
     ).all()
     due_ids = [state.entry_id for state in due_states]
 
-    # New cards introduced today, counted from when the state row was created.
+    # New cards introduced today, counted from when the state row was created —
+    # the learner's calendar day, so the 20-card budget resets at local midnight.
     started_today = (
         db.scalar(
             select(func.count())
             .select_from(VocabularyReviewState)
             .where(
                 VocabularyReviewState.user_id == current_user.id,
-                VocabularyReviewState.created_at >= now - timedelta(days=1),
+                VocabularyReviewState.created_at >= lo,
+                VocabularyReviewState.created_at < hi,
             )
         )
         or 0

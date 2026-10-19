@@ -159,9 +159,9 @@ export default function ReviewPage() {
       </div>
 
       {/* Thành phần của lô: hàng đợi SM-2 và ngạch từ mới mỗi ngày chảy vào
-          cùng một lượt ôn, nên tổng thẻ có thể lớn hơn số đến hạn trên huy
-          hiệu. Hai con số phải hiện rõ ở đây, không để người học tự đếm rồi
-          nghi ngờ con số ở nơi khác. */}
+          cùng một lượt ôn. Huy hiệu trên nav đếm đúng TỔNG hai số này (cùng
+          endpoint, cùng tham số), nên hai thẻ ở đây là phần tách ra của con
+          số đó — hiện rõ để người học không phải tự đếm. */}
       <div className="mb-6 flex flex-wrap gap-2">
         {dueCount > 0 && <Tag tone="warn">{dueCount} ôn lại</Tag>}
         {newCount > 0 && <Tag tone="action">{newCount} từ mới</Tag>}

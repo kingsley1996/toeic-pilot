@@ -23,7 +23,7 @@ import {
 import { apiFetch } from "@/lib/api";
 import { SCENE_BADGES } from "@/components/scenes/scene-card";
 import { SCENES, type SceneBadge } from "@/content/scenes";
-import { useDueCount } from "@/lib/due-count";
+import { useReviewCount } from "@/lib/review-count";
 import { useSession } from "@/lib/session";
 
 /*
@@ -91,7 +91,7 @@ function BookCard({
 
 function VocabularyLanding() {
   const { status, token } = useSession();
-  const due = useDueCount();
+  const reviewCount = useReviewCount();
   // Mỗi tuyển tập một detail (mỗi cái chứa items của nó) — card trang này là
   // cuốn sách, nên cần một tầng sâu hơn `GET /vocabulary-collections` phẳng.
   const [collections, setCollections] = useState<VocabularyCollectionDetail[] | null>(null);
@@ -130,16 +130,19 @@ function VocabularyLanding() {
        * Đặt dưới danh sách thì người học phải cuộn qua mọi cuốn mới thấy việc
        * đã đến hạn, và hàng đợi SM-2 chỉ có giá trị khi được làm đúng ngày.
        *
-       * `useDueCount` trả 0 cho khách vãng lai, nên khối này tự vắng mặt.
+       * Con số là TỔNG THẺ của phiên (`useReviewCount`: đến hạn + từ mới), đúng
+       * bằng những gì bấm "Ôn ngay" sẽ nhận — không phải chỉ số từ đến hạn như
+       * dòng chữ cũ nói. `useReviewCount` trả 0 cho khách vãng lai, nên khối này
+       * tự vắng mặt.
        */}
-      {due > 0 && (
+      {reviewCount > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded border border-action bg-action-tint p-5">
           <div className="min-w-0 flex-1">
             <p className="flex items-center gap-1.5 font-semibold text-action-ink">
               <RotateCcw size={15} strokeWidth={2} aria-hidden />
-              <span className="font-data tabular-nums">{due}</span> từ đến hạn ôn
+              <span className="font-data tabular-nums">{reviewCount}</span> thẻ đang chờ bạn
             </p>
-            <p className="mt-0.5 text-small text-ink-muted">Ôn đúng lúc sắp quên thì nhớ lâu.</p>
+            <p className="mt-0.5 text-small text-ink-muted">Ôn từ đến hạn trước, rồi gặp từ mới.</p>
           </div>
           <ButtonLink href="/learn/review" size="sm">
             Ôn ngay

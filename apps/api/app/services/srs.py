@@ -146,22 +146,30 @@ def review(state: ReviewState, grade: int, now: datetime) -> ReviewOutcome:
         # "Thành thạo" = học viên khẳng định đã thuộc, và engine tôn trọng điều
         # đó bằng cách nhảy thẳng lên mốc đã-thuộc thay vì bắt chờ ba tuần. Đây
         # là lần duy nhất điểm không đo chất lượng của TRÍ NHỚ mà đo một quyết
-        # định — nên interval đặt CỨNG ở ngưỡng, không nhân với hệ số cũ.
+        # định — nên interval nhảy thẳng lên ngưỡng, không nhân với hệ số cũ.
         # Ease vẫn đi công thức chuẩn (chỉ số càng thấp càng thấy dễ), và lần
         # này vẫn tính là một lượt pass: `repetitions` nhích lên.
-        ease = next_ease(state.ease_factor, GRADE_EASY)
+        #
+        # `max` chứ không gán thẳng: một thẻ đã giãn xa hơn ngưỡng (52, 130
+        # ngày) mà bấm "Thành thạo" lần nữa thì kéo nó về 21 là giáng cấp
+        # chính từ mà người học vừa khẳng định đã thuộc.
+        interval = max(MASTERED_INTERVAL_DAYS, state.interval_days)
         return ReviewOutcome(
-            ease_factor=ease,
-            interval_days=MASTERED_INTERVAL_DAYS,
+            ease_factor=next_ease(state.ease_factor, GRADE_EASY),
+            interval_days=interval,
             repetitions=state.repetitions + 1,
             lapses=state.lapses,
-            due_at=now + timedelta(days=MASTERED_INTERVAL_DAYS),
+            due_at=now + timedelta(days=interval),
         )
 
     repetitions = state.repetitions + 1
     if repetitions == 1:
         interval = FIRST_INTERVAL_DAYS
-    elif repetitions == 2:
+    elif repetitions == 2 and state.interval_days < SECOND_INTERVAL_DAYS:
+        # `state.interval_days` trong điều kiện: thẻ vừa bấm "Thành thạo" có
+        # repetitions = 1 và interval = 21; lượt pass kế tiếp rơi đúng vào
+        # `repetitions == 2` và bị kéo về 6 ngày — bậc Thành thạo tự giáng cấp
+        # ngay lượt sau. Nhánh 1 → 6 chỉ đúng cho thẻ mới đi lên từ 1 ngày.
         interval = SECOND_INTERVAL_DAYS
     else:
         grown = Decimal(state.interval_days) * ease
