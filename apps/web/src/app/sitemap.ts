@@ -6,9 +6,11 @@ import { SITE_URL } from "@/lib/site";
 
 /*
  * URL public duy nhất crawler đọc được nội dung: trang giới thiệu, hub scenes,
- * 12 trang cảnh (tiêu đề + mô tả SSR), hub từ vựng, bảng xếp hạng, hub blog +
- * từng bài đã xuất bản. Mọi route còn lại sau đăng nhập hoặc là trang quản trị
- * — cho vào đây chỉ làm Google index trang skeleton rỗng.
+ * 12 trang cảnh (tiêu đề + mô tả + danh sách từ SSR), hub từ vựng, bảng xếp
+ * hạng, hub blog + từng bài đã xuất bản. Mọi route còn lại sau đăng nhập hoặc
+ * là trang quản trị — cho vào đây chỉ làm Google index trang skeleton rỗng.
+ * Trang /learn/vocabulary/{slug} CŨNG thuộc nhóm sau-đăng-nhập (khách chỉ thấy
+ * skeleton rồi hộp thoại login), nên không có ở đây.
  *
  * Slug blog lấy từ API lúc build (ISR 1 giờ — bài mới publish vào sitemap
  * chậm nhất 1 giờ, chấp nhận được cho SEO). API hỏng thì sitemap thiếu blog
