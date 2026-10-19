@@ -82,6 +82,7 @@ from app.services.srs import (
     MASTERY_MASTERED,
     MASTERY_NEW,
     MAX_SESSION_CARDS,
+    NEW_CARDS_PAUSE_AT,
     NEW_CARDS_PER_DAY,
     ReviewOutcome,
     ReviewState,
@@ -1046,7 +1047,7 @@ def review_session(
 
     `include_new=False` phục vụ những chế độ đòi học viên TỰ VIẾT RA từ. Bắt gõ
     lại một từ chưa từng thấy thì không có câu trả lời nào đúng được: lối thoát
-    duy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả 20/20 thẻ đều rơi
+    duy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả ngạch từ mới rơi
     vào cảnh đó — tôi phát hiện khi tự đóng vai học viên mới, không phải khi
     đọc code.
     """
@@ -1058,17 +1059,33 @@ def review_session(
     # Đến hạn TRONG hôm nay (`due_at < hi`) chứ không phải đến hạn ngay bây
     # giờ: ôn sớm vài tiếng là hành vi bình thường, và người mở app buổi sáng
     # phải thấy cùng con số với người mở buổi tối.
-    timezone = ensure_profile(db, current_user).timezone
-    lo, hi = day_bounds(progression.local_today(now, timezone), timezone)
+    profile = ensure_profile(db, current_user)
+    lo, hi = day_bounds(progression.local_today(now, profile.timezone), profile.timezone)
+    # Ngạch từ mới là lựa chọn của người học, không phải hằng số của hệ thống;
+    # `NEW_CARDS_PER_DAY` chỉ là mặc định khi hồ sơ để trống.
+    new_target = profile.daily_new_limit or NEW_CARDS_PER_DAY
+    due_filters = (
+        VocabularyReviewState.user_id == current_user.id,
+        VocabularyReviewState.due_at < hi,
+        VocabularyEntry.status == PUBLISHED,
+    )
+    # Tổng hàng đợi đến hạn, KHÔNG cắt theo `limit`: `due_count` là số thẻ của
+    # lô hôm nay (tối đa 100), còn con số này để giao diện nói được "còn bao
+    # nhiêu nữa đang chờ" thay vì để "100+" vô nghĩa với người vắng mặt tuần.
+    due_total = (
+        db.scalar(
+            select(func.count())
+            .select_from(VocabularyReviewState)
+            .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
+            .where(*due_filters)
+        )
+        or 0
+    )
 
     due_states = db.scalars(
         select(VocabularyReviewState)
         .join(VocabularyEntry, VocabularyEntry.id == VocabularyReviewState.entry_id)
-        .where(
-            VocabularyReviewState.user_id == current_user.id,
-            VocabularyReviewState.due_at < hi,
-            VocabularyEntry.status == PUBLISHED,
-        )
+        .where(*due_filters)
         # Tiebreaker: hàng loạt thẻ cùng hạn trong một ngày, và không có nó thì
         # thứ tự giữa chúng (kể cả tập con mà `limit` cắt ra) đổi giữa hai lần
         # đọc cùng dữ liệu.
@@ -1078,7 +1095,7 @@ def review_session(
     due_ids = [state.entry_id for state in due_states]
 
     # New cards introduced today, counted from when the state row was created —
-    # the learner's calendar day, so the 20-card budget resets at local midnight.
+    # the learner's calendar day, so the daily budget resets at local midnight.
     started_today = (
         db.scalar(
             select(func.count())
@@ -1092,17 +1109,17 @@ def review_session(
         or 0
     )
 
+    # Phòng còn lại cho từ mới: trần lô, và ngưỡng tạm dừng khi nợ ôn đã dày
+    # (`NEW_CARDS_PAUSE_AT`) — càng nhiều thẻ đến hạn thì càng ít từ mới, tới 0.
+    new_room = max(0, min(NEW_CARDS_PAUSE_AT, limit) - len(due_ids))
+    new_budget = max(0, min(new_target - started_today, new_room)) if include_new else 0
+
     if not include_cards:
         # Dashboard hỏi "hôm nay còn việc không": hai con số trả lời trọn câu
         # đó, còn 55 thẻ là một trăm khối audio URL mà trang không đọc tới.
         # `due_ids` đã cắt theo `limit` — giống hệt những gì một buổi học thật
         # sẽ nhận; số từ mới đếm trên cùng điều kiện + trần như đường đầy đủ,
         # nên hai nơi không thể nói hai con số khác nhau.
-        new_budget = (
-            max(0, min(NEW_CARDS_PER_DAY - started_today, limit - len(due_ids)))
-            if include_new
-            else 0
-        )
         new_seen = select(VocabularyReviewState.entry_id).where(
             VocabularyReviewState.user_id == current_user.id
         )
@@ -1124,11 +1141,9 @@ def review_session(
             if new_budget
             else 0
         )
-        return ReviewSession(due_count=len(due_ids), new_count=new_count, cards=[])
-
-    new_budget = (
-        max(0, min(NEW_CARDS_PER_DAY - started_today, limit - len(due_ids))) if include_new else 0
-    )
+        return ReviewSession(
+            due_count=len(due_ids), due_total=due_total, new_count=new_count, cards=[]
+        )
 
     new_entries: list[VocabularyEntry] = []
     if new_budget:
@@ -1155,7 +1170,9 @@ def review_session(
     cards = [ReviewCard(**_detail(e).model_dump(), is_new=False) for e in due_entries]
     cards += [ReviewCard(**_detail(e).model_dump(), is_new=True) for e in new_entries]
 
-    return ReviewSession(due_count=len(due_entries), new_count=len(new_entries), cards=cards)
+    return ReviewSession(
+        due_count=len(due_entries), due_total=due_total, new_count=len(new_entries), cards=cards
+    )
 
 
 @router.post("/vocabulary/{entry_id}/review", response_model=ReviewResult)

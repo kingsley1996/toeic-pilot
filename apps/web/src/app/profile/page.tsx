@@ -84,7 +84,7 @@ const ACCENTS = [
 ];
 
 /** Mặc định của hệ thống khi hồ sơ để trống — xem `NEW_CARDS_PER_DAY`. */
-const DEFAULT_NEW_PER_DAY = 20;
+const DEFAULT_NEW_PER_DAY = 10;
 
 /** `""` từ ô input là "để trống", và để trống nghĩa là xoá — tức `null`. */
 function orNull(value: FormDataEntryValue | null): string | null {
@@ -874,7 +874,7 @@ export default function ProfilePage() {
           >
             <Field
               label="Từ mới mỗi ngày"
-              hint={`Bỏ trống để dùng mặc định của hệ thống (${DEFAULT_NEW_PER_DAY}).`}
+              hint={`Bỏ trống để dùng mặc định của hệ thống (${DEFAULT_NEW_PER_DAY}). Khi thẻ đến hạn nhiều, hệ thống tạm ngừng từ mới để bạn trả nợ ôn trước.`}
             >
               <Input
                 name="daily_new_limit"

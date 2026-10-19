@@ -91,7 +91,7 @@ function BookCard({
 
 function VocabularyLanding() {
   const { status, token } = useSession();
-  const reviewCount = useReviewCount();
+  const review = useReviewCount();
   // Mỗi tuyển tập một detail (mỗi cái chứa items của nó) — card trang này là
   // cuốn sách, nên cần một tầng sâu hơn `GET /vocabulary-collections` phẳng.
   const [collections, setCollections] = useState<VocabularyCollectionDetail[] | null>(null);
@@ -130,19 +130,34 @@ function VocabularyLanding() {
        * Đặt dưới danh sách thì người học phải cuộn qua mọi cuốn mới thấy việc
        * đã đến hạn, và hàng đợi SM-2 chỉ có giá trị khi được làm đúng ngày.
        *
-       * Con số là TỔNG THẺ của phiên (`useReviewCount`: đến hạn + từ mới), đúng
-       * bằng những gì bấm "Ôn ngay" sẽ nhận — không phải chỉ số từ đến hạn như
-       * dòng chữ cũ nói. `useReviewCount` trả 0 cho khách vãng lai, nên khối này
-       * tự vắng mặt.
+       * Hai phần tách rõ chứ không gộp một con số (`useReviewCount`): "ôn" là
+       * việc có hạn chót, "từ mới" là lời mời. Khi hàng đợi dài hơn lô hôm nay
+       * thì dòng phụ nói thẳng còn bao nhiêu đang chờ, thay vì một "99+" không
+       * ai biết là nợ cũ hay việc hôm nay. `useReviewCount` trả 0 cho khách
+       * vãng lai, nên khối này tự vắng mặt.
        */}
-      {reviewCount > 0 && (
+      {review.due + review.newCount > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded border border-action bg-action-tint p-5">
           <div className="min-w-0 flex-1">
-            <p className="flex items-center gap-1.5 font-semibold text-action-ink">
+            <p className="flex flex-wrap items-center gap-1.5 font-semibold text-action-ink">
               <RotateCcw size={15} strokeWidth={2} aria-hidden />
-              <span className="font-data tabular-nums">{reviewCount}</span> thẻ đang chờ bạn
+              {review.due > 0 && (
+                <>
+                  <span className="font-data tabular-nums">{review.due}</span> thẻ ôn
+                </>
+              )}
+              {review.due > 0 && review.newCount > 0 && <span aria-hidden>·</span>}
+              {review.newCount > 0 && (
+                <>
+                  <span className="font-data tabular-nums">{review.newCount}</span> từ mới
+                </>
+              )}
             </p>
-            <p className="mt-0.5 text-small text-ink-muted">Ôn từ đến hạn trước, rồi gặp từ mới.</p>
+            <p className="mt-0.5 text-small text-ink-muted">
+              {review.dueTotal > review.due
+                ? `Còn ${review.dueTotal} thẻ đang chờ — hôm nay làm ${review.due} thẻ trước.`
+                : "Ôn từ đến hạn trước, rồi gặp từ mới."}
+            </p>
           </div>
           <ButtonLink href="/learn/review" size="sm">
             Ôn ngay

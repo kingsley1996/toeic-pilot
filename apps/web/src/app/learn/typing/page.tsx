@@ -63,7 +63,7 @@ export default function TypingPage() {
       // `include_new=false` là điều kiện để chế độ này trả lời được. Bắt gõ
       // lại một từ chưa từng thấy thì không tồn tại câu trả lời đúng nào —
       // lối thoát duy nhất là đoán bừa rồi ăn điểm 0, và với người mới thì
-      // 20/20 thẻ đều rơi vào cảnh đó.
+      // cả ngạch thẻ đều rơi vào cảnh đó.
       apiFetch<ReviewSession>(`${API_ROUTES.reviewSession}?include_new=false`, { token: t })
         .then((session) => {
           setCards(session.cards);

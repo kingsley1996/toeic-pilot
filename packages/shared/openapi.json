@@ -13489,6 +13489,10 @@
             "title": "Due Count",
             "type": "integer"
           },
+          "due_total": {
+            "title": "Due Total",
+            "type": "integer"
+          },
           "new_count": {
             "title": "New Count",
             "type": "integer"
@@ -13496,6 +13500,7 @@
         },
         "required": [
           "due_count",
+          "due_total",
           "new_count",
           "cards"
         ],
@@ -31034,7 +31039,7 @@
     },
     "/api/v1/vocabulary-review/session": {
       "get": {
-        "description": "Cards due today, then new ones up to the daily cap.\n\nDue before new on purpose: reviewing what is about to be forgotten is worth\nmore than meeting something for the first time, and if the session is cut\nshort it should be the new words that wait.\n\n`include_new=False` phục vụ những chế độ đòi học viên TỰ VIẾT RA từ. Bắt gõ\nlại một từ chưa từng thấy thì không có câu trả lời nào đúng được: lối thoát\nduy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả 20/20 thẻ đều rơi\nvào cảnh đó — tôi phát hiện khi tự đóng vai học viên mới, không phải khi\nđọc code.",
+        "description": "Cards due today, then new ones up to the daily cap.\n\nDue before new on purpose: reviewing what is about to be forgotten is worth\nmore than meeting something for the first time, and if the session is cut\nshort it should be the new words that wait.\n\n`include_new=False` phục vụ những chế độ đòi học viên TỰ VIẾT RA từ. Bắt gõ\nlại một từ chưa từng thấy thì không có câu trả lời nào đúng được: lối thoát\nduy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả ngạch từ mới rơi\nvào cảnh đó — tôi phát hiện khi tự đóng vai học viên mới, không phải khi\nđọc code.",
         "operationId": "review_session_api_v1_vocabulary_review_session_get",
         "parameters": [
           {

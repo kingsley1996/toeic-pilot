@@ -3,7 +3,7 @@
 **Trạng thái:** 🟡 **TẠM THỜI** · cập nhật 2026-08-09
 **Mục đích:** ghi lại bộ mặc định đã chọn để xây, **không** phải để chốt trên giấy
 
-> **Đã dựng xong theo đúng đặc tả này** — 8 endpoint học viên, 4 trang (`/learn`, `/learn/vocabulary`, `/learn/review`, `/learn/dictation`), SM-2 ở `app/services/srs.py`, chấm dictation ở `app/services/dictation.py`. Cái chưa có là **nội dung để dùng thử**: 3 từ và 4 câu. Nên §5 dưới đây vẫn là dự đoán chứ chưa phải quan sát — chưa ai học đủ lâu để biết 20 từ mới/ngày là nhiều hay ít.
+> **Đã dựng xong theo đúng đặc tả này** — 8 endpoint học viên, 4 trang (`/learn`, `/learn/vocabulary`, `/learn/review`, `/learn/dictation`), SM-2 ở `app/services/srs.py`, chấm dictation ở `app/services/dictation.py`. Cái chưa có là **nội dung để dùng thử**: 3 từ và 4 câu. Nên §5 dưới đây vẫn là dự đoán chứ chưa phải quan sát — chưa ai học đủ lâu để biết ngạch mặc định 10 từ mới/ngày là nhiều hay ít.
 
 > Tài liệu này tồn tại để **bị sửa**. Nó là bộ gọn nhất chạy được đầu-cuối, dựng lên để dùng thử rồi chỉnh — không phải kết quả của một vòng thiết kế. Mỗi lựa chọn dưới đây đều có ghi phương án thay thế đã cân nhắc, để lúc sửa không phải nghĩ lại từ đầu.
 >
@@ -50,7 +50,8 @@ Bốn nút, không phải sáu: SM-2 gốc dùng thang 0–5, nhưng 0/1/2 đề
 | Tham số | Mặc định | Vì sao |
 |---|---|---|
 | Từ đến hạn mỗi phiên | tối đa 100 | Đủ cho một buổi, không gây choáng |
-| Từ mới mỗi ngày | 20 | Không giới hạn từ mới là cách chắc chắn nhất để tạo ra một núi nợ ôn tập sau hai tuần |
+| Từ mới mỗi ngày | 10, hồ sơ `daily_new_limit` ghi đè | Một thẻ mới kéo theo gần 10 lượt ôn trong vài tuần đầu (Anki: 20 thẻ mới/ngày ⇒ ~200 lượt ôn/ngày); 10 là mức bền cho người học 15–20 phút/ngày |
+| Tạm dừng từ mới | khi thẻ đến hạn ≥ 80 | Nợ ôn dày mà vẫn nhận từ mới thì hàng đợi chỉ dài thêm — vòng xoáy bỏ học. Anki chặn thẻ mới theo trần review cùng lý do |
 | Thứ tự | đến hạn lâu nhất trước, rồi đến từ mới | Ôn cái sắp quên trước khi học cái mới |
 
 Truy vấn dùng index `ix_vocabulary_review_state_due` `(user_id, due_at)` đã có sẵn.
@@ -182,7 +183,7 @@ Không cần thêm cột nào — đây là cổ tức của việc hash tính t
 
 Ghi trước những chỗ tôi đoán là sẽ phải đổi, để lúc đó không tưởng là phát hiện mới:
 
-- **20 từ mới/ngày** là con số mượn từ Anki, chưa có căn cứ nào cho ứng dụng này.
+- **Ngạch từ mới** không còn là con số mượn từ Anki: mặc định 10, hồ sơ ghi đè được, và tự rút về 0 khi nợ ôn ≥ 80. Còn phải xem người học thật đặt bao nhiêu — con số này giờ là dữ liệu, không phải phỏng đoán.
 - **Bốn nút** có thể là quá nhiều với người mới. Hai nút (Chưa thuộc / Thuộc) học nhanh hơn nhưng nuôi SM-2 kém hơn.
 - **Không giới hạn số lần nghe lại** làm dictation dễ hơn hẳn so với thi thật. Có thể cần chế độ giới hạn 2 lần.
 - **Ngưỡng typo**: hiện sai một ký tự là sai. Có thể quá khắt khe với người gõ nhanh.

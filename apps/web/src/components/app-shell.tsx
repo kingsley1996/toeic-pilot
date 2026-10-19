@@ -144,15 +144,22 @@ const BLOG_LINK: NavItem = { href: "/blog", label: "Blog", Icon: Newspaper };
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const reviewCount = useReviewCount();
+  const review = useReviewCount();
   const { status } = useSession();
   const signedIn = status === "authenticated";
+  // Huy hiệu đếm THẺ ĐẾN HẠN, không cộng từ mới: đến hạn là việc có hạn chót
+  // (sắp quên), còn từ mới là lời mời. Cộng cả hai thì huy hiệu đứng ở 10–20
+  // mãi vì từ mới chưa học vẫn còn đó, và người vắng mặt tuần thấy "99+" mà
+  // không biết đó là nợ cũ hay việc hôm nay.
+  //
+  // "100+" khi lô đầy mà hàng đợi còn dài: nói đúng "còn hơn 100 thẻ", thay vì
+  // "99+" (trần hiển thị cũ) vốn chỉ là quy ước của con số, không của hàng đợi.
+  const badge =
+    review.due > 0 ? (review.dueTotal > review.due ? `${review.due}+` : review.due) : undefined;
   // Gắn huy hiệu vào đúng mục từ vựng. Ghép theo `href`, không theo chỉ số:
   // thêm hay đổi thứ tự mục thì huy hiệu vẫn bám đúng chỗ.
   const withBadge = (list: NavItem[]): NavItem[] =>
-    list.map((link) =>
-      link.href === "/learn/vocabulary" ? { ...link, badge: reviewCount } : link,
-    );
+    list.map((link) => (link.href === "/learn/vocabulary" ? { ...link, badge } : link));
 
   // Thanh trên của trang giới thiệu: LUÔN đúng ba kho nội dung, không phụ thuộc
   // phiên. Sidebar thì thêm các mục của tài khoản khi đã đăng nhập, giữ nguyên

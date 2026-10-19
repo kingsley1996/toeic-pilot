@@ -36,8 +36,11 @@ export type NavItem = {
    * chọn: một huy hiệu "0" là màu và hình dạng dành cho "có việc cần làm" đem
    * gán cho tình trạng không có việc gì. Cùng lý do bảng tiến độ không tô màu
    * số 0.
+   *
+   * Nhận cả string vì người gọi muốn tự định dạng ("100+" khi lô đã đầy mà hàng
+   * đợi còn dài). Nav không tự đoán: nó không biết con số đằng sau là gì.
    */
-  badge?: number;
+  badge?: number | string;
 };
 
 /**
@@ -82,7 +85,7 @@ export function NavLink({
           gọn là một lựa chọn thị giác, và với trình đọc màn hình thì bộ mục phải
           y hệt nhau ở cả hai trạng thái. */}
       <span className="rail:sr-only">{label}</span>
-      {badge !== undefined && badge > 0 && (
+      {badge !== undefined && (typeof badge === "string" ? badge !== "" : badge > 0) && (
         <>
           {/* `ml-auto` để huy hiệu bám mép phải ở sidebar; ở thanh trên nằm ngang
               thì mục co theo nội dung nên nó chỉ nằm sát sau nhãn. */}
@@ -92,7 +95,7 @@ export function NavLink({
             // nghe "Từ vựng 12" và không biết 12 là gì.
             aria-label={`${badge} từ cần ôn`}
           >
-            {badge > 99 ? "99+" : badge}
+            {badge}
           </span>
           {/* Thu gọn thì không còn chỗ cho con số, nhưng "có việc đang chờ" vẫn
               phải nhìn thấy — nếu không, thu gọn sidebar là tắt luôn lời nhắc.

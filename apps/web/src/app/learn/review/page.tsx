@@ -26,6 +26,7 @@ export default function ReviewPage() {
   const { status, token } = useRequireSession();
   const [cards, setCards] = useState<ReviewCard[] | null>(null);
   const [dueCount, setDueCount] = useState(0);
+  const [dueTotal, setDueTotal] = useState(0);
   const [newCount, setNewCount] = useState(0);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -38,6 +39,7 @@ export default function ReviewPage() {
         .then((session) => {
           setCards(session.cards);
           setDueCount(session.due_count);
+          setDueTotal(session.due_total);
           setNewCount(session.new_count);
           setIndex(0);
           setFlipped(false);
@@ -159,13 +161,21 @@ export default function ReviewPage() {
       </div>
 
       {/* Thành phần của lô: hàng đợi SM-2 và ngạch từ mới mỗi ngày chảy vào
-          cùng một lượt ôn. Huy hiệu trên nav đếm đúng TỔNG hai số này (cùng
-          endpoint, cùng tham số), nên hai thẻ ở đây là phần tách ra của con
-          số đó — hiện rõ để người học không phải tự đếm. */}
+          cùng một lượt ôn. Huy hiệu trên nav đếm thẻ ĐẾN HẠN (không cộng từ
+          mới), nên hai thẻ ở đây cho biết lô này gồm những gì. */}
       <div className="mb-6 flex flex-wrap gap-2">
         {dueCount > 0 && <Tag tone="warn">{dueCount} ôn lại</Tag>}
         {newCount > 0 && <Tag tone="action">{newCount} từ mới</Tag>}
       </div>
+
+      {/* Lô bị cắt ở 100 thẻ: người vắng dài ngày vẫn thấy đúng lô của mình,
+          nhưng biết là còn nữa đang chờ thay vì tưởng đây là hết. */}
+      {dueTotal > dueCount && (
+        <p className="mb-6 text-small text-ink-muted">
+          Còn <span className="font-data tabular-nums">{dueTotal}</span> thẻ đang chờ — làm xong lô
+          này sẽ gặp tiếp trong hôm nay.
+        </p>
+      )}
 
       {error && (
         <div className="mb-4">

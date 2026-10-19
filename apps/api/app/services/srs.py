@@ -40,8 +40,19 @@ SECOND_INTERVAL_DAYS = 6
 # Session policy rather than algorithm, but it belongs next to the algorithm
 # it shapes. An uncapped supply of new cards is the reliable way to build a
 # review backlog the learner meets a fortnight later and abandons.
-NEW_CARDS_PER_DAY = 20
+#
+# 10 chứ không 20: một thẻ mới kéo theo gần 10 lượt ôn trong vài tuần đầu
+# (Anki đo được 20 thẻ mới/ngày ⇒ ~200 lượt ôn/ngày), mà mỗi lượt ở đây là một
+# từ phải nhớ. 10/ngày là mức bền cho người học 15–20 phút/ngày; người có
+# `daily_new_limit` riêng trong hồ sơ thì con số của họ thắng.
+NEW_CARDS_PER_DAY = 10
 MAX_SESSION_CARDS = 100
+
+# Khi thẻ đến hạn đã chiếm 80% lô, ngừng nhét từ mới vào — kể cả khi người học
+# đặt ngạch cao hơn. Học viên đang trả nợ ôn mà vẫn nhận từ mới thì hàng đợi
+# chỉ dài thêm, và đó là vòng xoáy bỏ học: nghỉ vài ngày → 100+ thẻ → nản.
+# Anki cũng chặn thẻ mới theo trần review với đúng lý do này.
+NEW_CARDS_PAUSE_AT = 80
 
 # A word counts as learned once its interval reaches three weeks. The threshold
 # is Anki's "mature card" line and is measured in INTERVAL, not repetitions:

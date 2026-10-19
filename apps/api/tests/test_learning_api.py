@@ -35,6 +35,8 @@ from app.services.srs import (
     GRADE_GOOD,
     GRADE_HARD,
     GRADE_MASTERED,
+    MAX_SESSION_CARDS,
+    NEW_CARDS_PAUSE_AT,
     NEW_CARDS_PER_DAY,
 )
 from tests.test_domain_model import make_audio
@@ -283,17 +285,21 @@ def test_an_overdue_card_comes_back(
     assert body["cards"][0]["is_new"] is False
 
 
-def _set_noon_timezone(db_session: Session, learner: User) -> ZoneInfo:
+def _set_noon_timezone(
+    db_session: Session, learner: User, *, daily_new_limit: int | None = None
+) -> ZoneInfo:
     """Đặt múi giờ hồ sơ sao cho giờ địa phương là 12:00, trả về zone.
 
-    Hai test dưới nói về biên NGÀY địa phương; chạy lúc 23:59 giờ Việt Nam thì
+    Các test dưới nói về biên NGÀY địa phương; chạy lúc 23:59 giờ Việt Nam thì
     "1 giờ nữa" và "23 giờ tối qua" đều rơi sang ngày khác, và test đỏ vì đồng
     hồ chứ không vì code. Kéo giờ địa phương về buổi trưa làm các khoảng cách
     trong ngày trở nên xác định.
     """
     offset = 12 - datetime.now(UTC).hour
     zone = ZoneInfo("Etc/UTC" if offset == 0 else f"Etc/GMT{-offset:+d}")
-    db_session.add(UserProfile(user_id=learner.id, timezone=str(zone)))
+    db_session.add(
+        UserProfile(user_id=learner.id, timezone=str(zone), daily_new_limit=daily_new_limit)
+    )
     db_session.commit()
     return zone
 
@@ -343,15 +349,91 @@ def test_the_daily_new_budget_resets_at_local_midnight(
     for index in range(NEW_CARDS_PER_DAY):
         entry = make_word(db_session, f"word{index}", marker=str(index))
         db_session.add(
-            VocabularyReviewState(
-                user_id=learner.id, entry_id=entry.id, created_at=late_last_night
-            )
+            VocabularyReviewState(user_id=learner.id, entry_id=entry.id, created_at=late_last_night)
         )
     make_word(db_session, "unseen", marker="z")
     db_session.commit()
 
     body = client.get("/api/v1/vocabulary-review/session", headers=headers).json()
     assert body["new_count"] == 1
+
+
+def test_the_new_word_target_comes_from_the_learner_profile(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    """Ngạch từ mới là lựa chọn của người học, không phải hằng số 10.
+
+    `daily_new_limit` nằm trong hồ sơ từ lâu nhưng chưa từng được phiên đọc —
+    ô "Từ mới mỗi ngày" trong trang hồ sơ chỉ để trang trí. Test này khoá đường
+    nối đó: đặt 3 thì phiên trả đúng 3, dù còn 5 từ chưa gặp.
+    """
+    _set_noon_timezone(db_session, learner, daily_new_limit=3)
+    for index in range(5):
+        make_word(db_session, f"word{index}", marker=str(index))
+
+    body = client.get("/api/v1/vocabulary-review/session", headers=headers).json()
+    assert body["new_count"] == 3
+
+
+def _add_due_states(db_session: Session, learner: User, count: int, start: int = 0) -> None:
+    """`count` thẻ đến hạn từ hôm qua, dựng hàng đợi mà không cần chấm bài.
+
+    `created_at` lùi một tháng: hàng `VocabularyReviewState` mới tạo được tính
+    là "từ mới mở hôm nay", mà mấy thẻ này là thẻ CŨ đến hạn — để mặc định thì
+    chúng ăn hết ngạch từ mới và test đo sai thứ nó định đo.
+    """
+    overdue = datetime.now(UTC) - timedelta(days=1)
+    introduced = datetime.now(UTC) - timedelta(days=30)
+    for index in range(start, start + count):
+        entry = make_word(db_session, f"due{index}", marker=f"d{index}")
+        db_session.add(
+            VocabularyReviewState(
+                user_id=learner.id, entry_id=entry.id, due_at=overdue, created_at=introduced
+            )
+        )
+    db_session.commit()
+
+
+def test_new_words_taper_off_as_the_review_queue_fills(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    """Nợ ôn dày thì từ mới tự rút về 0 thay vì chất thêm.
+
+    79 thẻ đến hạn → còn đúng 1 chỗ cho từ mới; chạm ngưỡng 80 → 0. Không có
+    phanh này thì người vắng vài ngày nhận thêm chục từ mới trên đống nợ, và
+    vòng xoáy bắt đầu: càng nản càng nhiều thẻ.
+    """
+    _set_noon_timezone(db_session, learner)
+    _add_due_states(db_session, learner, NEW_CARDS_PAUSE_AT - 1)
+    make_word(db_session, "unseen", marker="z")
+
+    session = client.get("/api/v1/vocabulary-review/session", headers=headers).json()
+    assert session["due_count"] == NEW_CARDS_PAUSE_AT - 1
+    assert session["new_count"] == 1
+
+    _add_due_states(db_session, learner, 1, start=NEW_CARDS_PAUSE_AT - 1)
+    session = client.get("/api/v1/vocabulary-review/session", headers=headers).json()
+    assert session["due_count"] == NEW_CARDS_PAUSE_AT
+    assert session["new_count"] == 0
+
+
+def test_due_total_reports_the_backlog_beyond_the_session_cap(
+    client: TestClient, db_session: Session, learner: User, headers: dict[str, str]
+) -> None:
+    """Lô cắt ở 100 thẻ, nhưng `due_total` phải nói cả hàng đợi.
+
+    Không có nó thì giao diện chỉ có "100+" — con số không phân biệt được
+    "vừa đủ một buổi" với "còn 300 thẻ nữa đang chờ", và người học không biết
+    mình đang ở đâu trên con dốc.
+    """
+    _set_noon_timezone(db_session, learner)
+    _add_due_states(db_session, learner, MAX_SESSION_CARDS + 1)
+    make_word(db_session, "unseen", marker="z")
+
+    body = client.get("/api/v1/vocabulary-review/session", headers=headers).json()
+    assert body["due_count"] == MAX_SESSION_CARDS
+    assert body["due_total"] == MAX_SESSION_CARDS + 1
+    assert body["new_count"] == 0
 
 
 def test_a_draft_entry_never_enters_a_session(
@@ -840,7 +922,7 @@ def test_a_wrong_answer_is_graded_as_forgotten_and_reveals_the_word(
     # KHÔNG phải lapse: từ này chưa từng được học, và trượt lần đầu gặp không
     # phải là quên. Bản đầu của test này khẳng định `== 1` — nó mã hoá đúng cái
     # bug mà `srs.review` vừa sửa, và chỉ lộ ra khi tôi tự đóng vai người học
-    # mới rồi thấy 20/20 thẻ đầu tiên đều bị ghi là "đã quên".
+    # mới rồi thấy cả ngạch thẻ đầu tiên đều bị ghi là "đã quên".
     assert body["lapses"] == 0
 
 
@@ -995,8 +1077,8 @@ def test_a_typing_session_can_exclude_words_never_seen(
 ) -> None:
     """`include_new=false` là thứ giữ cho chế độ gõ có thể trả lời được.
 
-    Với người mới thì 20/20 thẻ đều là từ mới; bắt họ tự viết ra một từ chưa
-    từng thấy thì không có câu trả lời đúng nào tồn tại.
+    Với người mới thì cả ngạch từ mới đều là thẻ mới; bắt họ tự viết ra một từ
+    chưa từng thấy thì không có câu trả lời đúng nào tồn tại.
     """
     make_word(db_session, "invoice", marker="a")
     make_word(db_session, "deadline", marker="b")

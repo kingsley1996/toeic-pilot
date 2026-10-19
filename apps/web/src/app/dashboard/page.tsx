@@ -421,9 +421,9 @@ export default function TodayPage() {
             />
             {/* Số duy nhất ở đây ĐÒI hành động, nên nó là số duy nhất được tô
                 màu khi khác 0 — màu là tín hiệu, không phải trang trí (§6.3).
-                Con số là TỔNG của phiên (đến hạn + từ mới), đúng bằng huy hiệu
-                trên nav và nút bên dưới; nhãn "Đến hạn" cũ là lời nói dối với
-                người mới — từ chưa từng gặp thì chưa đến hạn. */}
+                Con số là TỔNG việc của phiên (đến hạn + từ mới): huy hiệu trên
+                nav chỉ đếm thẻ đến hạn vì đó là việc có hạn chót, còn ô này trả
+                lời "hôm nay có gì để làm". */}
             <StatTile
               Icon={TrendingUp}
               tint="bg-warn-tint text-warn"
@@ -447,9 +447,9 @@ export default function TodayPage() {
             />
           </div>
 
-          {/* Người mới có due_count = 0 và new_count = 20: họ KHÔNG "cần ôn", họ
-              chưa học gì cả. Gọi 20 từ chưa từng gặp là "cần ôn hôm nay" là dùng
-              sai từ ở đúng con số lớn nhất màn hình. */}
+          {/* Người mới có due_count = 0 và chỉ có từ mới: họ KHÔNG "cần ôn", họ
+              chưa học gì cả. Gọi chừng ấy từ chưa từng gặp là "cần ôn hôm nay"
+              là dùng sai từ ở đúng con số lớn nhất màn hình. */}
           {waiting === 0 ? (
             <div className="mt-6 flex items-start gap-3 border-t border-rule pt-5">
               <CalendarCheck
@@ -469,10 +469,8 @@ export default function TodayPage() {
                chiếm cả chiều ngang như ảnh mẫu: trên một bảng điều khiển đầy số,
                việc cần làm phải to hơn thứ đang mô tả tình hình. */
             <div className="mt-6 flex flex-col gap-2 border-t border-rule pt-5">
-              {/* Hai badge riêng là phần tách ra của con số trên nút — cùng
-                  con số với huy hiệu trên nav, vì cả hai đọc chung một endpoint
-                  (`reviewSession?include_cards=false`). Không tách thì người
-                  học không biết lô có bao nhiêu từ mới. */}
+              {/* Hai thẻ tách rõ "việc có hạn chót" (ôn) khỏi "lời mời" (từ
+                  mới), thay vì một con số gộp che mất phần nào là phần nào. */}
               <div className="flex flex-wrap gap-2">
                 {session && session.due_count > 0 && (
                   <Tag tone="warn">{session.due_count} ôn lại</Tag>
@@ -481,6 +479,16 @@ export default function TodayPage() {
                   <Tag tone="action">{session.new_count} từ mới</Tag>
                 )}
               </div>
+              {/* Vắng vài ngày thì lô bị cắt ở 100 thẻ, nên 100 đó không phải
+                  cả hàng đợi. Nói thẳng còn bao nhiêu đang chờ — con số đó là
+                  lý do người học quay lại, và cũng là lời giải thích cho việc
+                  từ mới tạm ngừng khi nợ ôn dày. */}
+              {session && session.due_total > session.due_count && (
+                <p className="text-small text-ink-muted">
+                  Còn <span className="font-data tabular-nums">{session.due_total}</span> thẻ đang
+                  chờ — hôm nay làm {session.due_count} thẻ trước.
+                </p>
+              )}
               <ButtonLink href="/learn/review" size="lg" className="w-full justify-center">
                 <RotateCcw size={16} strokeWidth={2} aria-hidden />
                 {onlyNew ? "Học từ mới" : "Ôn tập ngay"}

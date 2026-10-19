@@ -5332,7 +5332,7 @@ export interface paths {
          *
          *     `include_new=False` phục vụ những chế độ đòi học viên TỰ VIẾT RA từ. Bắt gõ
          *     lại một từ chưa từng thấy thì không có câu trả lời nào đúng được: lối thoát
-         *     duy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả 20/20 thẻ đều rơi
+         *     duy nhất là đoán bừa rồi ăn điểm 0. Với người mới thì cả ngạch từ mới rơi
          *     vào cảnh đó — tôi phát hiện khi tự đóng vai học viên mới, không phải khi
          *     đọc code.
          */
@@ -10584,6 +10584,8 @@ export interface components {
             cards: components["schemas"]["ReviewCard"][];
             /** Due Count */
             due_count: number;
+            /** Due Total */
+            due_total: number;
             /** New Count */
             new_count: number;
         };

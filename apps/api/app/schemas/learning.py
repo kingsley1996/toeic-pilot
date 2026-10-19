@@ -267,7 +267,11 @@ class ReviewCard(VocabularyDetail):
 
 
 class ReviewSession(BaseModel):
+    # `due_count` là số thẻ đến hạn TRONG LÔ hôm nay (bị cắt bởi `limit`),
+    # `due_total` là cả hàng đợi. Hai con số khác nhau khi người học vắng mặt
+    # dài: lô vẫn 100 thẻ, nhưng giao diện cần nói được còn bao nhiêu đang chờ.
     due_count: int
+    due_total: int
     new_count: int
     cards: list[ReviewCard]
 
