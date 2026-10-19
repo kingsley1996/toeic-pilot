@@ -235,6 +235,12 @@ jobs:
           name: playwright-report
           path: apps/web/playwright-report/
           retention-days: 7
+      - name: Dừng API nền
+        # Post-step của `setup-uv` chạy `uv cache prune`; `uv run uvicorn` còn
+        # sống thì giữ lock cache, prune ngồi chờ "cache is currently in-use"
+        # hết 5 phút rồi bị cắt (exit 2) — job đỏ dù E2E đã xanh. Tắt trước.
+        if: always()
+        run: pkill -f "uvicorn app.main:app" || true
 
   contract:
     # Guards against the drift in planning/docs/REVIEW-OPUS.md P1-4: shared TypeScript
