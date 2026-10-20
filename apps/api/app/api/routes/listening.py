@@ -160,6 +160,7 @@ def _summarize(
                 ListeningSegment.content_id.in_(content_ids),
                 ListeningAttempt.user_id == user_id,
                 ListeningAttempt.is_complete.is_(True),
+                ListeningAttempt.revealed.is_(False),
             )
             .group_by(ListeningSegment.content_id)
         ).all():
@@ -375,6 +376,7 @@ def get_listening_content(
                 ListeningSegment.content_id == content.id,
                 ListeningAttempt.user_id == user.id,
                 ListeningAttempt.is_complete.is_(True),
+                ListeningAttempt.revealed.is_(False),
             )
             .distinct()
         ).all()
@@ -404,6 +406,7 @@ def submit_listening_attempt(
         answer=body.answer,
         accuracy=result.accuracy,
         is_complete=result.is_complete,
+        revealed=body.revealed,
         word_diff=result.as_json(),
         time_spent_seconds=body.time_spent_seconds,
     )
@@ -413,7 +416,9 @@ def submit_listening_attempt(
 
     return ListeningAttemptResult(
         attempt_id=str(attempt.id),
-        is_correct=result.is_complete,
+        # Đã mở đáp án thì UI không được đánh dấu segment hoàn thành, cùng
+        # nghĩa với danh sách `completed_segment_ids` phía server.
+        is_correct=result.is_complete and not body.revealed,
         similarity=str(result.accuracy),
         expected_text=segment.text,
         diff=[WordDiff(op=item.op, word=item.word) for item in result.diff],

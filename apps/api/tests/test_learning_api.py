@@ -522,6 +522,23 @@ def test_submitting_needs_authentication(client: TestClient, db_session: Session
     assert response.status_code == 401
 
 
+def test_submitted_text_is_capped_before_the_grader_runs(
+    client: TestClient, db_session: Session, headers: dict[str, str]
+) -> None:
+    """Trần 2000 ký tự, chặn trước khi SequenceMatcher O(n·m) chạy.
+
+    Không có trần thì một lần dán vài MB vừa bận một worker của API vừa treo
+    tab người gửi — cả hai đầu chạy cùng một bộ chấm trên cùng đoạn chữ.
+    """
+    item = make_dictation(db_session)
+    response = client.post(
+        f"/api/v1/dictation/{item.id}/attempts",
+        json={"submitted_text": "a" * 2001},
+        headers=headers,
+    )
+    assert response.status_code == 422
+
+
 def test_a_draft_item_cannot_be_attempted(
     client: TestClient, db_session: Session, headers: dict[str, str]
 ) -> None:

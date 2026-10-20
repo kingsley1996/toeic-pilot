@@ -1,15 +1,15 @@
 "use client";
 
 import { API_ROUTES, type DictationStoryDetail } from "@toeic-pilot/shared";
-import { CircleCheck, CircleDashed } from "lucide-react";
-import { useParams } from "next/navigation";
+import { ArrowLeft, CircleCheck, CircleDashed } from "lucide-react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-import { Breadcrumbs } from "@/components/breadcrumbs";
 import { DictationExercise } from "@/components/dictation-exercise";
 import { DictationNextUp } from "@/components/dictation-next";
 import { StoryProgressBar } from "@/components/story-progress";
-import { Alert, EmptyState, Page, PageHeader, Panel, SkeletonList, cx } from "@/components/ui";
+import { Alert, EmptyState, Page, SkeletonList, cx } from "@/components/ui";
 import { apiFetch } from "@/lib/api";
 import { GuestNotice } from "@/components/guest-notice";
 import { useSession } from "@/lib/session";
@@ -18,9 +18,18 @@ import { useSession } from "@/lib/session";
 export default function DictationStoryPage() {
   const { status, token } = useSession();
   const storyId = String(useParams().storyId);
+  const router = useRouter();
   const [story, setStory] = useState<DictationStoryDetail | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  // Đích "Đi tiếp" của bài đã xong, để Enter ở câu cuối đi được luôn thay vì
+  // chấm lại câu vừa đúng.
+  const [nextHref, setNextHref] = useState<{ storyId: string; href: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const rememberNext = useCallback(
+    (href: string | null) => setNextHref(href ? { storyId, href } : null),
+    [storyId],
+  );
 
   const load = useCallback(
     (t?: string) =>
@@ -57,27 +66,33 @@ export default function DictationStoryPage() {
   const active = story?.items.find((item) => item.id === activeId) ?? null;
   const activeIndex = story?.items.findIndex((item) => item.id === activeId) ?? -1;
   const next = story && activeIndex >= 0 ? story.items[activeIndex + 1] : undefined;
+  // Chỉ dùng đích của CHÍNH bài này: đổi bài mà state cũ còn sót lại thì Enter
+  // sẽ nhảy về bài trước.
+  const continueHref = nextHref && story && nextHref.storyId === story.id ? nextHref.href : null;
 
   return (
-    <Page className="max-w-3xl">
+    <Page className="py-4 sm:py-6">
       {error && <Alert>{error}</Alert>}
 
       {story && (
-        <>
-          <Breadcrumbs
-            trail={[
-              { href: "/learn/dictation", label: "Dictation" },
-              { href: `/learn/dictation/topics/${story.topic_id}`, label: story.topic_name },
-              { href: `/learn/dictation/sections/${story.section_id}`, label: story.section_name },
-            ]}
-          />
-          <PageHeader eyebrow="Bài nghe" title={story.title} description={story.description} />
+        // Chế độ luyện: thanh trên gom tiêu đề + tiến độ + dải câu, phần gõ
+        // chiếm phần còn lại và tự căn giữa. Trang chủ đề/section vẫn giữ
+        // PageHeader đầy đủ; ở đây người học đang gõ, không đang đọc giới thiệu.
+        <div className="mx-auto flex min-h-[calc(100dvh-16rem)] w-full max-w-5xl flex-col">
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/learn/dictation/sections/${story.section_id}`}
+              aria-label={`Quay lại ${story.section_name}`}
+              title={`Quay lại ${story.section_name}`}
+              className="grid h-8 w-8 shrink-0 place-items-center rounded border border-rule-strong text-ink-muted transition-colors hover:bg-recess hover:text-ink"
+            >
+              <ArrowLeft size={16} strokeWidth={2} aria-hidden />
+            </Link>
+            <h1 className="min-w-0 truncate text-subtitle font-semibold">{story.title}</h1>
+            <StoryProgressBar progress={story.progress} className="ml-auto w-36 shrink-0" />
+          </div>
 
-          <GuestNotice className="mb-4" />
-
-          <Panel className="mb-4 p-4">
-            <StoryProgressBar progress={story.progress} />
-          </Panel>
+          <GuestNotice className="mt-3" />
 
           {story.items.length === 0 && (
             <EmptyState
@@ -90,7 +105,7 @@ export default function DictationStoryPage() {
           {/* Dải câu: vừa là điều hướng vừa là bản đồ tiến độ. Câu đã làm mang
               dấu tích, câu đang làm được tô — nhìn một cái là biết còn bao xa. */}
           {story.items.length > 0 && (
-            <div className="mb-4 flex flex-wrap gap-1.5">
+            <div className="mb-3 mt-3 flex flex-wrap gap-1.5">
               {story.items.map((item, index) => {
                 const done = item.completed;
                 const current = item.id === activeId;
@@ -125,35 +140,47 @@ export default function DictationStoryPage() {
               xuất hiện ngay khi câu cuối vừa đúng. */}
           {story.progress.total_items > 0 &&
             story.progress.completed_items >= story.progress.total_items && (
-              <DictationNextUp
-                token={token}
-                topicId={story.topic_id}
-                sectionId={story.section_id}
-                storyId={story.id}
-              />
+              <div className="mb-3">
+                <DictationNextUp
+                  token={token}
+                  topicId={story.topic_id}
+                  sectionId={story.section_id}
+                  storyId={story.id}
+                  onResolved={rememberNext}
+                />
+              </div>
             )}
 
           {active && (
             <>
-              <p className="mb-2 text-small text-ink-muted">
+              <p className="mb-1 mt-1 text-small text-ink-muted">
                 Câu {activeIndex + 1}/{story.items.length} · {active.word_count} từ · nghe lại bao
                 nhiêu lần cũng được
               </p>
-              <DictationExercise
-                // `key` chứ không phải effect reset — xem chú thích ở component.
-                key={active.id}
-                item={active}
-                onGraded={() => token && void load(token)}
-                onNext={next ? () => setActiveId(next.id) : undefined}
-                footer={
-                  next ? undefined : (
-                    <p className="text-small text-ink-muted">Đây là câu cuối của bài.</p>
-                  )
-                }
-              />
+              <div className="flex flex-1 flex-col justify-center">
+                <DictationExercise
+                  // `key` chứ không phải effect reset — xem chú thích ở component.
+                  key={active.id}
+                  item={active}
+                  onGraded={() => token && void load(token)}
+                  onNext={
+                    next
+                      ? () => setActiveId(next.id)
+                      : continueHref
+                        ? () => router.push(continueHref)
+                        : undefined
+                  }
+                  nextLabel={next ? "Câu tiếp theo" : "Đi tiếp"}
+                  footer={
+                    next || continueHref ? undefined : (
+                      <p className="text-small text-ink-muted">Đây là câu cuối của bài.</p>
+                    )
+                  }
+                />
+              </div>
             </>
           )}
-        </>
+        </div>
       )}
     </Page>
   );

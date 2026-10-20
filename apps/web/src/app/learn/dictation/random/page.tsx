@@ -1,7 +1,8 @@
 "use client";
 
 import { API_ROUTES, type DictationDetail } from "@toeic-pilot/shared";
-import { Shuffle } from "lucide-react";
+import { ArrowLeft, Shuffle } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -78,48 +79,63 @@ export default function RandomDictationPage() {
   }
 
   return (
-    <Page className="max-w-3xl">
-      <Breadcrumbs trail={[{ href: "/learn/dictation", label: "Dictation" }]} />
-      <PageHeader
-        eyebrow="Dictation"
-        title="Nghe ngẫu nhiên"
-        description="Một câu bất kỳ trong toàn bộ nội dung. Không tính tiến độ, chỉ để quen tai."
-      />
-
-      <GuestNotice className="mb-4" />
-
-      {error && <Alert>{error}</Alert>}
-
-      {!item && !error && <SkeletonList rows={3} />}
-
-      {item && (
-        <>
-          <div className="mb-3 flex flex-wrap items-center gap-3">
+    <Page className={item ? "py-4 sm:py-6" : "max-w-3xl"}>
+      {item ? (
+        // Cùng chế độ luyện với trang bài: thanh trên gọn, phần gõ ở giữa.
+        <div className="mx-auto flex min-h-[calc(100dvh-16rem)] w-full max-w-5xl flex-col">
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/learn/dictation"
+              aria-label="Quay lại Dictation"
+              title="Quay lại Dictation"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded border border-rule-strong text-ink-muted transition-colors hover:bg-recess hover:text-ink"
+            >
+              <ArrowLeft size={16} strokeWidth={2} aria-hidden />
+            </Link>
+            <h1 className="min-w-0 truncate text-subtitle font-semibold">Nghe ngẫu nhiên</h1>
             <Button
+              className="ml-auto"
               variant="secondary"
+              size="sm"
               onClick={() => reroll(item.id)}
               disabled={rolling}
-              /* Bỏ qua được TRƯỚC khi gõ xong. Một câu quá khó mà không có đường
-                 vòng thì chế độ "nghe cho vui" biến thành chỗ mắc kẹt. */
+              /* Bỏ qua được TRƯỚC khi gõ xong. Một câu quá khó mà không có
+                 đường vòng thì chế độ "nghe cho vui" biến thành chỗ mắc kẹt. */
             >
-              <Shuffle size={16} strokeWidth={2} aria-hidden />
+              <Shuffle size={14} strokeWidth={2} aria-hidden />
               Câu khác
             </Button>
-            <span className="text-small text-ink-muted">
-              {item.word_count} từ · nghe lại bao nhiêu lần cũng được
-            </span>
           </div>
-
-          <DictationExercise
-            /* `key` chứ không phải effect reset — xem chú thích ở component. Ở
-               đây nó còn gánh thêm một việc: bốc câu mới phải xoá sạch ô nhập và
-               bảng đối chiếu của câu cũ, mà cách duy nhất chắc chắn là thay hẳn
-               component. */
-            key={item.id}
-            item={item}
-            onNext={() => reroll(item.id)}
-            nextLabel="Câu khác"
+          <p className="mb-1 mt-2 text-small text-ink-muted">
+            {item.word_count} từ · nghe lại bao nhiêu lần cũng được
+          </p>
+          <div className="flex flex-1 flex-col justify-center">
+            <DictationExercise
+              /* `key` chứ không phải effect reset — xem chú thích ở component.
+                 Ở đây nó còn gánh thêm một việc: bốc câu mới phải xoá sạch ô
+                 nhập và bảng đối chiếu của câu cũ, mà cách duy nhất chắc chắn
+                 là thay hẳn component. */
+              key={item.id}
+              item={item}
+              onNext={() => reroll(item.id)}
+              nextLabel="Câu khác"
+            />
+          </div>
+        </div>
+      ) : (
+        <>
+          <Breadcrumbs trail={[{ href: "/learn/dictation", label: "Dictation" }]} />
+          <PageHeader
+            eyebrow="Dictation"
+            title="Nghe ngẫu nhiên"
+            description="Một câu bất kỳ trong toàn bộ nội dung. Không tính tiến độ, chỉ để quen tai."
           />
+
+          <GuestNotice className="mb-4" />
+
+          {error && <Alert>{error}</Alert>}
+
+          {!item && !error && <SkeletonList rows={3} />}
         </>
       )}
     </Page>

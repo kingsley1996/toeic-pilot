@@ -138,6 +138,7 @@ def _dictation_today(db: Session, user_id: uuid.UUID, lo: datetime, hi: datetime
             select(func.count(func.distinct(DictationAttempt.item_id))).where(
                 DictationAttempt.user_id == user_id,
                 DictationAttempt.is_complete.is_(True),
+                DictationAttempt.revealed.is_(False),
                 DictationAttempt.created_at >= lo,
                 DictationAttempt.created_at < hi,
             )

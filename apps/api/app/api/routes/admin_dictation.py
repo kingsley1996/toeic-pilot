@@ -62,6 +62,28 @@ can_edit = require_role("editor", "admin")
 can_publish = require_role("admin")
 
 
+def _refuse_status_published(body: object) -> None:
+    """PATCH không phải cửa để xuất bản cây dictation.
+
+    Cửa duy nhất là `POST .../publish`: nơi đó mới có `can_publish`, cổng audio
+    (câu), cổng "bài phải có câu đã publish", và dấu `published_by`/`published_at`.
+    Nhận `status: "published"` ở PATCH là đi vòng qua cả bốn — editor publish
+    được một câu có clip đã cũ, và học viên bị chấm trên câu chưa từng nghe.
+
+    Soi `exclude_unset` chứ không soi từng trường: PATCH không gửi `status` là
+    chuyện bình thường, và chỉ đúng giá trị "published" mới bị chặn — lưu trữ /
+    về nháp vẫn đi qua PATCH như trước.
+    """
+    if body.model_dump(exclude_unset=True).get("status") == "published":  # type: ignore[attr-defined]
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "Use POST /admin/dictation/.../publish to publish: PATCH cannot check "
+                "the audio gate or the admin role, and would leave published_by empty."
+            ),
+        )
+
+
 def _attempt_counts(db: Session, item_ids: Sequence[uuid.UUID]) -> dict[uuid.UUID, int]:
     """Số lượt học viên đã làm, cho từng câu, trong MỘT truy vấn.
 
@@ -206,6 +228,7 @@ def update_dictation(
     if item is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
 
+    _refuse_status_published(body)
     payload = body.model_dump(exclude_unset=True)
     # Xoá trắng ô bản dịch phải cho ra NULL, không phải chuỗi rỗng: hai giá trị
     # cùng nghĩa "chưa dịch" thì mọi lượt đếm câu còn thiếu bản dịch đều sai, và
@@ -619,6 +642,7 @@ def update_dictation_topic(
     topic = db.get(DictationTopic, topic_id)
     if topic is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
+    _refuse_status_published(body)
     _apply(topic, body, ("name", "slug", "description", "position", "status"))
     try:
         db.commit()
@@ -681,6 +705,7 @@ def update_dictation_section(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Topic not found")
     if body.topic_id is not None:
         section.topic_id = uuid.UUID(body.topic_id)
+    _refuse_status_published(body)
     _apply(section, body, ("name", "description", "position", "status"))
     db.commit()
     db.refresh(section)
@@ -732,6 +757,7 @@ def update_dictation_story(
         if db.get(DictationSection, uuid.UUID(body.section_id)) is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Section not found")
         story.section_id = uuid.UUID(body.section_id)
+    _refuse_status_published(body)
     _apply(story, body, ("title", "description", "position", "difficulty", "status"))
     db.commit()
     db.refresh(story)

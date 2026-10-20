@@ -144,6 +144,11 @@ class ListeningAttempt(Base):
     is_complete: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default=text("false"), default=False
     )
+    # Đã xem đáp án trước khi gõ đúng — không tính vào `completed_segment_ids`,
+    # cùng nghĩa với `dictation_attempt.revealed`.
+    revealed: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=text("false"), default=False
+    )
     # `matched / expected * 100` từ bộ chấm dictation — đóng vai `similarity`
     # của SPEC (không đẻ thêm khái niệm mới cho cùng một con số).
     accuracy: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False)

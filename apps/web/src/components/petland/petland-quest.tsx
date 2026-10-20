@@ -406,7 +406,7 @@ export function QuestCard({
           />
 
           {/* Chữ THIẾU hiện thành chấm, không hiện chữ. Cùng lý do
-              `maskUnreached` ở màn chép chính tả: một bước sai rồi thử lại mà
+              `maskMissing` ở màn chép chính tả: một bước sai rồi thử lại mà
               được xem đáp án thì lần thử sau chỉ là chép lại — và ở đây lần thử
               sau còn có ruby ở cuối. Chữ THỪA thì hiện nguyên, vì đó là chữ của
               chính người gõ và không tiết lộ gì. */}

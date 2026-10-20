@@ -213,6 +213,7 @@ def gather_stats(db: Session, user_id: uuid.UUID, timezone: str) -> LearningStat
             ).where(
                 DictationAttempt.user_id == user_id,
                 DictationAttempt.is_complete.is_(True),
+                DictationAttempt.revealed.is_(False),
             ),
         )
     ).all():

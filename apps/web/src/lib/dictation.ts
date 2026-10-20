@@ -213,50 +213,26 @@ export function grade(transcript: string, submitted: string): GradeResult {
 }
 
 /**
- * Che những từ học viên chưa gõ tới.
+ * Che MỌI từ của đáp án mà người học chưa gõ đúng (op `missing`).
  *
- * Không có nó, bấm Kiểm tra khi mới gõ 4 trên 10 từ sẽ in ra cả 10 — tức là
- * phát đáp án cho đúng phần người ta chưa nghe ra. Bài tập mất nghĩa ngay từ
- * lần bấm đầu tiên.
+ * Trước đây chỉ che phần sau từ cuối cùng đã gõ, còn từ bị bỏ sót giữa câu thì
+ * in nguyên — đủ để gõ vài từ cuối rồi chấm và đọc trọn những từ còn lại. Lần
+ * chấm chỉ được trả lời "đúng chưa"; muốn thấy chữ thì dùng bậc gợi ý (chữ đầu
+ * miễn phí, mở đáp án có giá). Petland đã che đúng như vậy từ trước.
  *
- * Ranh giới là **số từ học viên đã gõ**, tính theo vị trí trong câu đáp án:
- * từ `missing` nằm ở vị trí thứ `i` bị che khi `i >= số từ đã gõ`.
- *
- *     đáp án : we need to make a reservation before visiting the restaurant
- *     đã gõ  : we need to maek                        (4 từ)
- *     hiện   : we need to make maek * *********** ****** ******** *** **********
- *                          ^^^^ vị trí 3 < 4 nên KHÔNG che: đã thử, đã sai
- *
- * Ranh giới này **không** suy ra được từ vị trí trong `diff`. Cách hiển nhiên —
- * "che mọi thứ sau mục cuối cùng học viên đóng góp" — sai, vì
- * `SequenceMatcher` gom cả đoạn còn lại vào MỘT khối `replace`, đặt toàn bộ
- * `missing` trước `extra`; với ví dụ trên nó sẽ che 0 từ và in nguyên đáp án.
- * Sai đúng ở ca hay gặp nhất: gõ dở và gõ sai từ cuối.
- *
- * Số từ đã gõ tự suy ra được từ chính `diff`: mỗi từ học viên nhập vào hoặc
- * khớp (`match`) hoặc thừa (`extra`), không có khả năng thứ ba.
- *
- * Số dấu sao bằng số ký tự của từ. Đó là gợi ý có chủ ý — biết từ tiếp theo dài
- * mấy chữ là một điểm tựa quen thuộc của dictation — và nó giữ cho dòng chữ
- * không nhảy khi từ được mở ra.
+ * Số dấu sao bằng số ký tự của từ. Đó là gợi ý có chủ ý — biết từ thiếu dài mấy
+ * chữ là một điểm tựa quen thuộc của dictation — và nó giữ cho dòng chữ không
+ * nhảy khi từ được mở ra.
  *
  * **Đây thuần tuý là hiển thị.** Nó chạy trên kết quả của `grade()` chứ không
  * nằm trong đó: `accuracy` vẫn tính trên toàn bộ câu, nên con số học viên nhìn
  * thấy vẫn khớp với con số server ghi lại. Đưa việc che vào `grade()` sẽ phá
  * đúng sự khớp đó.
  */
-export function maskUnreached(diff: WordResult[]): DisplayWord[] {
-  const typedCount = diff.filter((word) => word.op === "match" || word.op === "extra").length;
-
-  let position = -1;
-  return diff.map((word) => {
-    // `extra` là từ học viên gõ ra, không chiếm vị trí nào trong câu đáp án.
-    if (word.op === "extra") return word;
-    position += 1;
-    return position >= typedCount && word.op === "missing"
-      ? { op: "hidden" as const, word: "*".repeat(word.word.length) }
-      : word;
-  });
+export function maskMissing(diff: WordResult[]): DisplayWord[] {
+  return diff.map((word) =>
+    word.op === "missing" ? { op: "hidden" as const, word: "*".repeat(word.word.length) } : word,
+  );
 }
 
 /**

@@ -19,6 +19,7 @@ from app.models import (
     DictationStory,
     DictationTopic,
     User,
+    XpEvent,
 )
 
 
@@ -294,6 +295,38 @@ def test_done_stays_done_after_a_worse_attempt(client: TestClient, db_session: S
 
     body = client.get(f"/api/v1/dictation-stories/{story.id}", headers=headers).json()
     assert body["progress"]["completed_items"] == 1
+
+
+def test_revealing_the_answer_keeps_the_grade_but_not_the_progress(
+    client: TestClient, db_session: Session
+) -> None:
+    """Đã mở đáp án thì bài gõ vẫn được chấm đúng, nhưng không tính là đã nghe ra.
+
+    `is_complete` phải giữ đúng sự thật để UI còn vẽ diff; tiến độ và XP là
+    chuyện khác — chép đáp án không đo được việc nghe.
+    """
+    story = build_tree(db_session, marker="rv")
+    headers = auth(client, db_session, "rv@example.com")
+    detail = client.get(f"/api/v1/dictation-stories/{story.id}", headers=headers).json()
+    first = detail["items"][0]["id"]
+
+    body = client.post(
+        f"/api/v1/dictation/{first}/attempts",
+        json={"submitted_text": "First sentence here.", "revealed": True},
+        headers=headers,
+    ).json()
+    assert body["is_complete"] is True
+    assert body["pet"] is None
+
+    again = client.get(f"/api/v1/dictation-stories/{story.id}", headers=headers).json()
+    assert again["progress"]["completed_items"] == 0
+    assert again["items"][0]["completed"] is False
+
+    attempt = db_session.query(DictationAttempt).one()
+    assert attempt.revealed is True
+    assert (
+        db_session.query(XpEvent).filter(XpEvent.source_type == "dictation_complete").count() == 0
+    )
 
 
 def test_progress_is_per_user(client: TestClient, db_session: Session) -> None:

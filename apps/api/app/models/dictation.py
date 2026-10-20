@@ -124,6 +124,12 @@ class DictationAttempt(Base):
     is_complete: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default=text("false"), default=False
     )
+    # Người học đã mở đáp án TRƯỚC khi gõ đúng. `is_complete` vẫn ghi đúng sự
+    # thật của bài gõ, nhưng lượt này không được tính vào tiến độ/XP — chép đáp
+    # án không phải là nghe ra. Xem `_completed_items` và `record_dictation_attempt`.
+    revealed: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=text("false"), default=False
+    )
     # Word-level comparison, so the UI can re-render the highlighting without
     # re-running the grader.
     word_diff: Mapped[Any | None] = mapped_column(_JSON_TYPE, nullable=True)

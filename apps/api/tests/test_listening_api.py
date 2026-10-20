@@ -155,6 +155,29 @@ def test_submit_correct_and_wrong_answers(client: TestClient, db_session: Sessio
     assert listing[0]["completed_count"] == 1
 
 
+def test_a_revealed_answer_does_not_complete_the_segment(
+    client: TestClient, db_session: Session
+) -> None:
+    headers = _headers_for(db_session, "reveal@example.com")
+    body = _create(client, headers)
+    first = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()[
+        "segments"
+    ][0]
+
+    res = client.post(
+        f"/api/v1/listening/contents/{body['id']}/attempts",
+        headers=headers,
+        json={"segment_id": first["id"], "answer": "Hello everyone", "revealed": True},
+    )
+    assert res.status_code == 200
+    assert res.json()["is_correct"] is False
+
+    listing = client.get("/api/v1/listening/contents", headers=headers).json()
+    assert listing[0]["completed_count"] == 0
+    detail = client.get(f"/api/v1/listening/contents/{body['id']}", headers=headers).json()
+    assert detail["completed_segment_ids"] == []
+
+
 def test_cross_user_and_cross_content_are_404(client: TestClient, db_session: Session) -> None:
     mine_headers = _headers_for(db_session, "mine@example.com")
     other_headers = _headers_for(db_session, "other@example.com")

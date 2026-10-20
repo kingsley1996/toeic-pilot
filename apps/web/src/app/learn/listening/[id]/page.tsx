@@ -20,7 +20,7 @@ import { apiFetch } from "@/lib/api";
 import { formatTime } from "@/lib/listening-player";
 import { useRequireSession } from "@/lib/session";
 
-/** Một từ che thành `*` dài bằng đúng từ đó — cùng chuẩn `maskUnreached` của
+/** Một từ che thành `*` dài bằng đúng từ đó — cùng chuẩn `maskMissing` của
  * dictation (nhìn độ dài đoán từ là một phần cuộc chơi, không phải lộ đáp án).
  * Chưa đúng thì không có diff để mask, nên mask thẳng từ transcript thô. */
 function MaskedText({ text }: { text: string }) {
@@ -171,7 +171,11 @@ export default function ListeningLessonPage() {
 
   /** Ghi lượt làm về attempts của segment — cũng là chỗ duy nhất đánh dấu câu
    * đã đúng (server phán, không phải trình duyệt), và tính thời gian làm. */
-  async function submitSegment(segmentId: string, text: string): Promise<unknown> {
+  async function submitSegment(
+    segmentId: string,
+    text: string,
+    revealed: boolean,
+  ): Promise<unknown> {
     if (!token || !content) return null;
     const result = await apiFetch<ListeningAttemptResult>(
       API_ROUTES.listeningAttempts(content.id),
@@ -181,6 +185,7 @@ export default function ListeningLessonPage() {
         body: JSON.stringify({
           segment_id: segmentId,
           answer: text,
+          revealed,
           time_spent_seconds: Math.max(
             0,
             Math.round((nowMs() - (segStartedAt.current ?? nowMs())) / 1000),
@@ -368,7 +373,7 @@ export default function ListeningLessonPage() {
                 transcript_vi: active.text_vi,
                 word_count: active.text.split(/\s+/).length,
               }}
-              submitAnswer={(text) => submitSegment(active.id, text)}
+              submitAnswer={(text, { revealed }) => submitSegment(active.id, text, revealed)}
               onNext={next ? () => goTo(activeIndex + 1) : undefined}
               nextLabel="Câu tiếp theo"
               advanceOnEnter={false}

@@ -6,7 +6,8 @@ import {
   type DictationPage,
   type DictationSummary,
 } from "@toeic-pilot/shared";
-import { Headphones } from "lucide-react";
+import { ArrowLeft, Headphones } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -62,71 +63,87 @@ export default function StandaloneDictationPage() {
   }
 
   return (
-    <Page className="max-w-2xl">
-      <Breadcrumbs trail={[{ href: "/learn/dictation", label: "Dictation" }]} />
-      <PageHeader
-        eyebrow="Câu lẻ"
-        title="Câu chưa thuộc bài nào"
-        description="Mỗi câu đứng riêng, không theo thứ tự nào."
-      />
-
-      <GuestNotice className="mb-4" />
-
-      {error && (
-        <div className="mb-4">
-          <Alert>{error}</Alert>
-        </div>
-      )}
-      {!items && <SkeletonList rows={4} />}
-
-      {items?.length === 0 && (
-        <EmptyState
-          icon={Headphones}
-          title="Không còn câu lẻ nào"
-          description="Mọi câu đã được xếp vào bài. Vào Dictation để duyệt theo chủ đề."
-        />
-      )}
-
+    <Page className={active ? "py-4 sm:py-6" : "max-w-2xl"}>
       {active ? (
-        <>
-          <p className="mb-2 text-small text-ink-muted">
+        // Cùng chế độ luyện với trang bài: thanh trên gọn, phần gõ ở giữa.
+        <div className="mx-auto flex min-h-[calc(100dvh-16rem)] w-full max-w-5xl flex-col">
+          <div className="flex items-center gap-2">
+            <Link
+              href="/learn/dictation"
+              aria-label="Quay lại Dictation"
+              title="Quay lại Dictation"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded border border-rule-strong text-ink-muted transition-colors hover:bg-recess hover:text-ink"
+            >
+              <ArrowLeft size={16} strokeWidth={2} aria-hidden />
+            </Link>
+            <h1 className="min-w-0 truncate text-subtitle font-semibold">Câu lẻ</h1>
+          </div>
+          <p className="mb-1 mt-3 text-small text-ink-muted">
             {active.word_count} từ · nghe lại bao nhiêu lần cũng được
           </p>
-          <DictationExercise
-            key={active.id}
-            item={active}
-            onNext={() => setActive(null)}
-            nextLabel="Câu khác"
-          />
-        </>
-      ) : (
-        <div className="space-y-2">
-          {items?.map((item, position) => (
-            <Panel key={item.id} className="overflow-hidden">
-              <button
-                type="button"
-                onClick={() => {
-                  setError(null);
-                  apiFetch<DictationDetail>(API_ROUTES.dictationDetail(item.id))
-                    .then(setActive)
-                    .catch(() => setError("Không tải được câu này."));
-                }}
-                className="flex w-full items-center gap-4 px-4 py-3.5 text-left transition-colors hover:bg-recess"
-              >
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded border border-rule bg-recess font-data text-small text-ink-muted">
-                  {position + 1}
-                </span>
-                <span className="flex-1 text-small text-ink-muted">{item.word_count} từ</span>
-                <Tag
-                  tone={item.difficulty <= 2 ? "ok" : item.difficulty >= 4 ? "alert" : "neutral"}
-                >
-                  độ khó {item.difficulty}
-                </Tag>
-              </button>
-            </Panel>
-          ))}
-          <Pager total={total} limit={PAGE_SIZE} offset={offset} onOffset={setOffset} />
+          <div className="flex flex-1 flex-col justify-center">
+            <DictationExercise
+              key={active.id}
+              item={active}
+              onNext={() => setActive(null)}
+              nextLabel="Câu khác"
+            />
+          </div>
         </div>
+      ) : (
+        <>
+          <Breadcrumbs trail={[{ href: "/learn/dictation", label: "Dictation" }]} />
+          <PageHeader
+            eyebrow="Câu lẻ"
+            title="Câu chưa thuộc bài nào"
+            description="Mỗi câu đứng riêng, không theo thứ tự nào."
+          />
+
+          <GuestNotice className="mb-4" />
+
+          {error && (
+            <div className="mb-4">
+              <Alert>{error}</Alert>
+            </div>
+          )}
+          {!items && <SkeletonList rows={4} />}
+
+          {items?.length === 0 && (
+            <EmptyState
+              icon={Headphones}
+              title="Không còn câu lẻ nào"
+              description="Mọi câu đã được xếp vào bài. Vào Dictation để duyệt theo chủ đề."
+            />
+          )}
+
+          <div className="space-y-2">
+            {items?.map((item, position) => (
+              <Panel key={item.id} className="overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError(null);
+                    apiFetch<DictationDetail>(API_ROUTES.dictationDetail(item.id))
+                      .then(setActive)
+                      .catch(() => setError("Không tải được câu này."));
+                  }}
+                  className="flex w-full items-center gap-4 px-4 py-3.5 text-left transition-colors hover:bg-recess"
+                >
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded border border-rule bg-recess font-data text-small text-ink-muted">
+                    {position + 1}
+                  </span>
+                  <span className="flex-1 text-small text-ink-muted">{item.word_count} từ</span>
+                  <Tag
+                    tone={item.difficulty <= 2 ? "ok" : item.difficulty >= 4 ? "alert" : "neutral"}
+                  >
+                    độ khó {item.difficulty}
+                  </Tag>
+                </button>
+              </Panel>
+            ))}
+            <Pager total={total} limit={PAGE_SIZE} offset={offset} onOffset={setOffset} />
+          </div>
+        </>
       )}
     </Page>
   );

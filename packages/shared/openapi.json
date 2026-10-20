@@ -4318,7 +4318,13 @@
       },
       "DictationSubmit": {
         "properties": {
+          "revealed": {
+            "default": false,
+            "title": "Revealed",
+            "type": "boolean"
+          },
           "submitted_text": {
+            "maxLength": 2000,
             "title": "Submitted Text",
             "type": "string"
           }
@@ -8102,8 +8108,14 @@
         "properties": {
           "answer": {
             "default": "",
+            "maxLength": 2000,
             "title": "Answer",
             "type": "string"
+          },
+          "revealed": {
+            "default": false,
+            "title": "Revealed",
+            "type": "boolean"
           },
           "segment_id": {
             "format": "uuid",
@@ -13274,6 +13286,7 @@
           },
           "typed": {
             "description": "Nguyên văn học viên gõ, không chuẩn hoá trước",
+            "maxLength": 200,
             "title": "Typed",
             "type": "string"
           }

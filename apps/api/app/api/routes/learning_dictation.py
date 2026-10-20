@@ -185,7 +185,12 @@ def get_dictation(item_id: uuid.UUID, db: Session = Depends(get_db)) -> Dictatio
 
 
 def record_dictation_attempt(
-    db: Session, user: User, item: DictationItem, submitted_text: str
+    db: Session,
+    user: User,
+    item: DictationItem,
+    submitted_text: str,
+    *,
+    revealed: bool = False,
 ) -> tuple[DictationAttempt, dictation_grader.GradeResult]:
     """Chấm một câu chép chính tả và ghi lại đủ mọi hệ quả của nó.
 
@@ -209,6 +214,7 @@ def record_dictation_attempt(
         submitted_text=submitted_text,
         accuracy=result.accuracy,
         is_complete=result.is_complete,
+        revealed=revealed,
         word_diff=result.as_json(),
     )
     db.add(attempt)
@@ -216,8 +222,11 @@ def record_dictation_attempt(
     # Chỉ trao XP cho câu ĐÚNG TRỌN. `accuracy` không dùng được làm cổng ở đây:
     # gõ cả câu rồi gõ thêm vẫn cho 100%, và gõ hai lần cũng vậy — cùng lý do
     # tiến độ dictation đếm `is_complete` chứ không đếm điểm.
+    #
+    # `revealed` chặn cả XP lẫn ruby: đáp án đã hiện trên màn hình thì "đúng"
+    # không còn đo được việc nghe, chỉ đo việc chép.
     db.flush()
-    if result.is_complete:
+    if result.is_complete and not revealed:
         try:
             progression.award(
                 db,
@@ -246,12 +255,18 @@ def submit_dictation(
     if item is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
 
-    attempt, result = record_dictation_attempt(db, current_user, item, body.submitted_text)
+    attempt, result = record_dictation_attempt(
+        db, current_user, item, body.submitted_text, revealed=body.revealed
+    )
     # Ở ĐÂY chứ không trong `record_dictation_attempt`: hàm ấy còn được các cuộc
     # chạm mặt gọi tới, và ở đó phần thưởng đã là `XP_PER_ENCOUNTER` — móc vào
     # hàm chung thì một lượt trả lời NPC được trả hai lần. Cùng cái bẫy mà
     # `test_encounters` đã bắt ở phía từ vựng.
-    reward = reward_study(db, current_user.id, "dictation_item") if result.is_complete else None
+    reward = (
+        reward_study(db, current_user.id, "dictation_item")
+        if result.is_complete and not body.revealed
+        else None
+    )
     db.commit()
     db.refresh(attempt)
 
@@ -301,6 +316,7 @@ def _completed_items(db: Session, user_id: uuid.UUID, item_ids: list[uuid.UUID])
             DictationAttempt.user_id == user_id,
             DictationAttempt.item_id.in_(item_ids),
             DictationAttempt.is_complete.is_(True),
+            DictationAttempt.revealed.is_(False),
         )
         .distinct()
     ).all()

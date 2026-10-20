@@ -96,11 +96,14 @@ export function DictationNextUp({
   topicId,
   sectionId,
   storyId,
+  onResolved,
 }: {
   token: string | null;
   topicId: string;
   sectionId: string;
   storyId: string;
+  /** Báo đích vừa tìm được để trang cha nối phím Enter. `null` = chưa có. */
+  onResolved?: (href: string | null) => void;
 }) {
   const [next, setNext] = useState<Destination | null>(null);
   const [done, setDone] = useState(false);
@@ -113,6 +116,8 @@ export function DictationNextUp({
         if (!alive) return;
         setNext(found);
         setDone(found === null);
+        // Hết nội dung thì đích là đúng lối đi mà panel này mời: nghe ngẫu nhiên.
+        onResolved?.(found?.href ?? "/learn/dictation/random");
       })
       // Hỏng thì im lặng không hiện gì. Khối này là một lối đi tắt; breadcrumb
       // phía trên vẫn đưa được người học đi bất cứ đâu, nên một thông báo lỗi ở
@@ -121,7 +126,7 @@ export function DictationNextUp({
     return () => {
       alive = false;
     };
-  }, [token, topicId, sectionId, storyId]);
+  }, [token, topicId, sectionId, storyId, onResolved]);
 
   if (!token) return null;
 

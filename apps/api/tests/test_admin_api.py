@@ -558,6 +558,37 @@ def test_dictation_publishing_is_blocked_without_audio(
     assert "answer key" in response.json()["detail"]
 
 
+def test_patch_cannot_publish_dictation_nodes(
+    client: TestClient, db_session: Session, auth: Callable[[str], dict[str, str]]
+) -> None:
+    """Xuất bản chỉ có một cửa: POST .../publish.
+
+    PATCH đi vòng qua `can_publish`, cổng audio, và bỏ trống `published_by` —
+    editor publish được một câu có clip đã cũ, tức là học viên bị chấm trên câu
+    chưa từng được phát. Chặn cả admin: một cửa thì không có cửa nào lãng quên.
+    """
+    item = DictationItem(transcript="The report is due Friday.", difficulty=3)
+    db_session.add(item)
+    db_session.commit()
+
+    for role in ("editor", "admin"):
+        response = client.patch(
+            f"/api/v1/admin/dictation/{item.id}",
+            json={"status": "published"},
+            headers=auth(role),
+        )
+        assert response.status_code == 409
+
+    # Lưu trữ và về nháp vẫn là việc của PATCH — cổng mới không được chặn nhầm.
+    archived = client.patch(
+        f"/api/v1/admin/dictation/{item.id}",
+        json={"status": "archived"},
+        headers=auth("editor"),
+    )
+    assert archived.status_code == 200
+    assert archived.json()["status"] == "archived"
+
+
 def test_the_database_also_refuses_a_published_item_without_audio(db_session: Session) -> None:
     # Belt and braces: the endpoint checks, and so does the schema.
     from sqlalchemy.exc import IntegrityError

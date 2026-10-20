@@ -7182,6 +7182,11 @@ export interface components {
         };
         /** DictationSubmit */
         DictationSubmit: {
+            /**
+             * Revealed
+             * @default false
+             */
+            revealed: boolean;
             /** Submitted Text */
             submitted_text: string;
         };
@@ -8608,6 +8613,11 @@ export interface components {
              * @default
              */
             answer: string;
+            /**
+             * Revealed
+             * @default false
+             */
+            revealed: boolean;
             /**
              * Segment Id
              * Format: uuid

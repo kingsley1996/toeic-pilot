@@ -316,7 +316,10 @@ class ReviewResult(BaseModel):
 class RecallSubmit(BaseModel):
     """Một lần gõ lại từ."""
 
-    typed: str = Field(description="Nguyên văn học viên gõ, không chuẩn hoá trước")
+    # Cùng lỗ hổng với `DictationSubmit.submitted_text`, cùng cách chặn: `judge`
+    # là bộ so chuỗi O(n·m), và một từ dài nhất cũng chỉ vài chục ký tự. 200 là
+    # rộng gấp nhiều lần mọi headword thật.
+    typed: str = Field(max_length=200, description="Nguyên văn học viên gõ, không chuẩn hoá trước")
     # Thứ DUY NHẤT người học còn tự khai — và chỉ có tác dụng khi bài gõ đã
     # đúng. Nói "dễ" trong lúc viết sai không nâng được điểm: server kiểm trước
     # rồi mới xét cờ này.
@@ -395,7 +398,15 @@ class DictationDetail(DictationSummary):
 
 
 class DictationSubmit(BaseModel):
-    submitted_text: str
+    # Trần 2000 ký tự: bộ chấm là SequenceMatcher O(n·m) chạy ở CẢ HAI đầu (máy
+    # chủ chấm lại bản được lưu), và câu dictation dài nhất cũng chỉ vài trăm ký
+    # tự. Không có trần thì một lần dán vài MB là treo tab người gửi và bận một
+    # worker của API. Cùng con số với `text` của cuộc chạm mặt pet.
+    submitted_text: str = Field(max_length=2000)
+    # Người học tự khai đã mở transcript trước khi gõ. Không chặn được việc nói
+    # dối, nhưng cửa UI là nơi duy nhất lộ đáp án trước khi chấm: đã qua đó thì
+    # lượt này không tính tiến độ/XP (xem `record_dictation_attempt`).
+    revealed: bool = False
 
 
 class WordDiff(BaseModel):

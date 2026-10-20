@@ -139,8 +139,13 @@ class ListeningContentUpdate(BaseModel):
 
 class ListeningAttemptSubmit(BaseModel):
     segment_id: uuid.UUID
-    answer: str = ""
+    # Cùng trần với `DictationSubmit.submitted_text`: Lab dùng chung bộ chấm
+    # O(n·m), nên cùng một lỗ hổng nếu không chặn ở đây.
+    answer: str = Field(default="", max_length=2000)
     time_spent_seconds: int | None = Field(default=None, ge=0)
+    # Cùng nghĩa với `DictationSubmit.revealed`: đã mở đáp án thì lượt này
+    # không đánh dấu segment hoàn thành.
+    revealed: bool = False
 
 
 class ListeningAttemptResult(BaseModel):
