@@ -28,8 +28,7 @@ import { useSession } from "@/lib/session";
  * đổi chế độ.
  */
 export default function RandomDictationPage() {
-  // Không lấy `token`: trang này không hiện tiến độ và endpoint không cần auth.
-  const { status } = useSession();
+  const { status, token } = useSession();
   const [item, setItem] = useState<DictationDetail | null>(null);
   const [rolling, setRolling] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,28 +40,32 @@ export default function RandomDictationPage() {
    * bộ trong thân effect là thứ luật `react-hooks/set-state-in-effect` của dự án
    * này chặn — nó xếp tầng render — nên trạng thái "đang bốc" được bật ở CHỖ
    * BẤM, nơi nó thật sự có nghĩa, còn `roll` chỉ đi lấy dữ liệu.
+   *
+   * Token là tuỳ chọn: máy chủ dùng nó để bỏ qua những câu người học đã làm
+   * xong, còn khách vãng lai vẫn bốc được từ toàn kho.
    */
-  const roll = useCallback((exclude?: string) => {
-    const url = exclude
-      ? `${API_ROUTES.dictationRandom}?exclude=${exclude}`
-      : API_ROUTES.dictationRandom;
-    return apiFetch<DictationDetail>(url)
-      .then((data) => {
-        setItem(data);
-        setError(null);
-      })
-      .catch(() => setError("Chưa có câu nào để nghe. Nội dung có thể đang được biên soạn."))
-      .finally(() => setRolling(false));
-  }, []);
+  const roll = useCallback(
+    (exclude?: string) => {
+      const url = exclude
+        ? `${API_ROUTES.dictationRandom}?exclude=${exclude}`
+        : API_ROUTES.dictationRandom;
+      return apiFetch<DictationDetail>(url, { token: token ?? undefined })
+        .then((data) => {
+          setItem(data);
+          setError(null);
+        })
+        .catch(() => setError("Chưa có câu nào để nghe. Nội dung có thể đang được biên soạn."))
+        .finally(() => setRolling(false));
+    },
+    [token],
+  );
 
   useEffect(() => {
-    // KHÔNG chờ token: `/dictation-random` không cần đăng nhập, và trang này
-    // không hiện tiến độ nên chẳng có gì để đợi. Điều kiện cũ là `if (token)`,
-    // và với khách vãng lai nó im lặng không bao giờ chạy — trang dựng xong với
-    // `item` là null, không skeleton vì phiên đã phân giải, không lỗi vì chưa ai
-    // gọi gì. Một trang trắng mà không có gì sai để mà báo.
+    // Chờ phiên phân giải xong để lần bốc ĐẦU TIÊN đã biết người học là ai;
+    // bốc trước khi có token sẽ trả về một câu đã làm rồi effect chạy lại.
+    if (status === "loading") return;
     void roll();
-  }, [roll]);
+  }, [roll, status]);
 
   /** Bốc lại theo yêu cầu của người dùng: khoá nút trong lúc chờ, rồi đi lấy. */
   function reroll(exclude: string) {

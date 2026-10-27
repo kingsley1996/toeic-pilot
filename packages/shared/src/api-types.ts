@@ -3607,9 +3607,13 @@ export interface paths {
          *     lần bấm, và **không loại được câu vừa nghe**: với kho nội dung nhỏ, bấm "câu
          *     khác" mà ra đúng câu cũ đọc như nút hỏng.
          *
+         *     Người đã đăng nhập thì bỏ qua những câu **đã làm xong** (đúng và không mở
+         *     đáp án) — "nghe cho quen tai" mà lặp lại đúng câu vừa làm thì không còn là
+         *     nghe cái mới. Khách vãng lai không có lịch sử nên vẫn bốc toàn bộ.
+         *
          *     `exclude` bị BỎ QUA khi nó là câu duy nhất còn lại. Tôn trọng nó tuyệt đối
          *     nghĩa là kho có đúng một câu thì nút trả 404 — một lỗi cho một tình huống
-         *     hoàn toàn hợp lệ.
+         *     hoàn toàn hợp lệ. Cùng lý do, làm xong cả kho thì bốc lại từ đầu thay vì 404.
          */
         get: operations["get_random_dictation_api_v1_dictation_random_get"];
         put?: never;

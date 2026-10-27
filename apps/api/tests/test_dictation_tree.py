@@ -123,6 +123,62 @@ def test_random_skips_the_sentence_just_heard(client: TestClient, db_session: Se
         assert client.get(f"/api/v1/dictation-random?exclude={first}").json()["id"] != first
 
 
+def test_random_skips_sentences_the_learner_already_finished(
+    client: TestClient, db_session: Session
+) -> None:
+    """Đã làm xong một câu thì lần vào sau không được bốc lại nó.
+
+    Kho hai câu nên sau khi xong một câu chỉ còn đúng một khả năng — khẳng định
+    không phụ thuộc may rủi. Làm nốt câu còn lại thì kho hết câu chưa làm: vẫn
+    phải bốc lại một câu, không được 404.
+    """
+    story = build_tree(db_session, marker="rf")
+    finished, remaining = db_session.scalars(
+        select(DictationItem).where(DictationItem.story_id == story.id)
+    ).all()
+    headers = auth(client, db_session, "random-finished@example.com")
+
+    for item in (finished, remaining):
+        response = client.post(
+            f"/api/v1/dictation/{item.id}/attempts",
+            json={"submitted_text": item.transcript},
+            headers=headers,
+        )
+        assert response.json()["is_complete"] is True
+        if item is finished:
+            for _ in range(5):
+                body = client.get("/api/v1/dictation-random", headers=headers).json()
+                assert body["id"] == str(remaining.id)
+
+    # Cả kho đã xong: trả lại một câu đã làm thay vì nói hết nội dung.
+    assert client.get("/api/v1/dictation-random", headers=headers).status_code == 200
+
+
+def test_a_revealed_attempt_does_not_retire_the_sentence(
+    client: TestClient, db_session: Session
+) -> None:
+    """Đã xem đáp án thì câu đó vẫn còn trong vòng bốc — nó chưa được tính là xong."""
+    story = build_tree(db_session, marker="rv")
+    completed, peeked = db_session.scalars(
+        select(DictationItem).where(DictationItem.story_id == story.id)
+    ).all()
+    headers = auth(client, db_session, "random-revealed@example.com")
+    client.post(
+        f"/api/v1/dictation/{completed.id}/attempts",
+        json={"submitted_text": completed.transcript},
+        headers=headers,
+    )
+    client.post(
+        f"/api/v1/dictation/{peeked.id}/attempts",
+        json={"submitted_text": peeked.transcript, "revealed": True},
+        headers=headers,
+    )
+
+    for _ in range(5):
+        body = client.get("/api/v1/dictation-random", headers=headers).json()
+        assert body["id"] == str(peeked.id)
+
+
 def test_the_only_sentence_left_comes_back_rather_than_a_404(
     client: TestClient, db_session: Session
 ) -> None:

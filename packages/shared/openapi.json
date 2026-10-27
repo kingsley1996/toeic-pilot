@@ -27776,7 +27776,7 @@
     },
     "/api/v1/dictation-random": {
       "get": {
-        "description": "Một câu bất kỳ trong toàn bộ nội dung đã xuất bản.\n\n**Đường dẫn gạch nối, không lồng dưới `/dictation/`.** `/dictation/{item_id}`\nkhai `item_id: uuid.UUID`, nên `/dictation/random` bị chính nó bắt và trả 422\nvì không parse nổi chữ \"random\" thành UUID. Khai route tĩnh trước route động\ncũng chạy, nhưng khi đó THỨ TỰ KHAI BÁO trở thành thứ gánh trách nhiệm mà\nkhông nhìn thấy được — cùng lý do `/dictation-topics` đã nằm ngoài.\n\nBốc ngẫu nhiên ở máy chủ chứ không ở trình duyệt. Cách làm phía client là\nhỏi `total` rồi bốc một `offset` — chạy được, nhưng nó lôi cơ chế phân trang\nvào một tính năng chẳng liên quan gì tới phân trang, tốn ba lượt gọi cho một\nlần bấm, và **không loại được câu vừa nghe**: với kho nội dung nhỏ, bấm \"câu\nkhác\" mà ra đúng câu cũ đọc như nút hỏng.\n\n`exclude` bị BỎ QUA khi nó là câu duy nhất còn lại. Tôn trọng nó tuyệt đối\nnghĩa là kho có đúng một câu thì nút trả 404 — một lỗi cho một tình huống\nhoàn toàn hợp lệ.",
+        "description": "Một câu bất kỳ trong toàn bộ nội dung đã xuất bản.\n\n**Đường dẫn gạch nối, không lồng dưới `/dictation/`.** `/dictation/{item_id}`\nkhai `item_id: uuid.UUID`, nên `/dictation/random` bị chính nó bắt và trả 422\nvì không parse nổi chữ \"random\" thành UUID. Khai route tĩnh trước route động\ncũng chạy, nhưng khi đó THỨ TỰ KHAI BÁO trở thành thứ gánh trách nhiệm mà\nkhông nhìn thấy được — cùng lý do `/dictation-topics` đã nằm ngoài.\n\nBốc ngẫu nhiên ở máy chủ chứ không ở trình duyệt. Cách làm phía client là\nhỏi `total` rồi bốc một `offset` — chạy được, nhưng nó lôi cơ chế phân trang\nvào một tính năng chẳng liên quan gì tới phân trang, tốn ba lượt gọi cho một\nlần bấm, và **không loại được câu vừa nghe**: với kho nội dung nhỏ, bấm \"câu\nkhác\" mà ra đúng câu cũ đọc như nút hỏng.\n\nNgười đã đăng nhập thì bỏ qua những câu **đã làm xong** (đúng và không mở\nđáp án) — \"nghe cho quen tai\" mà lặp lại đúng câu vừa làm thì không còn là\nnghe cái mới. Khách vãng lai không có lịch sử nên vẫn bốc toàn bộ.\n\n`exclude` bị BỎ QUA khi nó là câu duy nhất còn lại. Tôn trọng nó tuyệt đối\nnghĩa là kho có đúng một câu thì nút trả 404 — một lỗi cho một tình huống\nhoàn toàn hợp lệ. Cùng lý do, làm xong cả kho thì bốc lại từ đầu thay vì 404.",
         "operationId": "get_random_dictation_api_v1_dictation_random_get",
         "parameters": [
           {
@@ -27821,6 +27821,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Get Random Dictation",
         "tags": [
           "learning"

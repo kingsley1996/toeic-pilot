@@ -132,6 +132,7 @@ def get_random_dictation(
     exclude: uuid.UUID | None = Query(
         default=None, description="id vừa nghe, để bấm lần nữa không ra đúng câu cũ"
     ),
+    user: User | None = Depends(get_optional_user),
     db: Session = Depends(get_db),
 ) -> DictationDetail:
     """Một câu bất kỳ trong toàn bộ nội dung đã xuất bản.
@@ -148,19 +149,36 @@ def get_random_dictation(
     lần bấm, và **không loại được câu vừa nghe**: với kho nội dung nhỏ, bấm "câu
     khác" mà ra đúng câu cũ đọc như nút hỏng.
 
+    Người đã đăng nhập thì bỏ qua những câu **đã làm xong** (đúng và không mở
+    đáp án) — "nghe cho quen tai" mà lặp lại đúng câu vừa làm thì không còn là
+    nghe cái mới. Khách vãng lai không có lịch sử nên vẫn bốc toàn bộ.
+
     `exclude` bị BỎ QUA khi nó là câu duy nhất còn lại. Tôn trọng nó tuyệt đối
     nghĩa là kho có đúng một câu thì nút trả 404 — một lỗi cho một tình huống
-    hoàn toàn hợp lệ.
+    hoàn toàn hợp lệ. Cùng lý do, làm xong cả kho thì bốc lại từ đầu thay vì 404.
     """
-    query = select(DictationItem).where(DictationItem.status == PUBLISHED)
-    item = db.scalars(
-        query.where(DictationItem.id != exclude).order_by(func.random()).limit(1)
-        if exclude is not None
-        else query.order_by(func.random()).limit(1)
-    ).first()
+    base = select(DictationItem).where(DictationItem.status == PUBLISHED)
+    preferred = base
+    if user is not None:
+        done = select(DictationAttempt.item_id).where(
+            DictationAttempt.user_id == user.id,
+            DictationAttempt.is_complete.is_(True),
+            DictationAttempt.revealed.is_(False),
+        )
+        preferred = preferred.where(DictationItem.id.not_in(done))
+    if exclude is not None:
+        preferred = preferred.where(DictationItem.id != exclude)
+
+    item = db.scalars(preferred.order_by(func.random()).limit(1)).first()
+
+    if item is None and user is not None:
+        # Đã làm xong cả kho: bốc lại trong toàn bộ nội dung, vẫn tránh câu vừa nghe.
+        fallback = base if exclude is None else base.where(DictationItem.id != exclude)
+        item = db.scalars(fallback.order_by(func.random()).limit(1)).first()
+
     if item is None and exclude is not None:
         # Chỉ còn đúng câu vừa nghe: trả lại chính nó chứ không báo hết nội dung.
-        item = db.scalars(query.order_by(func.random()).limit(1)).first()
+        item = db.scalars(base.order_by(func.random()).limit(1)).first()
     if item is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No published sentence")
     # `selectinload` không dùng được sau khi đã lấy hàng ra; nạp asset qua quan hệ
