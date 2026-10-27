@@ -48,6 +48,7 @@ không làm tính năng của pha sau khi pha trước còn mở, trừ khi đư
 | `adr/ADR-016-RETRIEVAL-KEEP-VECTOR-WITH-REVISIT.md` | Giữ vector + lexical fallback; số đo và điều kiện xem lại |
 | `adr/ADR-015-TURNSTILE.md` | Ô kiểm chống bot. §0: nửa còn lại của Cloudflare cần **tên miền**. §3 hỏng thì mở, chối thì đóng. §6 nó tiêu món nợ P1-7b |
 | `adr/ADR-014-DEPLOY-FREE.md` | Production trên free tier. §0 đọc trước; ba thứ hỏng im lặng ở §7 |
+| `docs/DEPLOYMENT.md` | **Bản đồ triển khai cho agent**: tổ chức code quanh `docker/`, dev vs prod (GHCR→Render hook, Vercel), chọn script sync dữ liệu, bảng hỏng im lặng. Đọc trước khi đụng `docker/**` hoặc đưa gì lên production |
 | `docs/AI-ENGINEERING-PLAN.md` | §3: giải thích một câu **giống nhau với mọi người học** nên tính sẵn offline. §2: chấm điểm, SM-2, quy đổi điểm **không bao giờ** chạm LLM |
 | `docs/PROMPT-SYSTEM.md` | Kiểm kê prompt. §0: hai sổ đăng ký, và ranh giới giữa chúng là ranh giới kiến trúc |
 | `docs/DESIGN-SYSTEM.md` | Ba luật hỏng im lặng: **không `box-shadow`**, **một bán kính 4px**, **`rule-strong`** cho viền |
