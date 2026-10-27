@@ -92,6 +92,19 @@
         }
       }
     },
+    "shopaikey": {
+      "base_url": "https://api.shopaikey.com/v1",
+      "api_key_env": "SHOPAPIKEY_API_KEY",
+      "comment": "ShopAiKey (shopaikey.com) — cổng bán lại key trả phí gói, nói giao thức OpenAI. Probe endpoint 2026-10-27: /v1/models không khoá trả 401 'Invalid token',type 'proxy_api_error' (dạng proxy API-key gateway). ID model do người dùng cung cấp, CHƯA xác nhận bằng GET /v1/models với khoá thật — kiểm bằng: set -a; . ../../.env; curl -H \"Authorization: Bearer $SHOPAPIKEY_API_KEY\" $base_url/models.",
+      "models": {
+        "deepseek-v4-flash": {
+          "rate_in": 0.44,
+          "rate_out": 1.32,
+          "rate_cached": 0.0147,
+          "comment": "GIÁ THAM CHIẾU, không phải giá hoá đơn — tài khoản ShopAiKey trả theo gói, không theo token. Con số mượn từ giá chuẩn DeepSeek-V4-Flash đã tra ở docs.b.ai ngày 2026-08-30 (cùng model, ghi giá busy như mục `bai`), purpose là để cost_usd ở /admin/ai ước được mức tiêu thụ, không Undertrị về 0. Khoá ShopAiKey có thể hết hạn giữa chu kỳ độc lập với bảng giá này."
+        }
+      }
+    },
     "zai": {
       "base_url": "https://api.z.ai/api/paas/v4",
       "api_key_env": "ZAI_API_KEY",
